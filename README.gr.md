@@ -2,7 +2,7 @@
 
 ## Σχετικά με το έργο
 
-Αυτό το έργο χρησιμοποιεί το **CodeIgniter 4** framework για την ανάπτυξη εφαρμογών PHP.
+Αυτό το έργο χρησιμοποιεί το **CodeIgniter 4** framework για την ανάπτυξη εφαρμογών PHP με το **SB Admin 2** Bootstrap admin template για το frontend.
 
 ## Απαιτήσεις συστήματος
 
@@ -97,14 +97,25 @@ php spark cache:clear
 
 - `app/` - Ο κώδικας της εφαρμογής σας (Controllers, Models, Views, κ.λπ.)
 - `public/` - Ο public web root (περιέχει το index.php και static assets)
+  - `public/sbadmin2/` - SB Admin 2 CSS και JavaScript
+  - `public/vendor/` - Frontend libraries (Bootstrap, jQuery, FontAwesome, Chart.js)
 - `tests/` - Τα tests της εφαρμογής
 - `writable/` - Φάκελος για logs, cache, sessions, uploads
 - `vendor/` - Dependencies του Composer (δεν περιλαμβάνεται στο Git)
+
+## Χαρακτηριστικά
+
+- **Dashboard:** Πλήρως λειτουργικό admin dashboard με SB Admin 2
+- **Responsive Design:** Βελτιστοποιημένο για όλες τις συσκευές
+- **Charts & Graphs:** Ενσωματωμένο Chart.js για data visualization
+- **Icons:** FontAwesome icons για όλα τα UI στοιχεία
+- **Bootstrap 4:** Σύγχρονο και καθαρό UI
 
 ## Τεκμηρίωση
 
 - [CodeIgniter 4 User Guide](https://codeigniter.com/user_guide/)
 - [CodeIgniter 4 Forum](https://forum.codeigniter.com)
+- [SB Admin 2 Documentation](https://startbootstrap.com/theme/sb-admin-2)
 
 ## Άδεια χρήσης
 
