@@ -15,8 +15,12 @@ class App extends BaseConfig
      * WITH a trailing slash:
      *
      * E.g., http://example.com/
+     *
+     * If you set this to an empty string, CodeIgniter will auto-detect the
+     * base URL from the server environment. This is recommended for applications
+     * that need to work on both development and production environments.
      */
-    public string $baseURL = 'http://localhost:8080/';
+    public string $baseURL = '';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

@@ -48,10 +48,23 @@ This happens when the application is configured with an HTTP baseURL but deploye
    php spark key:generate
    ```
 
-5. **Clear cache:**
+5. **Clear all caches:**
 
    ```bash
+   # Clear CodeIgniter cache
    php spark cache:clear
+   
+   # Clear PHP opcache (if using PHP-FPM)
+   sudo systemctl restart php8.3-fpm
+   # Or for Apache with mod_php
+   sudo systemctl restart apache2
+   ```
+
+6. **Update the codebase** (pull latest changes):
+
+   ```bash
+   git pull origin main
+   composer install --no-dev --optimize-autoloader
    ```
 
 ### Web Server Configuration
@@ -144,12 +157,31 @@ After deployment, test your site:
 
 ### Troubleshooting
 
-**Problem:** Resources still loading from HTTP
+**Problem:** Resources still loading from `http://localhost:8080/` even after updating `.env`
+
+**Root Cause:** The `app/Config/App.php` file has a hardcoded default baseURL that overrides the `.env` setting.
+
+**Solution:**
+1. Update the latest code which sets `app/Config/App.php` baseURL to empty string (auto-detect)
+2. Clear all caches:
+   ```bash
+   php spark cache:clear
+   sudo systemctl restart php8.3-fpm  # or restart apache2
+   ```
+3. Clear browser cache (Ctrl+Shift+Delete)
+4. Verify the `.env` file on production server has:
+   ```bash
+   app.baseURL = ''
+   ```
+
+**Problem:** Resources still loading from HTTP after all fixes
 
 **Solution:** Clear your browser cache and check:
-- `.env` file has correct `app.baseURL`
+- `.env` file has correct `app.baseURL = ''`
+- `app/Config/App.php` has `public string $baseURL = '';`
 - Web server cache is cleared
-- PHP opcache is cleared: `php spark cache:clear`
+- PHP opcache is cleared and PHP-FPM/Apache restarted
+- Browser cache is cleared (hard refresh: Ctrl+Shift+R)
 
 **Problem:** 404 errors on routes
 
