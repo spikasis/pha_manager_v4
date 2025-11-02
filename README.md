@@ -30,6 +30,8 @@ to your `app` folder. The affected files can be copied or merged from
 Copy `env` to `.env` and tailor for your app, specifically the baseURL
 and any database settings.
 
+**Important for HTTPS/Production:** If deploying to a production server with HTTPS, set `app.baseURL` to your HTTPS URL (e.g., `https://your-domain.com/`) or leave it empty (`app.baseURL = ''`) for auto-detection to avoid Mixed Content errors.
+
 ## Important Change with index.php
 
 `index.php` is no longer in the root of the project! It has been moved inside the *public* folder,

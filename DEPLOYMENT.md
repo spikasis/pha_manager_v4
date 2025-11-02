@@ -1,0 +1,207 @@
+# Deployment Guide - PHA Manager v4
+
+## Production Deployment on HTTPS
+
+### Issue: Mixed Content Errors
+
+If you see errors like:
+```
+Mixed Content: The page at 'https://manager.pikasishearing.gr/public/' was loaded over HTTPS, 
+but requested an insecure element 'http://localhost:8080/...'
+```
+
+This happens when the application is configured with an HTTP baseURL but deployed on HTTPS.
+
+### Solution
+
+1. **Update your `.env` file** on the production server:
+
+   ```bash
+   # Change this:
+   app.baseURL = 'http://localhost:8080/'
+   
+   # To this (recommended):
+   app.baseURL = ''
+   
+   # Or specify your production URL:
+   app.baseURL = 'https://manager.pikasishearing.gr/'
+   ```
+
+2. **Set the environment to production:**
+
+   ```bash
+   CI_ENVIRONMENT = production
+   ```
+
+3. **Update database settings:**
+
+   ```bash
+   database.default.hostname = your-db-host
+   database.default.database = your-db-name
+   database.default.username = your-db-user
+   database.default.password = your-db-password
+   ```
+
+4. **Generate a new encryption key** (if not already done):
+
+   ```bash
+   php spark key:generate
+   ```
+
+5. **Clear cache:**
+
+   ```bash
+   php spark cache:clear
+   ```
+
+### Web Server Configuration
+
+#### Apache (.htaccess in public/)
+
+The `.htaccess` file is already configured. Ensure `mod_rewrite` is enabled:
+
+```bash
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+```
+
+Your Apache VirtualHost should point to the `public/` directory:
+
+```apache
+<VirtualHost *:443>
+    ServerName manager.pikasishearing.gr
+    DocumentRoot /path/to/pha_manager_v4/public
+    
+    <Directory /path/to/pha_manager_v4/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    SSLEngine on
+    SSLCertificateFile /path/to/cert.pem
+    SSLCertificateKeyFile /path/to/key.pem
+</VirtualHost>
+```
+
+#### Nginx
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name manager.pikasishearing.gr;
+    
+    root /path/to/pha_manager_v4/public;
+    index index.php;
+    
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+    
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+    
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+### File Permissions
+
+Ensure the `writable/` directory is writable by the web server:
+
+```bash
+sudo chown -R www-data:www-data writable/
+sudo chmod -R 755 writable/
+```
+
+### Security Checklist
+
+- [ ] Set `CI_ENVIRONMENT = production` in `.env`
+- [ ] Set correct `app.baseURL` (HTTPS or empty)
+- [ ] Generate unique encryption key
+- [ ] Configure database with production credentials
+- [ ] Set proper file permissions on `writable/`
+- [ ] Remove or protect `.env` file from web access
+- [ ] Enable HTTPS with valid SSL certificate
+- [ ] Disable error display in production
+
+### Testing
+
+After deployment, test your site:
+
+1. Open your site in a browser: `https://manager.pikasishearing.gr/`
+2. Open browser DevTools (F12) → Console tab
+3. Check for any Mixed Content or resource loading errors
+4. All resources should load from HTTPS
+
+### Troubleshooting
+
+**Problem:** Resources still loading from HTTP
+
+**Solution:** Clear your browser cache and check:
+- `.env` file has correct `app.baseURL`
+- Web server cache is cleared
+- PHP opcache is cleared: `php spark cache:clear`
+
+**Problem:** 404 errors on routes
+
+**Solution:** 
+- Check web server points to `public/` directory
+- Verify `.htaccess` exists in `public/`
+- For Apache, ensure `mod_rewrite` is enabled
+
+## Greek Version / Ελληνική Έκδοση
+
+### Πρόβλημα: Mixed Content Errors
+
+Εάν βλέπετε σφάλματα όπως:
+```
+Mixed Content: The page at 'https://manager.pikasishearing.gr/public/' was loaded over HTTPS, 
+but requested an insecure element 'http://localhost:8080/...'
+```
+
+Αυτό συμβαίνει όταν η εφαρμογή είναι ρυθμισμένη με HTTP baseURL αλλά έχει αναπτυχθεί σε HTTPS.
+
+### Λύση
+
+1. **Ενημερώστε το `.env` αρχείο** στον production server:
+
+   ```bash
+   # Αλλάξτε αυτό:
+   app.baseURL = 'http://localhost:8080/'
+   
+   # Σε αυτό (συνιστάται):
+   app.baseURL = ''
+   
+   # Ή καθορίστε το production URL:
+   app.baseURL = 'https://manager.pikasishearing.gr/'
+   ```
+
+2. **Ρυθμίστε το περιβάλλον σε production:**
+
+   ```bash
+   CI_ENVIRONMENT = production
+   ```
+
+3. **Καθαρίστε το cache:**
+
+   ```bash
+   php spark cache:clear
+   ```
+
+### Έλεγχος
+
+Μετά την αλλαγή:
+1. Ανοίξτε το site: `https://manager.pikasishearing.gr/`
+2. Ελέγξτε το Console (F12) για σφάλματα
+3. Όλοι οι πόροι πρέπει να φορτώνονται από HTTPS
+
+Για περισσότερες λεπτομέρειες, δείτε την αγγλική έκδοση παραπάνω.

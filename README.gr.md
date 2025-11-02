@@ -39,9 +39,15 @@ cp env .env
 ```
 
 Επεξεργαστείτε το `.env` για να ρυθμίσετε:
-- Το `baseURL` της εφαρμογής σας
+- Το `baseURL` της εφαρμογής σας:
+  - Για development: `app.baseURL = 'http://localhost:8080/'`
+  - Για production με HTTPS: `app.baseURL = 'https://your-domain.com/'`
+  - Για αυτόματη ανίχνευση: `app.baseURL = ''` (συνιστάται)
+- Το `CI_ENVIRONMENT` (development ή production)
 - Τις ρυθμίσεις βάσης δεδομένων
 - Άλλες παραμέτρους περιβάλλοντος
+
+**Σημαντικό:** Αν χρησιμοποιείτε HTTPS σε production, βεβαιωθείτε ότι το `baseURL` είναι `https://` ή κενό για αποφυγή Mixed Content errors.
 
 ### 4. Δημιουργία κλειδιού κρυπτογράφησης
 
