@@ -484,32 +484,32 @@ class Auth extends BaseController
         
         // Admin users go to main dashboard
         if (in_array('admin', $groupNames)) {
-            return '/dashboard';
+            return base_url('dashboard');
         }
         
         // Branch-specific dashboards
         if (in_array('Thiva', $groupNames)) {
-            return '/dashboard/thiva';
+            return base_url('dashboard/thiva');
         }
         
         if (in_array('Levadia', $groupNames)) {
-            return '/dashboard/levadia';
+            return base_url('dashboard/levadia');
         }
         
         if (in_array('Service', $groupNames)) {
-            return '/dashboard/service';
+            return base_url('dashboard/service');
         }
         
         if (in_array('Selling Points', $groupNames)) {
-            return '/dashboard/selling-points';
+            return base_url('dashboard/selling-points');
         }
         
         // Lab users
         if (stripos($user['username'], 'lab') !== false) {
-            return '/dashboard/lab';
+            return base_url('dashboard/lab');
         }
         
         // Default for members or unknown groups
-        return '/dashboard';
+        return base_url('dashboard');
     }
 }

@@ -70,8 +70,10 @@ class UserModel extends Model
      */
     public function findByLogin(string $login)
     {
-        return $this->where('email', $login)
+        return $this->groupStart()
+                   ->where('email', $login)
                    ->orWhere('username', $login)
+                   ->groupEnd()
                    ->first();
     }
 

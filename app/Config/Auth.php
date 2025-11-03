@@ -35,12 +35,12 @@ class Auth extends BaseConfig
     /**
      * Login redirect URL
      */
-    public string $loginRedirect = '/dashboard';
+    public string $loginRedirect = 'dashboard';
     
     /**
      * Logout redirect URL
      */
-    public string $logoutRedirect = '/auth/login';
+    public string $logoutRedirect = 'auth/login';
     
     /**
      * Login URL
