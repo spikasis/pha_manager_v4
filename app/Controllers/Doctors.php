@@ -10,10 +10,24 @@ namespace App\Controllers;
  */
 class Doctors extends BaseCRUD
 {
+    protected $model;
     protected $modelName = 'App\\Models\\DoctorModel';
+    protected $tableName = 'doctors';
+    protected $viewPath = 'doctors/';
+    protected $pageTitle = 'Γιατροί';
     protected $module = 'doctors';
     protected $moduleTitle = 'Γιατροί';
     protected $moduleTitleSingle = 'Γιατρός';
+    
+    // Validation rules for BaseCRUD
+    protected $validationRules = [
+        'doc_name' => 'required|min_length[2]|max_length[255]',
+        'doc_address' => 'permit_empty|max_length[255]',
+        'doc_phone_work' => 'permit_empty|max_length[255]',
+        'doc_phone_mobile' => 'permit_empty|max_length[10]',
+        'doc_city' => 'permit_empty|max_length[255]',
+        'doc_price' => 'permit_empty|decimal|greater_than_equal_to[0]'
+    ];
     
     // Define the fields for the CRUD operations
     protected $crudFields = [
