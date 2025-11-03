@@ -26,22 +26,22 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => env('database.default.hostname', ''),
-        'username'     => env('database.default.username', ''),
-        'password'     => env('database.default.password', ''),
-        'database'     => env('database.default.database', ''),
-        'DBDriver'     => env('database.default.DBDriver', 'MySQLi'),
-        'DBPrefix'     => env('database.default.DBPrefix', ''),
+        'hostname'     => '',
+        'username'     => '',
+        'password'     => '',
+        'database'     => '',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
         'pConnect'     => false,
-        'DBDebug'      => (ENVIRONMENT !== 'production'),
-        'charset'      => env('database.default.charset', 'utf8mb4'),
-        'DBCollat'     => env('database.default.DBCollat', 'utf8mb4_general_ci'),
+        'DBDebug'      => true,
+        'charset'      => 'utf8mb4',
+        'DBCollat'     => 'utf8mb4_general_ci',
         'swapPre'      => '',
         'encrypt'      => false,
         'compress'     => false,
         'strictOn'     => false,
         'failover'     => [],
-        'port'         => env('database.default.port', 3306),
+        'port'         => 3306,
         'numberNative' => false,
         'foundRows'    => false,
         'dateFormat'   => [
@@ -192,6 +192,18 @@ class Database extends Config
     public function __construct()
     {
         parent::__construct();
+
+        // Load database configuration from environment variables
+        $this->default['hostname'] = env('database.default.hostname', 'localhost');
+        $this->default['username'] = env('database.default.username', '');
+        $this->default['password'] = env('database.default.password', '');
+        $this->default['database'] = env('database.default.database', '');
+        $this->default['DBDriver'] = env('database.default.DBDriver', 'MySQLi');
+        $this->default['DBPrefix'] = env('database.default.DBPrefix', '');
+        $this->default['charset'] = env('database.default.charset', 'utf8mb4');
+        $this->default['DBCollat'] = env('database.default.DBCollat', 'utf8mb4_general_ci');
+        $this->default['port'] = (int) env('database.default.port', 3306);
+        $this->default['DBDebug'] = (ENVIRONMENT !== 'production');
 
         // Ensure that we always set the database group to 'tests' if
         // we are currently running an automated test suite, so that
