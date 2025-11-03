@@ -3,9 +3,6 @@
 use CodeIgniter\Boot;
 use Config\Paths;
 
-// INTL FIX: Load locale fix before CodeIgniter bootstrap
-require_once ROOTPATH . 'app/Config/LocaleFix.php';
-
 /*
  *---------------------------------------------------------------
  * CHECK PHP VERSION
@@ -55,6 +52,9 @@ require FCPATH . '../app/Config/Paths.php';
 // ^^^ Change this line if you move your application folder
 
 $paths = new Paths();
+
+// INTL FIX: Load locale fix before CodeIgniter bootstrap
+require_once $paths->appDirectory . '/Config/LocaleFix.php';
 
 // LOAD THE FRAMEWORK BOOTSTRAP FILE
 require $paths->systemDirectory . '/Boot.php';
