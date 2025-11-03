@@ -131,8 +131,32 @@ class Auth extends BaseController
         $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
         session()->remove('redirect_url');
         
-        // Simple redirect to test page to verify functionality
-        return redirect()->to('/test');
+        // Debug: Show success message with session information
+        echo "<h1>🎉 Login Successful!</h1>";
+        echo "<h2>Debug Information:</h2>";
+        echo "<p><strong>User ID:</strong> " . ($user['id'] ?? 'Unknown') . "</p>";
+        echo "<p><strong>Username:</strong> " . ($user['username'] ?? 'Unknown') . "</p>";
+        echo "<p><strong>Email:</strong> " . ($user['email'] ?? 'Unknown') . "</p>";
+        echo "<p><strong>Intended redirect URL:</strong> " . $redirectUrl . "</p>";
+        echo "<p><strong>Base URL:</strong> " . base_url() . "</p>";
+        echo "<p><strong>Current URL:</strong> " . current_url() . "</p>";
+        
+        echo "<h3>Session Data After Login:</h3>";
+        echo "<pre>" . print_r(session()->get(), true) . "</pre>";
+        
+        echo "<h3>Auth Config Session Keys:</h3>";
+        echo "<p><strong>Session User ID Key:</strong> " . $this->authConfig->sessionUserIdKey . "</p>";
+        echo "<p><strong>Session contains user_id:</strong> " . (session('user_id') ? 'YES' : 'NO') . "</p>";
+        
+        echo "<hr>";
+        echo "<p>If you see this page, authentication is working. The issue is with redirects or AuthFilter.</p>";
+        echo "<p>Try manually navigating to:</p>";
+        echo "<ul>";
+        echo "<li><a href='" . base_url() . "'>Home: " . base_url() . "</a></li>";
+        echo "<li><a href='" . base_url('dashboard') . "'>Dashboard: " . base_url('dashboard') . "</a></li>";
+        echo "<li><a href='" . base_url('test') . "'>Test: " . base_url('test') . "</a></li>";
+        echo "</ul>";
+        exit;
         
         // Original redirect code (commented for now)
         // return redirect()->to($redirectUrl);
