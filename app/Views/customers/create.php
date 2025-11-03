@@ -1,4 +1,4 @@
-<?php $this->extend('templates/header') ?>
+<?php $this->extend('templates/layout') ?>
 
 <?php $this->section('content') ?>
 

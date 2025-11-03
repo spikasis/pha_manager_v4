@@ -8,11 +8,12 @@
     <title>Σύνδεση - PHA Manager v4</title>
 
     <!-- Bootstrap CSS -->
-    <link href="<?= base_url('public/vendor/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="<?= base_url('public/vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet">
-    <!-- SB Admin 2 CSS -->
-    <link href="<?= base_url('public/sbadmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+    <!-- SB Admin 2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" integrity="sha512-D4EvMhb8Q1SbzC6h4EaQlKcg8FC7hhP7R4CHLWBjkDh1FjsOgRE8XhyL0qxSmE5STMqhhzjJZ+z5LnMeBw0Ng==" crossorigin="anonymous">
 
     <style>
         body {
@@ -303,7 +304,11 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="<?= base_url('public/vendor/jquery/jquery.min.js') ?>"></script>
+        <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js" integrity="sha512-+QnjQxxaOpoJ+AAeNgvVatHiUWEDbvHja9l46BHhmzvP0blLTXC4QaQDkZKf+/F2XK6VZTWpd2c9OhmvMfwjKQ==" crossorigin="anonymous"></script>"></script>
     <script src="<?= base_url('public/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <!-- SB Admin 2 JS -->
     <script src="<?= base_url('public/sbladmin2/js/sb-admin-2.min.js') ?>"></script>

@@ -1,9 +1,6 @@
-<?= view('templates/header') ?>
-<?= view('templates/sidebar') ?>
-<?= view('templates/topbar') ?>
+<?= $this->extend('templates/layout') ?>
 
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
+<?= $this->section('content') ?>
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -279,6 +276,9 @@
                 </div>
                 <!-- /.container-fluid -->
 
+<?= $this->endSection() ?>
+
+<?= $this->section('head') ?>
 <style>
 .card-clickable {
     cursor: pointer;
@@ -295,5 +295,4 @@
     margin-bottom: 5px;
 }
 </style>
-
-<?= view('templates/footer') ?>
+<?= $this->endSection() ?>
