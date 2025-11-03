@@ -7,7 +7,9 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Public routes (no authentication required)
-$routes->get('/', 'AuthSafe::login'); // Redirect home to safe login
+$routes->get('/', function() {
+    return redirect()->to('/safe_login.php');
+}); // Redirect to pure PHP safe login
 
 // Authentication routes with auth prefix
 $routes->group('auth', function($routes) {

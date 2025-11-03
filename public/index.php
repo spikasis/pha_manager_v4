@@ -53,10 +53,7 @@ require FCPATH . '../app/Config/Paths.php';
 
 $paths = new Paths();
 
-// INTL FIX: Load locale fix before CodeIgniter bootstrap
-require_once $paths->appDirectory . '/Config/LocaleFix.php';
-
-// LOAD THE FRAMEWORK BOOTSTRAP FILE
+// LOAD THE FRAMEWORK BOOTSTRAP FILE  
 require $paths->systemDirectory . '/Boot.php';
 
 exit(Boot::bootWeb($paths));
