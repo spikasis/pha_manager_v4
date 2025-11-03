@@ -27,6 +27,14 @@ $routes->group('auth', function($routes) {
     $routes->get('activate-account/(:segment)', 'Auth::activateAccount/$1');
 });
 
+// Emergency authentication routes (for production issues)
+$routes->group('auth-emergency', function($routes) {
+    $routes->get('login', 'AuthEmergency::login');
+    $routes->post('login', 'AuthEmergency::attemptLogin');
+    $routes->post('attempt-login', 'AuthEmergency::attemptLogin');
+    $routes->get('logout', 'AuthEmergency::logout');
+});
+
 // Alternative routes without prefix for backward compatibility
 $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::attemptLogin');
