@@ -72,7 +72,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <img class="img-profile rounded-circle mr-2" 
-                                         src="<?= get_user_avatar($user['email']) ?>" 
+                                         src="https://via.placeholder.com/30x30/6c757d/ffffff?text=<?= substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1) ?>" 
                                          style="width: 30px; height: 30px;">
                                     <strong><?= esc($user['username']) ?></strong>
                                 </div>

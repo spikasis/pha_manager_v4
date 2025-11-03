@@ -22,49 +22,91 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-    <!-- SB Admin 2 CSS - fallback to local if available -->
-    <link href="<?= base_url('sbadmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet" onerror="this.onerror=null; this.href='https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css';">
+    <!-- SB Admin 2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" integrity="sha512-D4EvMhb8Q1SbzC6h4EaQlKcg8FC7hhP7R4CHLWBjkDh1FjsOgRE8XhyL0qxSmE5STMqhhzjJZ+z5LnMeBw0Ng==" crossorigin="anonymous">
 
     <!-- Custom CSS -->
     <style>
+        /* Sidebar customization */
+        .sidebar {
+            background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+        }
+        
         .sidebar-brand-icon {
             font-size: 2rem;
+            color: #fff !important;
+        }
+        
+        .sidebar .nav-item .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        .sidebar .nav-item .nav-link:hover {
+            color: #fff !important;
+        }
+        
+        /* Topbar */
+        .topbar {
+            height: 4.375rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
         }
         
         .navbar-nav .nav-item .nav-link {
-            color: #858796;
+            color: #858796 !important;
+        }
+        
+        /* Cards */
+        .card {
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+            border: 1px solid #e3e6f0 !important;
         }
         
         .card-header {
-            background-color: #f8f9fc;
-            border-bottom: 1px solid #e3e6f0;
+            background-color: #f8f9fc !important;
+            border-bottom: 1px solid #e3e6f0 !important;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: #4e73df !important;
+            border-color: #4e73df !important;
         }
         
         .btn-icon-split .icon {
             padding: 0.375rem 0.75rem;
+            background-color: rgba(0, 0, 0, 0.15) !important;
         }
         
+        /* Alerts */
         .alert {
-            border: none;
-            border-radius: 0.35rem;
+            border: none !important;
+            border-radius: 0.35rem !important;
         }
         
+        /* Tables */
         .table td {
-            vertical-align: middle;
+            vertical-align: middle !important;
         }
         
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #e3e6f0 !important;
+        }
+        
+        /* Profile images */
         .img-profile {
-            width: 2rem;
-            height: 2rem;
+            width: 2rem !important;
+            height: 2rem !important;
         }
         
+        /* Badges */
         .badge {
-            font-size: 0.75em;
+            font-size: 0.75em !important;
         }
         
         /* Greek fonts support */
         body, .sidebar .nav-item .nav-link, .topbar .navbar-nav .nav-item .nav-link {
-            font-family: 'Nunito', 'Arial', sans-serif;
+            font-family: 'Nunito', 'Arial', sans-serif !important;
         }
         
         /* Authentication forms */
@@ -74,9 +116,9 @@
         }
         
         .auth-card {
-            border: 0;
-            border-radius: 1rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border: 0 !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
         }
         
         .auth-card .card-body {
@@ -112,6 +154,26 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+        
+        /* DataTables customization */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5rem 1rem !important;
+        }
+        
+        /* Scroll to top button */
+        .scroll-to-top {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            display: none;
+            width: 2.75rem;
+            height: 2.75rem;
+            text-align: center;
+            color: #fff;
+            background: rgba(90, 92, 105, 0.5);
+            line-height: 46px;
+            border-radius: 100% !important;
         }
     </style>
 
@@ -183,18 +245,8 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
-    <!-- SB Admin 2 JS - try local first, fallback to CDN -->
-    <script>
-        // Try to load local SB Admin 2 JS, fallback to CDN
-        var script = document.createElement('script');
-        script.src = '<?= base_url('sbadmin2/js/sb-admin-2.min.js') ?>';
-        script.onerror = function() {
-            var fallbackScript = document.createElement('script');
-            fallbackScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js';
-            document.head.appendChild(fallbackScript);
-        };
-        document.head.appendChild(script);
-    </script>
+    <!-- SB Admin 2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js" integrity="sha512-+QnjQxxaOpoJ+AAeNgvVatHiUWEDbvHja9l46BHhmzvP0blLTXC4QaQDkZKf+/F2XK6VZTWpd2c9OhmvMfwjKQ==" crossorigin="anonymous"></script>
 
     <!-- Global JavaScript -->
     <script>

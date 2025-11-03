@@ -98,7 +98,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="<?= base_url('sbadmin2/img/undraw_profile.svg') ?>"
+                                        <img class="rounded-circle" src="https://via.placeholder.com/50x50/28a745/ffffff?text=U"
                                             alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
@@ -122,7 +122,7 @@
                                     <?= esc(session()->get('first_name') . ' ' . session()->get('last_name')) ?>
                                 </span>
                                 <img class="img-profile rounded-circle"
-                                    src="<?= base_url('sbadmin2/img/undraw_profile.svg') ?>">
+                                    src="https://via.placeholder.com/60x60/6c757d/ffffff?text=<?= substr(session()->get('first_name'), 0, 1) . substr(session()->get('last_name'), 0, 1) ?>">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
