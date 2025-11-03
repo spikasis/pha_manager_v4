@@ -114,6 +114,30 @@ $routes->group('admin', ['filter' => 'admin'], function($routes) {
 // REST API routes (optional)
 $routes->resource('api/patients', ['controller' => 'API\Patients']);
 
+// Login attempts (security monitoring) - READ-ONLY
+$routes->group('login-attempts', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'LoginAttempts::index');
+    $routes->get('getData', 'LoginAttempts::getData');
+    $routes->get('show/(:num)', 'LoginAttempts::show/$1');
+    $routes->get('getStatistics', 'LoginAttempts::getStatistics');
+    $routes->post('cleanup', 'LoginAttempts::cleanup');
+});
+
+// CRUD Management Routes (new system)
+$routes->group('', ['filter' => 'auth'], function($routes) {
+    // Users CRUD
+    $routes->resource('users', ['controller' => 'Users']);
+    $routes->get('users/getData', 'Users::getData');
+    $routes->post('users/toggleActive/(:num)', 'Users::toggleActive/$1');
+    $routes->post('users/checkUnique', 'Users::checkUnique');
+
+    // Groups CRUD
+    $routes->resource('groups', ['controller' => 'Groups']);
+    $routes->get('groups/getData', 'Groups::getData');
+    $routes->post('groups/checkUnique', 'Groups::checkUnique');
+    $routes->get('groups/getStatistics', 'Groups::getStatistics');
+});
+
 // Test routes for debugging
 $routes->get('test', 'Test::index');
 $routes->get('simple-test', 'SimpleTest::index');
