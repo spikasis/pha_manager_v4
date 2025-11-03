@@ -27,12 +27,12 @@ $port = 3306;
 echo "=== PHA Manager v4 - Database Connection Test ===\n\n";
 
 try {
-    // Test direct MySQL connection
-    $mysqli = new mysqli($hostname, $username, $password, $database, $port);
-    
-    if ($mysqli->connect_error) {
-        throw new Exception("Connection failed: " . $mysqli->connect_error);
-    }
+    // Test direct MySQL connection using PDO
+    $dsn = "mysql:host=$hostname;port=$port;dbname=$database;charset=utf8mb4";
+    $pdo = new PDO($dsn, $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
     
     echo "✅ Connected to database successfully!\n\n";
     
@@ -41,36 +41,36 @@ try {
     echo str_repeat("-", 30) . "\n";
     
     // Count customers
-    $result = $mysqli->query("SELECT COUNT(*) as count FROM customers");
-    $customerCount = $result->fetch_assoc()['count'];
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM customers");
+    $customerCount = $stmt->fetch()['count'];
     echo "👥 Total Customers: $customerCount\n";
     
     // Count active customers
-    $result = $mysqli->query("SELECT COUNT(*) as count FROM customers WHERE status = 1");
-    $activeCustomers = $result->fetch_assoc()['count'];
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM customers WHERE status = 1");
+    $activeCustomers = $stmt->fetch()['count'];
     echo "✅ Active Customers: $activeCustomers\n";
     
     // Count doctors
-    $result = $mysqli->query("SELECT COUNT(*) as count FROM doctors");
-    $doctorCount = $result->fetch_assoc()['count'];
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM doctors");
+    $doctorCount = $stmt->fetch()['count'];
     echo "👨‍⚕️ Total Doctors: $doctorCount\n";
     
     // Count services
-    $result = $mysqli->query("SELECT COUNT(*) as count FROM services");
-    $serviceCount = $result->fetch_assoc()['count'];
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM services");
+    $serviceCount = $stmt->fetch()['count'];
     echo "🔧 Total Services: $serviceCount\n";
     
     // Count active services
-    $result = $mysqli->query("SELECT COUNT(*) as count FROM services WHERE status = 1");
-    $activeServices = $result->fetch_assoc()['count'];
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM services WHERE status = 1");
+    $activeServices = $stmt->fetch()['count'];
     echo "⚡ Active Services: $activeServices\n";
     
     // Sample customer data
     echo "\n📋 Sample Customer Data:\n";
     echo str_repeat("-", 50) . "\n";
     
-    $result = $mysqli->query("SELECT id, name, phone_mobile, city FROM customers WHERE status = 1 LIMIT 5");
-    while ($row = $result->fetch_assoc()) {
+    $stmt = $pdo->query("SELECT id, name, phone_mobile, city FROM customers WHERE status = 1 LIMIT 5");
+    while ($row = $stmt->fetch()) {
         $phone = $row['phone_mobile'] ?: 'N/A';
         $city = $row['city'] ?: 'N/A';
         echo "ID: {$row['id']} | {$row['name']} | {$phone} | {$city}\n";
@@ -85,7 +85,7 @@ try {
     echo "\n⚠️  To run the full CI4 application, you need to enable the 'intl' PHP extension.\n";
     echo "   Edit your php.ini file and uncomment: extension=intl\n";
     
-    $mysqli->close();
+    $pdo = null;
     
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
