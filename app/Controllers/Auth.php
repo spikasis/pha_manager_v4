@@ -44,15 +44,72 @@ class Auth extends BaseController
     }
 
     /**
-     * Process login
+     * Process login - SIMPLE DEBUG VERSION
      */
     public function attemptLogin()
     {
-        $ipAddress = $this->request->getIPAddress();
-        $login = $this->request->getPost('login');
-        $password = $this->request->getPost('password');
-        $remember = $this->request->getPost('remember') ? true : false;
+        // Simple debug version to avoid "Whoops!" error
+        echo "<!DOCTYPE html><html><head><title>Login Debug</title></head><body>";
+        echo "<h1>🔍 Login Debug</h1>";
+        
+        try {
+            $login = $this->request->getPost('login');
+            $password = $this->request->getPost('password');
+            
+            echo "<p>✅ Request data received:</p>";
+            echo "<p>Login: " . ($login ?? 'NULL') . "</p>";
+            echo "<p>Password: " . (empty($password) ? 'EMPTY' : 'PROVIDED') . "</p>";
+            
+            // Test database connection
+            echo "<p>✅ Testing database connection...</p>";
+            $db = \Config\Database::connect();
+            echo "<p>✅ Database connected successfully</p>";
+            
+            // Test UserModel
+            echo "<p>✅ Testing UserModel...</p>";
+            $userModel = new \App\Models\UserModel();
+            echo "<p>✅ UserModel loaded successfully</p>";
+            
+            // Test finding user
+            if ($login) {
+                echo "<p>✅ Testing findByLogin...</p>";
+                $user = $userModel->findByLogin($login);
+                echo "<p>User found: " . ($user ? 'YES' : 'NO') . "</p>";
+                
+                if ($user && password_verify($password, $user['password'])) {
+                    echo "<p>✅ Password correct!</p>";
+                    echo "<h2>🎉 LOGIN SUCCESS!</h2>";
+                    echo "<p>User ID: " . $user['id'] . "</p>";
+                    echo "<p>Username: " . $user['username'] . "</p>";
+                } else {
+                    echo "<p>❌ Invalid login or password</p>";
+                }
+            }
+            
+        } catch (\Exception $e) {
+            echo "<p>❌ ERROR: " . $e->getMessage() . "</p>";
+            echo "<p>File: " . $e->getFile() . "</p>";
+            echo "<p>Line: " . $e->getLine() . "</p>";
+            echo "<pre>" . $e->getTraceAsString() . "</pre>";
+        }
+        
+        echo "</body></html>";
+        exit;
+    }
 
+    /**
+     * Logout user - simplified
+     */
+    public function logout()
+    {
+        // Simplified logout
+        session()->destroy();
+        return redirect()->to('auth/login');
+    }
+
+    private function oldAttemptLoginCode() 
+    {
+        // Old code moved here for reference
         // Check if IP is locked out
         if ($this->loginAttemptModel->isIpLockedOut($ipAddress)) {
             $timeRemaining = $this->loginAttemptModel->getLockoutTimeRemainingForIp($ipAddress);

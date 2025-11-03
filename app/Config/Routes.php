@@ -107,3 +107,8 @@ $routes->resource('api/patients', ['controller' => 'API\Patients']);
 // Test routes for debugging
 $routes->get('test', 'Test::index');
 $routes->get('simple-test', 'SimpleTest::index');
+
+// Simple Auth routes for debugging
+$routes->get('auth-simple/login', 'AuthSimple::login');
+$routes->post('auth-simple/attempt-login', 'AuthSimple::attemptLogin');
+$routes->get('auth-simple/logout', 'AuthSimple::logout');
