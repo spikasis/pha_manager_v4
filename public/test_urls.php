@@ -9,11 +9,11 @@ echo "<style>body { font-family: Arial, sans-serif; margin: 20px; }</style>";
 echo "<h2>Testing different URLs:</h2>";
 
 $urls = [
-    'http://localhost:8080/',
-    'http://localhost:8080/index.php',
-    'http://localhost:8080/auth/login',
-    'http://localhost:8080/index.php/auth/login',
-    'http://localhost:8080/login'
+    'https://manager.pikasishearing.gr/',
+    'https://manager.pikasishearing.gr/index.php',
+    'https://manager.pikasishearing.gr/auth/login',
+    'https://manager.pikasishearing.gr/index.php/auth/login',
+    'https://manager.pikasishearing.gr/login'
 ];
 
 foreach ($urls as $url) {

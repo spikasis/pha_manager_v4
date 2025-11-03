@@ -20,7 +20,7 @@ class App extends BaseConfig
      * base URL from the server environment. This is recommended for applications
      * that need to work on both development and production environments.
      */
-    public string $baseURL = '';
+    public string $baseURL = 'https://manager.pikasishearing.gr/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -33,7 +33,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $allowedHostnames = [];
+    public array $allowedHostnames = ['manager.pikasishearing.gr'];
 
     /**
      * --------------------------------------------------------------------------
@@ -161,7 +161,7 @@ class App extends BaseConfig
      * secure, the user will be redirected to a secure version of the page
      * and the HTTP Strict Transport Security (HSTS) header will be set.
      */
-    public bool $forceGlobalSecureRequests = false;
+    public bool $forceGlobalSecureRequests = true;
 
     /**
      * --------------------------------------------------------------------------

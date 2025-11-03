@@ -74,7 +74,7 @@ try {
     echo "<ul>";
     echo "<li>Username: <code>[selected username]</code></li>";
     echo "<li>Password: <code>admin123</code></li>";
-    echo "<li>Login URL: <a href='http://localhost:8080/auth/login'>http://localhost:8080/auth/login</a></li>";
+    echo "<li>Login URL: <a href='https://manager.pikasishearing.gr/auth/login'>https://manager.pikasishearing.gr/auth/login</a></li>";
     echo "</ul>";
     echo "</div>";
     
