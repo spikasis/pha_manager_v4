@@ -50,7 +50,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g0bUfdm2LfbLp3QqqrqJzoA2lltSyx9eidR3BZ9JmN1Lm/98dGcD2JL9BFe2SxZAAiz+r5rTQ2Q==" crossorigin="anonymous"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js" integrity="sha512-+QnjQxxaOpoJ+AAeNgvVatHiUWEDbvHja9l46BHhmzvP0blLTXC4QaQDkZKf+/F2XK6VZTWpd2c9OhmvMfwjKQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js" crossorigin="anonymous"></script>
 
     <!-- Page level plugins -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>

@@ -23,7 +23,7 @@
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <!-- SB Admin 2 CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" integrity="sha512-D4EvMhb8Q1SbzC6h4EaQlKcg8FC7hhP7R4CHLWBjkDh1FjsOgRE8XhyL0qxSmE5STMqhhzjJZ+z5LnMeBw0Ng==" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" crossorigin="anonymous">
 
     <!-- Custom CSS -->
     <style>
@@ -246,7 +246,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
     <!-- SB Admin 2 JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js" integrity="sha512-+QnjQxxaOpoJ+AAeNgvVatHiUWEDbvHja9l46BHhmzvP0blLTXC4QaQDkZKf+/F2XK6VZTWpd2c9OhmvMfwjKQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js" crossorigin="anonymous"></script>
 
     <!-- Global JavaScript -->
     <script>
