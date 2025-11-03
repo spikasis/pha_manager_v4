@@ -112,3 +112,9 @@ $routes->get('simple-test', 'SimpleTest::index');
 $routes->get('auth-simple/login', 'AuthSimple::login');
 $routes->post('auth-simple/attempt-login', 'AuthSimple::attemptLogin');
 $routes->get('auth-simple/logout', 'AuthSimple::logout');
+
+// Ultra Simple Auth routes - no CodeIgniter dependencies
+$routes->get('auth-ultra/login', 'AuthUltraSimple::login');
+$routes->post('auth-ultra/attempt-login', 'AuthUltraSimple::attemptLogin');
+$routes->get('auth-ultra/test-db', 'AuthUltraSimple::testDb');
+$routes->get('auth-ultra/test-models', 'AuthUltraSimple::testModels');
