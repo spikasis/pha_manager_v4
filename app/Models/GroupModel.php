@@ -7,50 +7,38 @@ use Config\Auth as AuthConfig;
 
 class GroupModel extends BaseCRUDModel
 {
-    protected $table;
-    protected $primaryKey;
-    protected $useAutoIncrement = true;
-    protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $protectFields = true;
+    protected $table = 'groups';
+    protected $primaryKey = 'id';
     protected $allowedFields = ['name', 'description'];
-
-    // Dates
+    
     protected $useTimestamps = false;
-    protected $dateFormat = 'datetime';
-    protected $createdField = '';
-    protected $updatedField = '';
-    protected $deletedField = '';
-
-    // Validation
+    protected $createdField = 'created_on';
+    protected $updatedField = 'last_modified';
+    
+    protected $returnType = 'array';
+    
+    // Validation rules
     protected $validationRules = [
-        'name' => 'required|min_length[2]|max_length[50]|is_unique[groups.name]',
+        'name' => 'required|max_length[100]|is_unique[groups.name,id,{id}]',
         'description' => 'permit_empty|max_length[255]'
     ];
+    
     protected $validationMessages = [
         'name' => [
-            'required' => 'Το όνομα της ομάδας είναι υποχρεωτικό',
-            'min_length' => 'Το όνομα πρέπει να έχει τουλάχιστον 2 χαρακτήρες',
-            'max_length' => 'Το όνομα δεν μπορεί να υπερβαίνει τους 50 χαρακτήρες',
-            'is_unique' => 'Το όνομα της ομάδας υπάρχει ήδη'
+            'required' => 'Το όνομα της ομάδας είναι υποχρεωτικό.',
+            'max_length' => 'Το όνομα δεν μπορεί να υπερβαίνει τους 100 χαρακτήρες.',
+            'is_unique' => 'Αυτό το όνομα ομάδας χρησιμοποιείται ήδη.'
         ],
         'description' => [
-            'max_length' => 'Η περιγραφή δεν μπορεί να υπερβαίνει τους 255 χαρακτήρες'
+            'max_length' => 'Η περιγραφή δεν μπορεί να υπερβαίνει τους 255 χαρακτήρες.'
         ]
     ];
-    protected $skipValidation = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert = [];
-    protected $afterInsert = [];
-    protected $beforeUpdate = [];
-    protected $afterUpdate = [];
-    protected $beforeFind = [];
-    protected $afterFind = [];
-    protected $beforeDelete = ['checkGroupUsage'];
-    protected $afterDelete = [];
+    
+    // Fields that can be searched
+    protected $searchableFields = ['name', 'description'];
+    
+    // Display field for dropdowns
+    protected $displayField = 'name';
 
     protected $authConfig;
 
@@ -63,25 +51,14 @@ class GroupModel extends BaseCRUDModel
     }
 
     /**
-     * Check if group is being used before deletion
+     * Get groups with user count
      */
-    protected function checkGroupUsage(array $data)
+    public function getGroupsWithUserCount()
     {
-        if (isset($data['id'])) {
-            $groupId = is_array($data['id']) ? $data['id'] : [$data['id']];
-            
-            foreach ($groupId as $id) {
-                $userCount = $this->db->table($this->authConfig->tables['users_groups'])
-                                     ->where('group_id', $id)
-                                     ->countAllResults();
-                
-                if ($userCount > 0) {
-                    throw new \RuntimeException("Cannot delete group ID {$id} - it has {$userCount} users assigned");
-                }
-            }
-        }
-        
-        return $data;
+        return $this->select('groups.*, COUNT(users.id) as user_count')
+                    ->join('users', 'users.group_id = groups.id', 'left')
+                    ->groupBy('groups.id')
+                    ->findAll();
     }
 
     /**
@@ -92,33 +69,26 @@ class GroupModel extends BaseCRUDModel
         return $this->where('name', $name)->first();
     }
 
-    /**
-     * Get all groups with user count
-     */
-    public function getGroupsWithUserCount(): array
-    {
-        $builder = $this->db->table($this->table . ' g');
-        $builder->select('g.*, COUNT(ug.user_id) as user_count');
-        $builder->join($this->authConfig->tables['users_groups'] . ' ug', 'g.id = ug.group_id', 'left');
-        $builder->groupBy('g.id');
-        $builder->orderBy('g.name', 'ASC');
-        
-        return $builder->get()->getResultArray();
-    }
+
 
     /**
-     * Get group users
+     * Get group with users
      */
-    public function getGroupUsers(int $groupId): array
+    public function getGroupWithUsers($id)
     {
-        $builder = $this->db->table($this->authConfig->tables['users'] . ' u');
-        $builder->select('u.*');
-        $builder->join($this->authConfig->tables['users_groups'] . ' ug', 'u.id = ug.user_id');
-        $builder->where('ug.group_id', $groupId);
-        $builder->where('u.active', 1);
-        $builder->orderBy('u.last_name, u.first_name', 'ASC');
+        $group = $this->find($id);
+        if (!$group) return null;
         
-        return $builder->get()->getResultArray();
+        // Get users in this group
+        $userModel = new \App\Models\UserModel();
+        $users = $userModel->select('id, username, email, first_name, last_name, active')
+                          ->where('group_id', $id)
+                          ->findAll();
+        
+        $group['users'] = $users;
+        $group['user_count'] = count($users);
+        
+        return $group;
     }
 
     /**
