@@ -106,4 +106,15 @@ class DoctorModel extends Model
             'cities_count' => count($cities)
         ];
     }
+
+    /**
+     * Get active doctors for dropdowns
+     */
+    public function getActiveDoctors()
+    {
+        return $this->select('id, name, doc_city, doc_phone')
+                   ->where('status', 1)
+                   ->orderBy('name', 'ASC')
+                   ->findAll();
+    }
 }

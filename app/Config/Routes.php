@@ -23,5 +23,18 @@ $routes->group('patients', function($routes) {
     $routes->get('search', 'Patients::search');
 });
 
+// Customers routes
+$routes->group('customers', function($routes) {
+    $routes->get('/', 'Customers::index');
+    $routes->get('create', 'Customers::create');
+    $routes->post('/', 'Customers::store');
+    $routes->get('(:num)', 'Customers::show/$1');
+    $routes->get('(:num)/edit', 'Customers::edit/$1');
+    $routes->put('(:num)', 'Customers::update/$1');
+    $routes->delete('(:num)', 'Customers::delete/$1');
+    $routes->get('search', 'Customers::search');
+    $routes->get('export', 'Customers::exportCustomers');
+});
+
 // REST API routes (optional)
 $routes->resource('api/patients', ['controller' => 'API\Patients']);

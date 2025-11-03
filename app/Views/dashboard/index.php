@@ -17,7 +17,7 @@
 
                         <!-- Customers Card -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card border-left-primary shadow h-100 py-2 card-clickable" onclick="window.location.href='<?= base_url('customers') ?>'">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -145,6 +145,47 @@
                         </div>
                     </div>
 
+                    <!-- Quick Actions -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-bolt"></i> Γρήγορες Ενέργειες
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <a href="<?= base_url('customers') ?>" class="btn btn-primary btn-block btn-lg">
+                                                <i class="fas fa-users"></i><br>
+                                                <small>Διαχείριση Πελατών</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <a href="<?= base_url('customers/create') ?>" class="btn btn-success btn-block btn-lg">
+                                                <i class="fas fa-user-plus"></i><br>
+                                                <small>Νέος Πελάτης</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <a href="#" class="btn btn-info btn-block btn-lg">
+                                                <i class="fas fa-wrench"></i><br>
+                                                <small>Νέα Υπηρεσία</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <a href="#" class="btn btn-warning btn-block btn-lg">
+                                                <i class="fas fa-assistive-listening-systems"></i><br>
+                                                <small>Νέο Ακουστικό</small>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Content Row -->
                     <div class="row">
 
@@ -237,5 +278,22 @@
 
                 </div>
                 <!-- /.container-fluid -->
+
+<style>
+.card-clickable {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-lg i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+</style>
 
 <?= view('templates/footer') ?>

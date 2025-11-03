@@ -144,7 +144,7 @@ class CustomerModel extends Model
     }
     
     /**
-     * Get customer statistics for dashboard
+     * Get dashboard statistics
      */
     public function getDashboardStats()
     {
@@ -159,5 +159,182 @@ class CustomerModel extends Model
             'customers_with_debt' => $withDebt,
             'pending_customers' => $pending
         ];
+    }
+
+    /**
+     * Get customers with search and filters
+     */
+    public function getCustomersWithSearch($search = null, $filters = [], $perPage = 20)
+    {
+        $builder = $this->db->table('customers c');
+        $builder->select('c.*, d.name as doctor_name');
+        $builder->join('doctors d', 'd.id = c.doctor_id', 'left');
+        
+        // Apply search
+        if (!empty($search)) {
+            $builder->groupStart();
+            $builder->like('c.name', $search);
+            $builder->orLike('c.phone_mobile', $search);
+            $builder->orLike('c.phone_landline', $search);
+            $builder->orLike('c.email', $search);
+            $builder->orLike('c.amka', $search);
+            $builder->orLike('c.city', $search);
+            $builder->groupEnd();
+        }
+        
+        // Apply filters
+        if (!empty($filters['city'])) {
+            $builder->where('c.city', $filters['city']);
+        }
+        
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $builder->where('c.status', $filters['status']);
+        }
+        
+        if (!empty($filters['doctor_id'])) {
+            $builder->where('c.doctor_id', $filters['doctor_id']);
+        }
+        
+        $builder->orderBy('c.created_at', 'DESC');
+        
+        if ($perPage) {
+            $request = \Config\Services::request();
+            $page = $request->getVar('page') ?? 1;
+            
+            // Get total count
+            $totalBuilder = clone $builder;
+            $total = $totalBuilder->countAllResults();
+            
+            // Get paginated data
+            $offset = ($page - 1) * $perPage;
+            $data = $builder->limit($perPage, $offset)->get()->getResultArray();
+            
+            // Create pager manually
+            $pager = \Config\Services::pager();
+            $pager->store('default', $page, $perPage, $total);
+            
+            return [
+                'data' => $data,
+                'pager' => $pager
+            ];
+        } else {
+            return [
+                'data' => $builder->get()->getResultArray(),
+                'pager' => null
+            ];
+        }
+    }
+
+    /**
+     * Get customer statistics
+     */
+    public function getCustomerStatistics($search = null, $filters = [])
+    {
+        $builder = $this->db->table('customers c');
+        
+        // Apply same filters as main query
+        if (!empty($search)) {
+            $builder->groupStart();
+            $builder->like('c.name', $search);
+            $builder->orLike('c.phone_mobile', $search);
+            $builder->orLike('c.phone_landline', $search);
+            $builder->orLike('c.email', $search);
+            $builder->orLike('c.amka', $search);
+            $builder->orLike('c.city', $search);
+            $builder->groupEnd();
+        }
+        
+        if (!empty($filters['city'])) {
+            $builder->where('c.city', $filters['city']);
+        }
+        
+        if (!empty($filters['doctor_id'])) {
+            $builder->where('c.doctor_id', $filters['doctor_id']);
+        }
+        
+        $total = $builder->countAllResults(false);
+        
+        // Active customers
+        $activeBuilder = clone $builder;
+        $active = $activeBuilder->where('c.status', 1)->countAllResults();
+        
+        // Customers with debt (assuming debt_flag exists)
+        $debtBuilder = clone $builder;
+        $withDebt = $debtBuilder->where('c.debt_flag', 1)->countAllResults();
+        
+        // New customers (last 30 days)
+        $newBuilder = clone $builder;
+        $newCustomers = $newBuilder->where('c.created_at >=', date('Y-m-d', strtotime('-30 days')))->countAllResults();
+        
+        return [
+            'total' => $total,
+            'active' => $active,
+            'with_debt' => $withDebt,
+            'new_customers' => $newCustomers
+        ];
+    }
+
+    /**
+     * Get distinct cities
+     */
+    public function getDistinctCities()
+    {
+        return $this->db->table('customers')
+                       ->select('city')
+                       ->where('city IS NOT NULL')
+                       ->where('city !=', '')
+                       ->distinct()
+                       ->orderBy('city')
+                       ->get()
+                       ->getResultArray();
+    }
+
+    /**
+     * Get customer with detailed information
+     */
+    public function getCustomerWithDetails($id)
+    {
+        $builder = $this->db->table('customers c');
+        $builder->select('c.*, d.name as doctor_name, d.phone as doctor_phone');
+        $builder->join('doctors d', 'd.id = c.doctor_id', 'left');
+        $builder->where('c.id', $id);
+        
+        return $builder->get()->getRowArray();
+    }
+
+    /**
+     * Get validation rules for customers
+     */
+    public function getCustomerValidationRules($id = null)
+    {
+        $rules = [
+            'name' => 'required|min_length[2]|max_length[255]',
+            'father_name' => 'max_length[255]',
+            'address' => 'max_length[500]',
+            'city' => 'max_length[100]',
+            'postal_code' => 'max_length[10]',
+            'phone_mobile' => 'max_length[20]',
+            'phone_landline' => 'max_length[20]',
+            'email' => 'permit_empty|valid_email|max_length[255]',
+            'birth_date' => 'permit_empty|valid_date',
+            'amka' => 'permit_empty|max_length[11]',
+            'amka_expire_date' => 'permit_empty|valid_date',
+            'identity_number' => 'permit_empty|max_length[20]',
+            'identity_expire_date' => 'permit_empty|valid_date',
+            'notes' => 'permit_empty|max_length[1000]'
+        ];
+        
+        // Add unique rules if creating new customer
+        if (!$id) {
+            $request = \Config\Services::request();
+            if (!empty($request->getPost('email'))) {
+                $rules['email'] .= '|is_unique[customers.email]';
+            }
+            if (!empty($request->getPost('amka'))) {
+                $rules['amka'] .= '|is_unique[customers.amka]';
+            }
+        }
+        
+        return $rules;
     }
 }
