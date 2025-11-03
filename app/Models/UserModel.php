@@ -66,14 +66,11 @@ class UserModel extends Model
     }
 
     /**
-     * Find user by email or username
+     * Find user by login (email or username)
      */
     public function findByLogin(string $login)
     {
-        return $this->groupStart()
-                   ->where('email', $login)
-                   ->orWhere('username', $login)
-                   ->groupEnd()
+        return $this->where("(email = ? OR username = ?)", [$login, $login])
                    ->first();
     }
 
@@ -170,7 +167,7 @@ class UserModel extends Model
      */
     public function updateLastLogin(int $userId): bool
     {
-        return $this->update($userId, ['last_login' => time()]);
+        return $this->update($userId, ['last_login' => date('Y-m-d H:i:s')]);
     }
 
     /**
