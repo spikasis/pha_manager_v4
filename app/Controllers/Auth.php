@@ -127,8 +127,8 @@ class Auth extends BaseController
 
         session()->setFlashdata('success', $this->authConfig->messages['login_successful']);
         
-        // Redirect to intended URL or default
-        $redirectUrl = session('redirect_url') ?? $this->authConfig->loginRedirect;
+        // Determine redirect URL based on user role and groups
+        $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
         session()->remove('redirect_url');
         
         return redirect()->to($redirectUrl);
@@ -468,5 +468,48 @@ class Auth extends BaseController
         // Auto login user
         $this->userModel->updateLastLogin($userId);
         $this->setUserSession($user);
+    }
+
+    /**
+     * Get dashboard redirect URL based on user role and groups
+     * 
+     * @param array $user User data
+     * @return string Redirect URL
+     */
+    protected function getDashboardRedirectUrl(array $user): string
+    {
+        // Get user groups
+        $groups = $this->userModel->getUserGroups($user['id']);
+        $groupNames = array_column($groups, 'name');
+        
+        // Admin users go to main dashboard
+        if (in_array('admin', $groupNames)) {
+            return '/dashboard';
+        }
+        
+        // Branch-specific dashboards
+        if (in_array('Thiva', $groupNames)) {
+            return '/dashboard/thiva';
+        }
+        
+        if (in_array('Levadia', $groupNames)) {
+            return '/dashboard/levadia';
+        }
+        
+        if (in_array('Service', $groupNames)) {
+            return '/dashboard/service';
+        }
+        
+        if (in_array('Selling Points', $groupNames)) {
+            return '/dashboard/selling-points';
+        }
+        
+        // Lab users
+        if (stripos($user['username'], 'lab') !== false) {
+            return '/dashboard/lab';
+        }
+        
+        // Default for members or unknown groups
+        return '/dashboard';
     }
 }
