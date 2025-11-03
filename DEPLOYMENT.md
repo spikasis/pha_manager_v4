@@ -1,5 +1,86 @@
 # Deployment Guide - PHA Manager v4
 
+## 🚀 URGENT: Authentication System Deployment
+
+### Immediate Fix for 404 /auth/attempt-login Error
+
+**Problem:** Production server returns 404 for `/auth/attempt-login` POST requests.
+
+**Immediate Solution (Critical):**
+
+1. **Update Routes.php** on production server:
+
+   File: `app/Config/Routes.php`
+   
+   Add inside the auth group:
+   ```php
+   // Authentication routes with auth prefix
+   $routes->group('auth', function($routes) {
+       $routes->get('login', 'Auth::login');
+       $routes->post('login', 'Auth::attemptLogin');
+       $routes->post('attempt-login', 'Auth::attemptLogin'); // ← ADD THIS
+       $routes->get('logout', 'Auth::logout');
+       $routes->get('register', 'Auth::register');
+       $routes->post('register', 'Auth::attemptRegister');
+       $routes->post('attempt-register', 'Auth::attemptRegister'); // ← ADD THIS
+   });
+   ```
+
+2. **Update Filters.php** to exclude auth from CSRF:
+
+   File: `app/Config/Filters.php`
+   
+   Change CSRF section to:
+   ```php
+   'csrf' => [
+       'before' => [
+           'customers/store',
+           'customers/update/*',
+           'customers/delete/*'
+           // REMOVED: 'auth/attempt-login', 'auth/attempt-register'
+       ]
+   ]
+   ```
+
+3. **Clear server cache:**
+   ```bash
+   php spark cache:clear
+   sudo systemctl restart php8.3-fpm  # or apache2
+   ```
+
+### Complete Authentication System Files to Upload:
+
+**Controllers:**
+- `app/Controllers/Auth.php` (NEW)
+- `app/Controllers/Dashboard.php` (UPDATE - branch logic)
+
+**Models:**  
+- `app/Models/UserModel.php` (NEW)
+- `app/Models/GroupModel.php` (NEW)
+- `app/Models/LoginAttemptModel.php` (NEW)
+
+**Config:**
+- `app/Config/Auth.php` (NEW)
+- `app/Config/Routes.php` (UPDATE)
+- `app/Config/Filters.php` (UPDATE)
+
+**Filters:**
+- `app/Filters/AuthFilter.php` (NEW)
+- `app/Filters/AdminFilter.php` (NEW) 
+- `app/Filters/PermissionFilter.php` (NEW)
+
+**Views:**
+- `app/Views/auth/login.php` (NEW)
+- `app/Views/auth/register.php` (NEW)
+- `app/Views/dashboard/branch.php` (NEW)
+- `app/Views/dashboard/index.php` (UPDATE)
+- `app/Views/templates/layout.php` (UPDATE - CDN assets)
+
+**Test Tools (Optional):**
+- `public/reset_password.php` (for password resets)
+
+---
+
 ## Production Deployment on HTTPS
 
 ### Issue: Mixed Content Errors
