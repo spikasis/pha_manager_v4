@@ -2,19 +2,42 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseCRUD;
 use App\Models\CustomerModel;
 use App\Models\DoctorModel;
 
-class Customers extends BaseController
+class Customers extends BaseCRUD
 {
     protected $customerModel;
     protected $doctorModel;
-    protected $helpers = ['form', 'url'];
+    protected $model;
+    protected $tableName = 'customers';
+    protected $viewPath = 'customers/';
+    protected $pageTitle = 'Πελάτες';
+    
+    // Validation rules for BaseCRUD
+    protected $validationRules = [
+        'name' => 'required|min_length[2]|max_length[255]',
+        'phone_home' => 'permit_empty|max_length[255]',
+        'phone_mobile' => 'permit_empty|max_length[255]',
+        'address' => 'permit_empty|max_length[255]',
+        'city' => 'permit_empty|max_length[255]',
+        'vat_id' => 'permit_empty|integer',
+        'insurance' => 'permit_empty|integer',
+        'doctor' => 'permit_empty|integer',
+        'ha_price' => 'permit_empty|decimal',
+        'amka' => 'permit_empty|max_length[11]',
+        'birthday' => 'permit_empty|valid_date',
+        'first_visit' => 'permit_empty|valid_date',
+        'first_fit' => 'permit_empty|valid_date',
+        'guarantee_end' => 'permit_empty|valid_date',
+    ];
 
     public function __construct()
     {
         $this->customerModel = new CustomerModel();
         $this->doctorModel = new DoctorModel();
+        $this->model = $this->customerModel; // For BaseCRUD compatibility
     }
 
     public function index()

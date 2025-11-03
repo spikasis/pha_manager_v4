@@ -1,6 +1,6 @@
-<?php $this->extend('templates/layout') ?>
+<?= $this->extend('crud_templates/create') ?>
 
-<?php $this->section('content') ?>
+<?= $this->section('form_fields') ?>
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">

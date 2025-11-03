@@ -1,6 +1,32 @@
-<?php $this->extend('templates/layout') ?>
+<?= $this->extend('crud_templates/index') ?>
 
-<?php $this->section('content') ?>
+<?= $this->section('table_headers') ?>
+<th>ID</th>
+<th>Όνομα</th>
+<th>Κινητό</th>
+<th>Σταθερό</th>
+<th>Πόλη</th>
+<th>Ασφάλιση</th>
+<th>Γιατρός</th>
+<th>Κατάσταση</th>
+<th>ΑΜΚΑ</th>
+<th>Χρέος</th>
+<?= $this->endSection() ?>
+
+<?= $this->section('datatable_columns') ?>
+{ "data": "id", "name": "id" },
+{ "data": "name", "name": "name" },
+{ "data": "phone_mobile", "name": "phone_mobile" },
+{ "data": "phone_home", "name": "phone_home" },
+{ "data": "city", "name": "city" },
+{ "data": "insurance_name", "name": "insurance_name" },
+{ "data": "doctor_name", "name": "doctor_name" },
+{ "data": "status_name", "name": "status_name" },
+{ "data": "amka", "name": "amka" },
+{ "data": "debt_flag", "name": "debt_flag", "orderable": false },
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">

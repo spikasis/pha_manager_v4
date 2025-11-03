@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseCRUDModel;
 
-class CustomerModel extends Model
+class CustomerModel extends BaseCRUDModel
 {
     protected $table = 'customers';
     protected $primaryKey = 'id';
@@ -302,6 +302,71 @@ class CustomerModel extends Model
         return $builder->get()->getRowArray();
     }
 
+    /**
+     * Get searchable fields for DataTables
+     */
+    protected function getSearchableFields()
+    {
+        return [
+            'name',
+            'phone_home',
+            'phone_mobile',
+            'address',
+            'city',
+            'customer_id',
+            'profession',
+            'amka',
+            'comments'
+        ];
+    }
+    
+    /**
+     * Get customers with related data (insurance, doctor, status)
+     * 
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function getWithRelations($limit = null, $offset = 0)
+    {
+        $builder = $this->select([
+            'customers.*',
+            'insurances.name as insurance_name',
+            'doctors.doc_name as doctor_name',
+            'customer_statuses.status as status_name',
+            'selling_points.city as selling_point_name'
+        ])
+        ->join('insurances', 'customers.insurance = insurances.id', 'left')
+        ->join('doctors', 'customers.doctor = doctors.id', 'left')
+        ->join('customer_statuses', 'customers.status = customer_statuses.id', 'left')
+        ->join('selling_points', 'customers.selling_point = selling_points.id', 'left');
+        
+        if ($limit) {
+            $builder->limit($limit, $offset);
+        }
+        
+        return $builder->get()->getResultArray();
+    }
+    
+    /**
+     * Calculate customer age
+     * 
+     * @param string $birthday
+     * @return int|null
+     */
+    public function calculateAge($birthday)
+    {
+        if (empty($birthday)) {
+            return null;
+        }
+        
+        $birthDate = new \DateTime($birthday);
+        $today = new \DateTime();
+        $age = $today->diff($birthDate);
+        
+        return $age->y;
+    }
+    
     /**
      * Get validation rules for customers
      */

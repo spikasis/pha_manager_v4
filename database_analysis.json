@@ -1,0 +1,2953 @@
+{
+    "core_entities": [
+        "customers"
+    ],
+    "user_management": [
+        "groups",
+        "login_attempts",
+        "users",
+        "users_groups"
+    ],
+    "lookup_tables": [
+        "banks",
+        "battery_types",
+        "ch_customers",
+        "companies",
+        "consumables",
+        "customer_statuses",
+        "dap_invoices",
+        "dap_items",
+        "doctors",
+        "ha_models",
+        "ha_types",
+        "insurances",
+        "lab_orders",
+        "lab_statuses",
+        "lab_types",
+        "manufacturers",
+        "moulds",
+        "offers",
+        "selling_points",
+        "series",
+        "service_categories",
+        "service_conditions",
+        "service_statuses",
+        "service_subcategories",
+        "session",
+        "site_log",
+        "stock_statuses",
+        "vendors"
+    ],
+    "system_tables": [
+        "balance_views",
+        "debt_views",
+        "earlabs",
+        "eopyy_pays",
+        "invoice_views",
+        "models",
+        "pays",
+        "service_tickets",
+        "services",
+        "stocks",
+        "tasks"
+    ],
+    "table_analysis": {
+        "balance_views": {
+            "columns": [
+                {
+                    "Field": "hearing_aid",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "price",
+                    "Type": "decimal(6,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "eopyy",
+                    "Type": "decimal(8,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "day_out",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "selling_point",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "1",
+                    "Extra": ""
+                },
+                {
+                    "Field": "sum_pays",
+                    "Type": "decimal(30,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 2258,
+            "primary_keys": [],
+            "foreign_keys": []
+        },
+        "banks": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "tinyint(8)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "iban",
+                    "Type": "varchar(30)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "type",
+                    "Type": "varchar(20)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "owner",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 4,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "battery_types": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "tinyint(4)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "type",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 5,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "ch_customers": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "c_name",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "address",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "city",
+                    "Type": "varchar(50)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vat_id",
+                    "Type": "varchar(10)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doy",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "postal",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "country",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 3,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "vat_id"
+            ]
+        },
+        "companies": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "tinyint(8)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "company_name",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "address",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone",
+                    "Type": "int(10) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "fax",
+                    "Type": "int(10) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "email",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "city",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "postal",
+                    "Type": "int(5)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vat",
+                    "Type": "int(9) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "logo",
+                    "Type": "blob",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "administrator",
+                    "Type": "tinyint(8)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ekapty",
+                    "Type": "int(5)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 1,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "consumables": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "date",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "10",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "13",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "312",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "675",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "675 COCHLEAR",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vendor",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "cost",
+                    "Type": "decimal(19,4)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 9,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "customer_statuses": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "status",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 5,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "customers": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "birthday",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone_home",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone_mobile",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "address",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "city",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vat_id",
+                    "Type": "int(10)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "insurance",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vivliario",
+                    "Type": "tinyint(2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "old_user",
+                    "Type": "varchar(3)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "selling_point",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doctor",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "first_visit",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "first_fit",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "guarantee_end",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ha_price",
+                    "Type": "decimal(10,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "customer_id",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "profession",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "debt_flag",
+                    "Type": "tinyint(2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "amka",
+                    "Type": "varchar(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "pending",
+                    "Type": "varchar(20)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 2569,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "vat_id",
+                "customer_id"
+            ]
+        },
+        "dap_invoices": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "from",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "to_customer",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 0,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "dap_items": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "invoice",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "hearing_aid",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "quantity",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "customer",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 0,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "debt_views": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "serial",
+                    "Type": "varchar(255)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "day_in",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "day_out",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "guarantee_end",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "type",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "model",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "manufacturer",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vendor",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "selling_point",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "1",
+                    "Extra": ""
+                },
+                {
+                    "Field": "customer_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "balance",
+                    "Type": "decimal(31,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 2258,
+            "primary_keys": [],
+            "foreign_keys": [
+                "customer_id"
+            ]
+        },
+        "doctors": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "doc_name",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doc_address",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doc_phone_work",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doc_phone_mobile",
+                    "Type": "varchar(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doc_city",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doc_price",
+                    "Type": "decimal(5,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 15,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "earlabs": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "customer_id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vendor_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "type",
+                    "Type": "varchar(255)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vent",
+                    "Type": "varchar(12)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date_order",
+                    "Type": "date",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date_delivery",
+                    "Type": "date",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(255)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "cost",
+                    "Type": "int(5) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "side",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "material",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "receiver",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date_fit",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "hearing_aid",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "filter",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "remake",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 1196,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "customer_id",
+                "vendor_id"
+            ]
+        },
+        "eopyy_pays": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(8)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "price",
+                    "Type": "decimal(8,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 180,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "groups": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "mediumint(8) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "description",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "created_from_ip",
+                    "Type": "varchar(16)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "updated_from_ip",
+                    "Type": "varchar(16)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 6,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "ha_models": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "model",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "brand",
+                    "Type": "tinyint(8)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "type",
+                    "Type": "tinyint(8) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "price_buy",
+                    "Type": "decimal(8,2) unsigned zerofill",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "price_sell",
+                    "Type": "decimal(8,2) unsigned zerofill",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "barcode",
+                    "Type": "int(15)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 0,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "ha_types": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "type",
+                    "Type": "varchar(15)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "",
+                    "Extra": ""
+                }
+            ],
+            "row_count": 6,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "insurances": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 7,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "invoice_views": {
+            "columns": [
+                {
+                    "Field": "year",
+                    "Type": "int(5)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "month",
+                    "Type": "int(3)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "price",
+                    "Type": "decimal(30,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "selling_point",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "1",
+                    "Extra": ""
+                }
+            ],
+            "row_count": 239,
+            "primary_keys": [],
+            "foreign_keys": []
+        },
+        "lab_orders": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "sender_id",
+                    "Type": "int(11) unsigned",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "branch_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "message",
+                    "Type": "text",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "enum('new','seen','completed')",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "new",
+                    "Extra": ""
+                },
+                {
+                    "Field": "created_at",
+                    "Type": "datetime",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "seen_at",
+                    "Type": "datetime",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "completed_at",
+                    "Type": "datetime",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 13,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "sender_id",
+                "branch_id"
+            ]
+        },
+        "lab_statuses": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "status",
+                    "Type": "varchar(15)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 4,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "lab_types": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(1)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "type",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 5,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "login_attempts": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "ip_address",
+                    "Type": "varchar(15)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "login",
+                    "Type": "varchar(100)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "time",
+                    "Type": "int(11) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 0,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "manufacturers": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "country",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ce_mark",
+                    "Type": "varchar(4)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "url",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "file",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 11,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "models": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "series",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "model",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ha_type",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "battery",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 288,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "moulds": {
+            "columns": [
+                {
+                    "Field": "mould_ID",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "type",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date_order",
+                    "Type": "datetime",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date_delivery",
+                    "Type": "datetime",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 124,
+            "primary_keys": [
+                "mould_ID"
+            ],
+            "foreign_keys": []
+        },
+        "offers": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "offer_date",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "customer_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "hearing_aid",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "price",
+                    "Type": "float",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "quantity",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "eopyy",
+                    "Type": "float",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "final_price",
+                    "Type": "float",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 10,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "customer_id"
+            ]
+        },
+        "pays": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(8)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "customer",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "hearing_aid",
+                    "Type": "int(10)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "date",
+                    "Type": "date",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "pay",
+                    "Type": "decimal(8,2) unsigned",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 3901,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "selling_points": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "city",
+                    "Type": "varchar(15)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone",
+                    "Type": "varchar(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "address",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "email",
+                    "Type": "varchar(35)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "administrator",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 2,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "series": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "tinyint(4)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "brand",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "series",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 43,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "service_categories": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "tinyint(4)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "categories",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 4,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "service_conditions": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "status",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 2,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "service_statuses": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "status",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 5,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "service_subcategories": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "tinyint(4)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "category",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "subcategory",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 15,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "service_tickets": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "ticket",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "service_sub",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "brand_name",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 770,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "services": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "ha_service",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "day_in",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ha_temp",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "action_service",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "malfunction",
+                    "Type": "text",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "lab_report",
+                    "Type": "text",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "lab_sent",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "price",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "1",
+                    "Extra": ""
+                },
+                {
+                    "Field": "lab_service",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 1159,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "session": {
+            "columns": [
+                {
+                    "Field": "session_id",
+                    "Type": "varchar(45)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ip_address",
+                    "Type": "varchar(20)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "user_agent",
+                    "Type": "varchar(255)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "last_activity",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "user_data",
+                    "Type": "text",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 3,
+            "primary_keys": [
+                "session_id"
+            ],
+            "foreign_keys": []
+        },
+        "site_log": {
+            "columns": [
+                {
+                    "Field": "site_log_id",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "no_of_visits",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ip_address",
+                    "Type": "varchar(20)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "requested_url",
+                    "Type": "tinytext",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "referer_page",
+                    "Type": "tinytext",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "page_name",
+                    "Type": "tinytext",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "query_string",
+                    "Type": "tinytext",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "browser",
+                    "Type": "tinytext",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "is_unique",
+                    "Type": "tinyint(1)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "access_date",
+                    "Type": "timestamp",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "current_timestamp()",
+                    "Extra": ""
+                }
+            ],
+            "row_count": 0,
+            "primary_keys": [
+                "site_log_id"
+            ],
+            "foreign_keys": []
+        },
+        "stock_statuses": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "status",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 8,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        },
+        "stocks": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(10)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "serial",
+                    "Type": "varchar(255)",
+                    "Null": "NO",
+                    "Key": "UNI",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "day_in",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "day_out",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "first_fit",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "guarantee_end",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "type",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "manufacturer",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "model",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vendor",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "status",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "voucher",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "stock_available",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "black",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "available_serial",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(255)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "customer_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ha_price",
+                    "Type": "decimal(6,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ha_id",
+                    "Type": "varchar(15)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ekapty_code",
+                    "Type": "varchar(25)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "eopyy",
+                    "Type": "decimal(8,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "balance",
+                    "Type": "decimal(8,2) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "debt",
+                    "Type": "int(8) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "doctor_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "selling_point",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": "1",
+                    "Extra": ""
+                },
+                {
+                    "Field": "on_test",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "ha_model",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ektelesi_eopyy",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 2258,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "customer_id",
+                "ha_id",
+                "doctor_id"
+            ]
+        },
+        "tasks": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "entry_date",
+                    "Type": "timestamp",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": "current_timestamp()",
+                    "Extra": ""
+                },
+                {
+                    "Field": "client",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "scan",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "order",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "gnomateusi",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "receive",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "tel_rdv",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "ektelesi",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "paradosi",
+                    "Type": "date",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "signatures",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "receipt",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "arxeio",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": "0",
+                    "Extra": ""
+                },
+                {
+                    "Field": "acoustic_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "comments",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "acoustic_id_2",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "tel_rdv_timestamp",
+                    "Type": "datetime",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 257,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "acoustic_id",
+                "acoustic_id_2"
+            ]
+        },
+        "users": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "mediumint(8) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "branch_id",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "ip_address",
+                    "Type": "varchar(16)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "username",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "password",
+                    "Type": "varchar(80)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "salt",
+                    "Type": "varchar(40)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "email",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "activation_code",
+                    "Type": "varchar(40)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "forgotten_password_code",
+                    "Type": "varchar(40)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "forgotten_password_time",
+                    "Type": "int(11) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "remember_code",
+                    "Type": "varchar(40)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "created_on",
+                    "Type": "int(11) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "last_login",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "active",
+                    "Type": "tinyint(1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "first_name",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "last_name",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "company",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone",
+                    "Type": "varchar(20)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 7,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "branch_id"
+            ]
+        },
+        "users_groups": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "mediumint(8) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "user_id",
+                    "Type": "mediumint(8) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "group_id",
+                    "Type": "mediumint(8) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 6,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": [
+                "user_id",
+                "group_id"
+            ]
+        },
+        "vendors": {
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Default": null,
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "name",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "phone",
+                    "Type": "varchar(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "address",
+                    "Type": "varchar(100)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "city",
+                    "Type": "varchar(25)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                },
+                {
+                    "Field": "vat",
+                    "Type": "varchar(10)",
+                    "Null": "NO",
+                    "Key": "",
+                    "Default": null,
+                    "Extra": ""
+                }
+            ],
+            "row_count": 9,
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": []
+        }
+    }
+}
