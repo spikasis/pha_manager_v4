@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>PHA Manager v4 - Demo</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- SB Admin 2 CSS -->
+    <link href="public/sbadmin2/css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <style>
+        .demo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card-clickable {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-clickable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2) !important;
+        }
+        .feature-complete {
+            border-left: 4px solid #28a745 !important;
+        }
+        .feature-partial {
+            border-left: 4px solid #ffc107 !important;
+        }
+        .feature-planned {
+            border-left: 4px solid #6c757d !important;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <!-- Demo Banner -->
+    <div class="demo-banner">
+        <h4><i class="fas fa-eye"></i> PHA MANAGER V4 - DEMO ΕΦΑΡΜΟΓΗΣ</h4>
+        <p class="mb-0">Αυτό είναι ένα demonstration της νέας εφαρμογής διαχείρισης ακουστικών βαρηκοΐας</p>
+    </div>
+
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Sidebar Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-assistive-listening-systems"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">PHA Manager <sup>v4</sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="#dashboard">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">Διαχείριση</div>
+
+            <!-- Customers -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCustomers">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Πελάτες</span>
+                </a>
+                <div id="collapseCustomers" class="collapse">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Διαχείριση Πελατών:</h6>
+                        <a class="collapse-item" href="#customers-list">Όλοι οι Πελάτες</a>
+                        <a class="collapse-item" href="#customer-create">Νέος Πελάτης</a>
+                        <a class="collapse-item" href="#customers-search">Αναζήτηση</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Services -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseServices">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Υπηρεσίες</span>
+                </a>
+                <div id="collapseServices" class="collapse">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Service Management:</h6>
+                        <a class="collapse-item" href="#services">Ενεργές Υπηρεσίες</a>
+                        <a class="collapse-item" href="#service-new">Νέο Service</a>
+                        <a class="collapse-item" href="#service-history">Ιστορικό</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Products -->
+            <li class="nav-item">
+                <a class="nav-link" href="#products">
+                    <i class="fas fa-fw fa-assistive-listening-systems"></i>
+                    <span>Προϊόντα</span>
+                </a>
+            </li>
+
+            <!-- Doctors -->
+            <li class="nav-item">
+                <a class="nav-link" href="#doctors">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Γιατροί</span>
+                </a>
+            </li>
+
+            <!-- Reports -->
+            <li class="nav-item">
+                <a class="nav-link" href="#reports">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Αναφορές</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Sidebar Toggle -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Αναζήτηση πελάτη...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administrator</span>
+                                <img class="img-profile rounded-circle" src="https://via.placeholder.com/40x40/4e73df/ffffff?text=A">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard - Επισκόπηση Συστήματος</h1>
+                    </div>
+
+                    <!-- Statistics Row -->
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2 card-clickable">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Συνολικοί Πελάτες</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">1,247</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2 card-clickable">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ενεργές Υπηρεσίες</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">45</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-wrench fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2 card-clickable">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Συνεργάτες Γιατροί</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">89</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user-md fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2 card-clickable">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Μηνιαίος Τζίρος</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">€15,420</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Implementation Progress -->
+                    <div class="row">
+                        <div class="col-lg-12 mb-4">
+                            <div class="card shadow">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-tasks"></i> Πρόοδος Ανάπτυξης PHA Manager v4
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <h6 class="text-success mb-3">✅ ΟΛΟΚΛΗΡΩΜΕΝΑ</h6>
+                                            
+                                            <div class="card feature-complete mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-database text-success"></i> Ανάλυση Βάσης Δεδομένων
+                                                    </h6>
+                                                    <small class="text-muted">Πλήρης ανάλυση 39 πινάκων της υπάρχουσας βάσης</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-complete mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-road text-success"></i> Implementation Roadmap
+                                                    </h6>
+                                                    <small class="text-muted">Λεπτομερές πλάνο ανάπτυξης 4 φάσεων</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-complete mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-users text-success"></i> Customer Management - Index
+                                                    </h6>
+                                                    <small class="text-muted">Λίστα πελατών με αναζήτηση, φίλτρα, εξαγωγή</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-complete mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-user-plus text-success"></i> Customer Creation Form
+                                                    </h6>
+                                                    <small class="text-muted">Φόρμα δημιουργίας πελάτη με validation</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-complete mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-edit text-success"></i> Customer Edit & Profile
+                                                    </h6>
+                                                    <small class="text-muted">Επεξεργασία και προβολή προφίλ πελάτη</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <h6 class="text-warning mb-3">🔄 ΣΕ ΕΞΕΛΙΞΗ</h6>
+                                            
+                                            <div class="card feature-partial mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-cog text-warning"></i> PHP Environment Setup
+                                                    </h6>
+                                                    <small class="text-muted">Διαμόρφωση PHP extensions (intl, pdo_mysql)</small>
+                                                </div>
+                                            </div>
+
+                                            <h6 class="text-secondary mb-3 mt-4">📋 ΕΠΟΜΕΝΑ ΒΗΜΑΤΑ</h6>
+
+                                            <div class="card feature-planned mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-wrench text-secondary"></i> Service Management System
+                                                    </h6>
+                                                    <small class="text-muted">Διαχείριση service tickets και επισκευών</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-planned mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-assistive-listening-systems text-secondary"></i> Hearing Aid Management
+                                                    </h6>
+                                                    <small class="text-muted">Καταχώρηση και tracking ακουστικών</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-planned mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-euro-sign text-secondary"></i> Financial Management
+                                                    </h6>
+                                                    <small class="text-muted">Τιμολόγηση, πληρωμές, οφειλές</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="card feature-planned mb-3">
+                                                <div class="card-body py-2">
+                                                    <h6 class="card-title mb-1">
+                                                        <i class="fas fa-chart-bar text-secondary"></i> Advanced Reporting
+                                                    </h6>
+                                                    <small class="text-muted">Αναφορές πωλήσεων, στατιστικών, KPIs</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-bolt"></i> Γρήγορες Ενέργειες (Demo)
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <button class="btn btn-primary btn-block btn-lg demo-btn" data-feature="customers">
+                                                <i class="fas fa-users"></i><br>
+                                                <small>Διαχείριση Πελατών</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <button class="btn btn-success btn-block btn-lg demo-btn" data-feature="new-customer">
+                                                <i class="fas fa-user-plus"></i><br>
+                                                <small>Νέος Πελάτης</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <button class="btn btn-info btn-block btn-lg demo-btn" data-feature="services">
+                                                <i class="fas fa-wrench"></i><br>
+                                                <small>Νέα Υπηρεσία</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 mb-3">
+                                            <button class="btn btn-warning btn-block btn-lg demo-btn" data-feature="products">
+                                                <i class="fas fa-assistive-listening-systems"></i><br>
+                                                <small>Νέο Ακουστικό</small>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; PHA Manager v4 2024 - Professional Hearing Aid Management System</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Demo Modal -->
+    <div class="modal fade" id="demoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-info-circle text-primary"></i> Demo Feature
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modal-content">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Κλείσιμο</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        // Demo functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-toggled');
+                document.querySelector('.sidebar').classList.toggle('toggled');
+            });
+
+            // Demo buttons
+            document.querySelectorAll('.demo-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const feature = this.getAttribute('data-feature');
+                    showDemoModal(feature);
+                });
+            });
+
+            // Statistics animation
+            animateCounters();
+        });
+
+        function showDemoModal(feature) {
+            const modal = new bootstrap.Modal(document.getElementById('demoModal'));
+            const modalContent = document.getElementById('modal-content');
+            
+            let content = '';
+            
+            switch(feature) {
+                case 'customers':
+                    content = `
+                        <h6><i class="fas fa-users text-primary"></i> Διαχείριση Πελατών</h6>
+                        <p>Η λειτουργία διαχείρισης πελατών περιλαμβάνει:</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">✅ Προβολή όλων των πελατών με pagination</li>
+                            <li class="list-group-item">✅ Αναζήτηση πελατών με πολλαπλά κριτήρια</li>
+                            <li class="list-group-item">✅ Φίλτρα για status, πόλη, γιατρό</li>
+                            <li class="list-group-item">✅ Εξαγωγή σε Excel/CSV</li>
+                            <li class="list-group-item">✅ Στατιστικά και analytics</li>
+                            <li class="list-group-item">✅ Bulk operations</li>
+                        </ul>
+                        <div class="alert alert-success mt-3">
+                            <i class="fas fa-check-circle"></i> <strong>Status:</strong> Ολοκληρωμένο και έτοιμο για χρήση!
+                        </div>
+                    `;
+                    break;
+                case 'new-customer':
+                    content = `
+                        <h6><i class="fas fa-user-plus text-success"></i> Νέος Πελάτης</h6>
+                        <p>Η φόρμα δημιουργίας νέου πελάτη παρέχει:</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">✅ Πλήρη στοιχεία πελάτη (προσωπικά, επικοινωνίας)</li>
+                            <li class="list-group-item">✅ Validation σε πραγματικό χρόνο</li>
+                            <li class="list-group-item">✅ Επιλογή γιατρού από dropdown</li>
+                            <li class="list-group-item">✅ ΑΜΚΑ και ταυτότητα με ημερομηνίες λήξης</li>
+                            <li class="list-group-item">✅ Αυτόματος έλεγχος τηλεφώνων και email</li>
+                            <li class="list-group-item">✅ Greek-friendly interface</li>
+                        </ul>
+                        <div class="alert alert-success mt-3">
+                            <i class="fas fa-check-circle"></i> <strong>Status:</strong> Ολοκληρωμένο με πλήρη validation!
+                        </div>
+                    `;
+                    break;
+                case 'services':
+                    content = `
+                        <h6><i class="fas fa-wrench text-info"></i> Σύστημα Υπηρεσιών</h6>
+                        <p>Το σύστημα διαχείρισης υπηρεσιών θα περιλαμβάνει:</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">🔄 Service tickets με status tracking</li>
+                            <li class="list-group-item">🔄 Καταγραφή επισκευών και συντήρησης</li>
+                            <li class="list-group-item">🔄 Χρονομέτρηση εργασιών</li>
+                            <li class="list-group-item">🔄 Κόστη ανά service</li>
+                            <li class="list-group-item">🔄 Ιστορικό υπηρεσιών ανά πελάτη</li>
+                            <li class="list-group-item">🔄 Notifications για follow-up</li>
+                        </ul>
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-clock"></i> <strong>Status:</strong> Phase 2 - Προγραμματισμένο για επόμενη εβδομάδα
+                        </div>
+                    `;
+                    break;
+                case 'products':
+                    content = `
+                        <h6><i class="fas fa-assistive-listening-systems text-warning"></i> Διαχείριση Ακουστικών</h6>
+                        <p>Το σύστημα διαχείρισης προϊόντων θα παρέχει:</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">🔄 Καταχώρηση ακουστικών με τεχνικά χαρακτηριστικά</li>
+                            <li class="list-group-item">🔄 Tracking σειριακών αριθμών</li>
+                            <li class="list-group-item">🔄 Διαχείριση εγγυήσεων</li>
+                            <li class="list-group-item">🔄 Stock management</li>
+                            <li class="list-group-item">🔄 Σύνδεση με suppliers</li>
+                            <li class="list-group-item">🔄 Price history και analytics</li>
+                        </ul>
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-calendar"></i> <strong>Status:</strong> Phase 3 - Σχεδιασμένο για τις επόμενες 2 εβδομάδες
+                        </div>
+                    `;
+                    break;
+                default:
+                    content = '<p>Demo feature information will be displayed here.</p>';
+            }
+            
+            modalContent.innerHTML = content;
+            modal.show();
+        }
+
+        function animateCounters() {
+            // Simple counter animation for demo
+            const counters = document.querySelectorAll('.h5');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent.replace(/[^\d]/g, ''));
+                if (target > 0) {
+                    let current = 0;
+                    const increment = target / 100;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        counter.textContent = Math.floor(current).toLocaleString();
+                        if (counter.textContent.includes('€')) {
+                            counter.textContent = '€' + Math.floor(current).toLocaleString();
+                        }
+                    }, 20);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
