@@ -4,7 +4,7 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('dashboard') ?>">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-heartbeat"></i>
+                    <i class="fas fa-deaf"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">PHA Manager <sup>v4</sup></div>
             </a>
@@ -27,18 +27,36 @@
                 Interface
             </div>
 
-            <!-- Nav Item - Pages Collapse Menu -->
+            <!-- Nav Item - Customers -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Components</span>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomers"
+                    aria-expanded="true" aria-controls="collapseCustomers">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Πελάτες</span>
                 </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseCustomers" class="collapse" aria-labelledby="headingCustomers" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="#">Buttons</a>
-                        <a class="collapse-item" href="#">Cards</a>
+                        <h6 class="collapse-header">Διαχείριση Πελατών:</h6>
+                        <a class="collapse-item" href="<?= base_url('customers') ?>">Όλοι οι Πελάτες</a>
+                        <a class="collapse-item" href="<?= base_url('customers/create') ?>">Νέος Πελάτης</a>
+                        <a class="collapse-item" href="<?= base_url('customers/search') ?>">Αναζήτηση</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Services -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServices"
+                    aria-expanded="true" aria-controls="collapseServices">
+                    <i class="fas fa-fw fa-tools"></i>
+                    <span>Υπηρεσίες</span>
+                </a>
+                <div id="collapseServices" class="collapse" aria-labelledby="headingServices" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Service Tickets:</h6>
+                        <a class="collapse-item" href="#">Ενεργές Υπηρεσίες</a>
+                        <a class="collapse-item" href="#">Νέο Service</a>
+                        <a class="collapse-item" href="#">Ιστορικό</a>
                     </div>
                 </div>
             </li>
@@ -48,42 +66,28 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Addons
+                Διαχείριση
             </div>
 
-            <!-- Nav Item - Pages Collapse Menu -->
+            <!-- Nav Item - Doctors -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="#">Login</a>
-                        <a class="collapse-item" href="#">Register</a>
-                        <a class="collapse-item" href="#">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="#">404 Page</a>
-                        <a class="collapse-item" href="#">Blank Page</a>
-                    </div>
-                </div>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Γιατροί</span></a>
             </li>
 
-            <!-- Nav Item - Charts -->
+            <!-- Nav Item - Stock -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-boxes"></i>
+                    <span>Αποθήκη</span></a>
+            </li>
+
+            <!-- Nav Item - Reports -->
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
+                    <span>Αναφορές</span></a>
             </li>
 
             <!-- Divider -->
