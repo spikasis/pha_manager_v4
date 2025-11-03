@@ -86,16 +86,100 @@ class DoctorModel extends BaseCRUDModel
     ];
     
     /**
-     * Get all doctors
+     * Get doctors for select dropdown
+     */
+    public function getForSelect(): array
+    {
+        return $this->select('id, doc_name')
+                    ->where('doc_name IS NOT NULL')
+                    ->where('doc_name !=', '')
+                    ->where('doc_name !=', 'NoDoctor')
+                    ->orderBy('doc_name', 'ASC')
+                    ->findAll();
+    }
+    
+    /**
+     * Get doctor statistics
+     */
+    public function getStatistics(): array
+    {
+        $stats = [];
+        
+        // Total doctors
+        $stats['total'] = $this->countAllResults();
+        
+        // Active doctors (not NoDoctor and have name)
+        $stats['active'] = $this->where('doc_name IS NOT NULL')
+                               ->where('doc_name !=', '')
+                               ->where('doc_name !=', 'NoDoctor')
+                               ->countAllResults(false);
+        
+        // Doctors with complete contact info
+        $stats['complete_contact'] = $this->where('doc_name IS NOT NULL')
+                                         ->where('doc_address IS NOT NULL')
+                                         ->where('doc_phone_mobile !=', '')
+                                         ->countAllResults(false);
+        
+        // Doctors by city
+        $stats['by_city'] = $this->select('doc_city, COUNT(*) as count')
+                                ->where('doc_city IS NOT NULL')
+                                ->where('doc_city !=', '')
+                                ->groupBy('doc_city')
+                                ->orderBy('count', 'DESC')
+                                ->limit(5)
+                                ->findAll();
+        
+        // Average price
+        $avgPrice = $this->select('AVG(doc_price) as avg_price')
+                        ->where('doc_price IS NOT NULL')
+                        ->where('doc_price >', 0)
+                        ->first();
+        $stats['avg_price'] = $avgPrice ? round($avgPrice['avg_price'], 2) : 0;
+        
+        return $stats;
+    }
+    
+    /**
+     * Get doctor with customer count
+     */
+    public function getDoctorWithCustomers(int $id): ?array
+    {
+        $doctor = $this->find($id);
+        if (!$doctor) {
+            return null;
+        }
+        
+        // Get customer count for this doctor
+        $customerModel = new \App\Models\CustomerModel();
+        $customerCount = $customerModel->where('doctor_id', $id)->countAllResults();
+        
+        $doctor['customer_count'] = $customerCount;
+        
+        return $doctor;
+    }
+    
+    /**
+     * Get related customers for a doctor
+     */
+    public function getRelatedCustomers(int $doctorId, int $limit = 10): array
+    {
+        $customerModel = new \App\Models\CustomerModel();
+        
+        return $customerModel->select('id, surname, name, phone')
+                           ->where('doctor_id', $doctorId)
+                           ->orderBy('surname', 'ASC')
+                           ->limit($limit)
+                           ->findAll();
+    }
+    
+    /**
+     * Legacy methods for backward compatibility
      */
     public function getAllDoctors()
     {
         return $this->orderBy('doc_name', 'ASC')->findAll();
     }
     
-    /**
-     * Search doctors by name or city
-     */
     public function searchDoctors($searchTerm)
     {
         return $this->groupStart()
@@ -107,9 +191,6 @@ class DoctorModel extends BaseCRUDModel
                     ->findAll();
     }
     
-    /**
-     * Get doctors by city
-     */
     public function getDoctorsByCity($city)
     {
         return $this->where('doc_city', $city)
@@ -117,44 +198,18 @@ class DoctorModel extends BaseCRUDModel
                     ->findAll();
     }
     
-    /**
-     * Get doctor with customer count
-     */
     public function getDoctorWithCustomerCount($id)
     {
-        $doctor = $this->find($id);
-        if ($doctor) {
-            $customerModel = new \App\Models\CustomerModel();
-            $doctor['customer_count'] = $customerModel->where('doctor', $id)->countAllResults();
-        }
-        return $doctor;
+        return $this->getDoctorWithCustomers($id);
     }
     
-    /**
-     * Get doctors statistics for dashboard
-     */
     public function getDashboardStats()
     {
-        $total = $this->countAllResults();
-        $cities = $this->select('doc_city')
-                      ->distinct()
-                      ->where('doc_city IS NOT NULL')
-                      ->findAll();
-        
-        return [
-            'total_doctors' => $total,
-            'cities_count' => count($cities)
-        ];
+        return $this->getStatistics();
     }
-
-    /**
-     * Get active doctors for dropdowns
-     */
+    
     public function getActiveDoctors()
     {
-        return $this->select('id, name, doc_city, doc_phone')
-                   ->where('status', 1)
-                   ->orderBy('name', 'ASC')
-                   ->findAll();
+        return $this->getForSelect();
     }
 }
