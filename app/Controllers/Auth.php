@@ -44,57 +44,79 @@ class Auth extends BaseController
     }
 
     /**
-     * Process login - SIMPLE DEBUG VERSION
+     * Process login attempt
      */
     public function attemptLogin()
     {
-        // Simple debug version to avoid "Whoops!" error
-        echo "<!DOCTYPE html><html><head><title>Login Debug</title></head><body>";
-        echo "<h1>🔍 Login Debug</h1>";
-        
+        // Validate input
+        $rules = [
+            'login' => [
+                'label' => 'Email/Username',
+                'rules' => 'required'
+            ],
+            'password' => [
+                'label' => 'Password',
+                'rules' => 'required'
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            session()->setFlashdata('validation', $this->validator);
+            return redirect()->back()->withInput();
+        }
+
+        $login = $this->request->getPost('login');
+        $password = $this->request->getPost('password');
+        $remember = (bool) $this->request->getPost('remember');
+
         try {
-            $login = $this->request->getPost('login');
-            $password = $this->request->getPost('password');
-            
-            echo "<p>✅ Request data received:</p>";
-            echo "<p>Login: " . ($login ?? 'NULL') . "</p>";
-            echo "<p>Password: " . (empty($password) ? 'EMPTY' : 'PROVIDED') . "</p>";
-            
-            // Test database connection
-            echo "<p>✅ Testing database connection...</p>";
-            $db = \Config\Database::connect();
-            echo "<p>✅ Database connected successfully</p>";
-            
-            // Test UserModel
-            echo "<p>✅ Testing UserModel...</p>";
-            $userModel = new \App\Models\UserModel();
-            echo "<p>✅ UserModel loaded successfully</p>";
-            
-            // Test finding user
-            if ($login) {
-                echo "<p>✅ Testing findByLogin...</p>";
-                $user = $userModel->findByLogin($login);
-                echo "<p>User found: " . ($user ? 'YES' : 'NO') . "</p>";
-                
-                if ($user && password_verify($password, $user['password'])) {
-                    echo "<p>✅ Password correct!</p>";
-                    echo "<h2>🎉 LOGIN SUCCESS!</h2>";
-                    echo "<p>User ID: " . $user['id'] . "</p>";
-                    echo "<p>Username: " . $user['username'] . "</p>";
-                } else {
-                    echo "<p>❌ Invalid login or password</p>";
-                }
+            // Find user
+            $user = $this->userModel->findByLogin($login);
+
+            if (!$user || !password_verify($password, $user['password'])) {
+                session()->setFlashdata('error', $this->authConfig->messages['login_unsuccessful']);
+                return redirect()->back()->withInput();
             }
+
+            // Check if user is active
+            if (!$user['active']) {
+                session()->setFlashdata('error', 'Ο λογαριασμός δεν είναι ενεργός. Επικοινωνήστε με τον διαχειριστή.');
+                return redirect()->back();
+            }
+
+            // Set remember me cookie if requested
+            if ($remember) {
+                $rememberCode = $this->userModel->generateRememberCode();
+                $this->userModel->setRememberCode($user['id'], $rememberCode);
+                
+                $cookieValue = $user['id'] . ':' . $rememberCode;
+                $cookie = [
+                    'name' => $this->authConfig->cookies['remember'],
+                    'value' => $cookieValue,
+                    'expire' => $this->authConfig->rememberMeDuration
+                ];
+                $this->response->setCookie($cookie);
+            }
+
+            // Update last login
+            $this->userModel->updateLastLogin($user['id']);
+
+            // Set session data
+            $this->setUserSession($user);
+
+            session()->setFlashdata('success', $this->authConfig->messages['login_successful']);
+            
+            // Determine redirect URL based on user role and groups
+            $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
+            session()->remove('redirect_url');
+            
+            return redirect()->to($redirectUrl);
             
         } catch (\Exception $e) {
-            echo "<p>❌ ERROR: " . $e->getMessage() . "</p>";
-            echo "<p>File: " . $e->getFile() . "</p>";
-            echo "<p>Line: " . $e->getLine() . "</p>";
-            echo "<pre>" . $e->getTraceAsString() . "</pre>";
+            log_message('error', 'Login error: ' . $e->getMessage());
+            session()->setFlashdata('error', 'Προέκυψε σφάλμα κατά τη σύνδεση. Δοκιμάστε ξανά.');
+            return redirect()->back();
         }
-        
-        echo "</body></html>";
-        exit;
     }
 
     private function oldAttemptLoginCode() 

@@ -205,6 +205,7 @@
 
                         <!-- Login Form -->
                         <?= form_open(base_url('auth/attempt-login'), ['class' => 'user']) ?>
+                            <?= csrf_field() ?>
                             <div class="form-group mb-3">
                                 <div class="input-group">
                                     <span class="input-group-text">
