@@ -2,46 +2,44 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseCRUDModel;
 use Config\Auth as AuthConfig;
 
-class LoginAttemptModel extends Model
+class LoginAttemptModel extends BaseCRUDModel
 {
-    protected $table;
-    protected $primaryKey;
-    protected $useAutoIncrement = true;
-    protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $protectFields = true;
+    protected $table = 'login_attempts';
+    protected $primaryKey = 'id';
     protected $allowedFields = ['ip_address', 'login', 'time'];
-
-    // Dates
+    
     protected $useTimestamps = false;
-    protected $dateFormat = 'datetime';
-    protected $createdField = '';
-    protected $updatedField = '';
-    protected $deletedField = '';
-
-    // Validation
+    protected $createdField = 'time';
+    protected $updatedField = false;
+    
+    protected $returnType = 'array';
+    
+    // Validation rules  
     protected $validationRules = [
         'ip_address' => 'required|valid_ip',
         'login' => 'required|max_length[255]',
         'time' => 'required|integer'
     ];
-    protected $validationMessages = [];
-    protected $skipValidation = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert = [];
-    protected $afterInsert = [];
-    protected $beforeUpdate = [];
-    protected $afterUpdate = [];
-    protected $beforeFind = [];
-    protected $afterFind = [];
-    protected $beforeDelete = [];
-    protected $afterDelete = [];
+    
+    protected $validationMessages = [
+        'ip_address' => [
+            'required' => 'Η IP διεύθυνση είναι υποχρεωτική.',
+            'valid_ip' => 'Μη έγκυρη IP διεύθυνση.'
+        ],
+        'login' => [
+            'required' => 'Το login είναι υποχρεωτικό.',
+            'max_length' => 'Το login δεν μπορεί να υπερβαίνει τους 255 χαρακτήρες.'
+        ]
+    ];
+    
+    // Fields that can be searched
+    protected $searchableFields = ['ip_address', 'login'];
+    
+    // Display field for dropdowns (not applicable for login attempts)
+    protected $displayField = 'login';
 
     protected $authConfig;
 
