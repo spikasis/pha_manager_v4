@@ -70,9 +70,14 @@ class UserModel extends BaseCRUDModel
      */
     public function findByLogin(string $login)
     {
-        return $this->where('email', $login)
-                   ->orWhere('username', $login)
-                   ->first();
+        // Try email first
+        $user = $this->where('email', $login)->first();
+        if ($user) {
+            return $user;
+        }
+        
+        // If not found by email, try username
+        return $this->where('username', $login)->first();
     }
 
     /**
