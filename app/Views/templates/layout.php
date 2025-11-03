@@ -10,15 +10,20 @@
 
     <title><?= isset($title) ? esc($title) : 'PHA Manager v4' ?></title>
 
-    <!-- Custom fonts for this template-->
-    <link href="<?= base_url('public/vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet" type="text/css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="<?= base_url('public/sbadmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet">
-
     <!-- DataTables CSS -->
-    <link href="<?= base_url('public/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- SB Admin 2 CSS - fallback to local if available -->
+    <link href="<?= base_url('sbadmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet" onerror="this.onerror=null; this.href='https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css';">
 
     <!-- Custom CSS -->
     <style>
@@ -162,22 +167,34 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="<?= base_url('public/vendor/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= base_url('public/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="<?= base_url('public/vendor/jquery-easing/jquery.easing.min.js') ?>"></script>
+    <!-- jQuery Easing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g0bUfdm2LfbLp3QqqrqJzoA2lltSyx9eidR3BZ9JmN1Lm/98dGcD2JL9BFe2SxZAAiz+r5rTQ2Q==" crossorigin="anonymous"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="<?= base_url('public/sbadmin2/js/sb-admin-2.min.js') ?>"></script>
-
-    <!-- DataTables JavaScript-->
-    <script src="<?= base_url('public/vendor/datatables/jquery.dataTables.min.js') ?>"></script>
-    <script src="<?= base_url('public/vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
     <!-- Chart.js -->
-    <script src="<?= base_url('public/vendor/chart.js/Chart.min.js') ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+    <!-- SB Admin 2 JS - try local first, fallback to CDN -->
+    <script>
+        // Try to load local SB Admin 2 JS, fallback to CDN
+        var script = document.createElement('script');
+        script.src = '<?= base_url('sbadmin2/js/sb-admin-2.min.js') ?>';
+        script.onerror = function() {
+            var fallbackScript = document.createElement('script');
+            fallbackScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js';
+            document.head.appendChild(fallbackScript);
+        };
+        document.head.appendChild(script);
+    </script>
 
     <!-- Global JavaScript -->
     <script>
