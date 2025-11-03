@@ -131,17 +131,11 @@ class Auth extends BaseController
         $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
         session()->remove('redirect_url');
         
-        // Debug: Show the redirect URL instead of redirecting
-        $debugInfo = [
-            'message' => 'Login successful! Debug information:',
-            'redirect_url' => $redirectUrl,
-            'base_url' => base_url(),
-            'user_groups' => $this->userModel->getUserGroups($user['id']),
-            'user_data' => $user
-        ];
+        // Simple redirect to test page to verify functionality
+        return redirect()->to('/test');
         
-        // Temporary debug view - remove this after fixing
-        return $this->response->setJSON($debugInfo);
+        // Original redirect code (commented for now)
+        // return redirect()->to($redirectUrl);
     }
 
     /**

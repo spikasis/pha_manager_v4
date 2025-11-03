@@ -103,3 +103,6 @@ $routes->group('admin', ['filter' => 'admin'], function($routes) {
 
 // REST API routes (optional)
 $routes->resource('api/patients', ['controller' => 'API\Patients']);
+
+// Test route for debugging
+$routes->get('test', 'Test::index');
