@@ -8,16 +8,25 @@ use CodeIgniter\Router\RouteCollection;
 
 // Public routes (no authentication required)
 $routes->get('/', 'Auth::login'); // Redirect home to login
+
+// Authentication routes with auth prefix
+$routes->group('auth', function($routes) {
+    $routes->get('login', 'Auth::login');
+    $routes->post('login', 'Auth::attemptLogin');
+    $routes->get('logout', 'Auth::logout');
+    $routes->get('register', 'Auth::register');
+    $routes->post('register', 'Auth::attemptRegister');
+    $routes->get('forgot-password', 'Auth::forgotPassword');
+    $routes->post('forgot-password', 'Auth::attemptForgotPassword');
+    $routes->get('reset-password/(:segment)', 'Auth::resetPassword/$1');
+    $routes->post('reset-password/(:segment)', 'Auth::attemptResetPassword/$1');
+    $routes->get('activate-account/(:segment)', 'Auth::activateAccount/$1');
+});
+
+// Alternative routes without prefix for backward compatibility
 $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::attemptLogin');
 $routes->get('logout', 'Auth::logout');
-$routes->get('register', 'Auth::register');
-$routes->post('register', 'Auth::attemptRegister');
-$routes->get('forgot-password', 'Auth::forgotPassword');
-$routes->post('forgot-password', 'Auth::attemptForgotPassword');
-$routes->get('reset-password/(:segment)', 'Auth::resetPassword/$1');
-$routes->post('reset-password/(:segment)', 'Auth::attemptResetPassword/$1');
-$routes->get('activate-account/(:segment)', 'Auth::activateAccount/$1');
 
 // Protected routes (authentication required)
 $routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
