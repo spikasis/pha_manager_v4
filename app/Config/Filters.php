@@ -34,6 +34,9 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'auth'          => \App\Filters\AuthFilter::class,
+        'admin'         => \App\Filters\AdminFilter::class,
+        'permission'    => \App\Filters\PermissionFilter::class,
     ];
 
     /**
@@ -106,5 +109,36 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        // Authentication required for all protected routes
+        'auth' => [
+            'before' => [
+                'dashboard/*',
+                'customers/*',
+                'services/*',
+                'products/*',
+                'reports/*',
+                'users/*',
+                'groups/*'
+            ]
+        ],
+        // Admin access only
+        'admin' => [
+            'before' => [
+                'users/*',
+                'groups/*',
+                'system/*'
+            ]
+        ],
+        // CSRF protection for forms
+        'csrf' => [
+            'before' => [
+                'auth/attempt-login',
+                'auth/attempt-register',
+                'customers/store',
+                'customers/update/*',
+                'customers/delete/*'
+            ]
+        ]
+    ];
 }

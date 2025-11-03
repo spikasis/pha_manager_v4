@@ -90,6 +90,34 @@
                     <span>Αναφορές</span></a>
             </li>
 
+            <!-- Admin Section (visible only to admins) -->
+            <?php if (session()->get('user_group') === 'admin'): ?>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Διαχείριση Συστήματος
+            </div>
+
+            <!-- Nav Item - Users -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdmin"
+                    aria-expanded="true" aria-controls="collapseAdmin">
+                    <i class="fas fa-fw fa-users-cog"></i>
+                    <span>Χρήστες & Ρόλοι</span>
+                </a>
+                <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Διαχείριση:</h6>
+                        <a class="collapse-item" href="<?= base_url('admin/users') ?>">Χρήστες</a>
+                        <a class="collapse-item" href="<?= base_url('admin/groups') ?>">Ρόλοι</a>
+                        <a class="collapse-item" href="<?= base_url('admin/settings') ?>">Ρυθμίσεις</a>
+                    </div>
+                </div>
+            </li>
+            <?php endif; ?>
+
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 

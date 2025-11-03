@@ -5,8 +5,22 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Dashboard::index');
-$routes->get('dashboard', 'Dashboard::index');
+
+// Public routes (no authentication required)
+$routes->get('/', 'Auth::login'); // Redirect home to login
+$routes->get('login', 'Auth::login');
+$routes->post('login', 'Auth::attemptLogin');
+$routes->get('logout', 'Auth::logout');
+$routes->get('register', 'Auth::register');
+$routes->post('register', 'Auth::attemptRegister');
+$routes->get('forgot-password', 'Auth::forgotPassword');
+$routes->post('forgot-password', 'Auth::attemptForgotPassword');
+$routes->get('reset-password/(:segment)', 'Auth::resetPassword/$1');
+$routes->post('reset-password/(:segment)', 'Auth::attemptResetPassword/$1');
+$routes->get('activate-account/(:segment)', 'Auth::activateAccount/$1');
+
+// Protected routes (authentication required)
+$routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
 
 // Database analyzer (temporary - for migration)
 $routes->get('analyze', 'DatabaseAnalyzer::index');
@@ -23,8 +37,8 @@ $routes->group('patients', function($routes) {
     $routes->get('search', 'Patients::search');
 });
 
-// Customers routes
-$routes->group('customers', function($routes) {
+// Customers routes (protected)
+$routes->group('customers', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'Customers::index');
     $routes->get('create', 'Customers::create');
     $routes->post('/', 'Customers::store');
@@ -34,6 +48,37 @@ $routes->group('customers', function($routes) {
     $routes->delete('(:num)', 'Customers::delete/$1');
     $routes->get('search', 'Customers::search');
     $routes->get('export', 'Customers::exportCustomers');
+});
+
+// Admin only routes
+$routes->group('admin', ['filter' => 'admin'], function($routes) {
+    // User management
+    $routes->group('users', function($routes) {
+        $routes->get('/', 'Admin\Users::index');
+        $routes->get('create', 'Admin\Users::create');
+        $routes->post('/', 'Admin\Users::store');
+        $routes->get('(:num)', 'Admin\Users::show/$1');
+        $routes->get('(:num)/edit', 'Admin\Users::edit/$1');
+        $routes->put('(:num)', 'Admin\Users::update/$1');
+        $routes->delete('(:num)', 'Admin\Users::delete/$1');
+        $routes->post('(:num)/activate', 'Admin\Users::activate/$1');
+        $routes->post('(:num)/deactivate', 'Admin\Users::deactivate/$1');
+    });
+    
+    // Group management
+    $routes->group('groups', function($routes) {
+        $routes->get('/', 'Admin\Groups::index');
+        $routes->get('create', 'Admin\Groups::create');
+        $routes->post('/', 'Admin\Groups::store');
+        $routes->get('(:num)', 'Admin\Groups::show/$1');
+        $routes->get('(:num)/edit', 'Admin\Groups::edit/$1');
+        $routes->put('(:num)', 'Admin\Groups::update/$1');
+        $routes->delete('(:num)', 'Admin\Groups::delete/$1');
+    });
+    
+    // System settings
+    $routes->get('settings', 'Admin\Settings::index');
+    $routes->post('settings', 'Admin\Settings::update');
 });
 
 // REST API routes (optional)
