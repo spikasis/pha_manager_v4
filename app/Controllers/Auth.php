@@ -131,7 +131,17 @@ class Auth extends BaseController
         $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
         session()->remove('redirect_url');
         
-        return redirect()->to($redirectUrl);
+        // Debug: Show the redirect URL instead of redirecting
+        $debugInfo = [
+            'message' => 'Login successful! Debug information:',
+            'redirect_url' => $redirectUrl,
+            'base_url' => base_url(),
+            'user_groups' => $this->userModel->getUserGroups($user['id']),
+            'user_data' => $user
+        ];
+        
+        // Temporary debug view - remove this after fixing
+        return $this->response->setJSON($debugInfo);
     }
 
     /**
@@ -484,7 +494,7 @@ class Auth extends BaseController
         
         // Admin users go to main dashboard
         if (in_array('admin', $groupNames)) {
-            return base_url('dashboard');
+            return base_url('/');
         }
         
         // Branch-specific dashboards
@@ -510,6 +520,6 @@ class Auth extends BaseController
         }
         
         // Default for members or unknown groups
-        return base_url('dashboard');
+        return base_url('/');
     }
 }

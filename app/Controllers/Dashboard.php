@@ -22,8 +22,7 @@ class Dashboard extends BaseController
         
         // Check if user is logged in (will be handled by AuthFilter)
         if (!session()->get('user_id')) {
-            header('Location: /login');
-            exit;
+            return redirect()->to(base_url('auth/login'));
         }
     }
     
