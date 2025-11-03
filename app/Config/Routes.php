@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Public routes (no authentication required)
-$routes->get('/', 'Auth::login'); // Redirect home to login
+$routes->get('/', 'AuthSafe::login'); // Redirect home to safe login
 
 // Authentication routes with auth prefix
 $routes->group('auth', function($routes) {
@@ -118,3 +118,8 @@ $routes->get('auth-ultra/login', 'AuthUltraSimple::login');
 $routes->post('auth-ultra/attempt-login', 'AuthUltraSimple::attemptLogin');
 $routes->get('auth-ultra/test-db', 'AuthUltraSimple::testDb');
 $routes->get('auth-ultra/test-models', 'AuthUltraSimple::testModels');
+
+// Safe Auth routes - works without intl extension
+$routes->get('auth-safe/login', 'AuthSafe::login');
+$routes->post('auth-safe/attempt-login', 'AuthSafe::attemptLogin');
+$routes->get('auth-safe/logout', 'AuthSafe::logout');

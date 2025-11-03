@@ -3,6 +3,9 @@
 use CodeIgniter\Boot;
 use Config\Paths;
 
+// INTL FIX: Load locale fix before CodeIgniter bootstrap
+require_once ROOTPATH . 'app/Config/LocaleFix.php';
+
 /*
  *---------------------------------------------------------------
  * CHECK PHP VERSION
