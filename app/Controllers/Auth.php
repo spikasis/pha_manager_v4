@@ -131,31 +131,20 @@ class Auth extends BaseController
         $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
         session()->remove('redirect_url');
         
-        // Debug: Show success message with session information
-        echo "<h1>🎉 Login Successful!</h1>";
-        echo "<h2>Debug Information:</h2>";
-        echo "<p><strong>User ID:</strong> " . ($user['id'] ?? 'Unknown') . "</p>";
-        echo "<p><strong>Username:</strong> " . ($user['username'] ?? 'Unknown') . "</p>";
-        echo "<p><strong>Email:</strong> " . ($user['email'] ?? 'Unknown') . "</p>";
-        echo "<p><strong>Intended redirect URL:</strong> " . $redirectUrl . "</p>";
-        echo "<p><strong>Base URL:</strong> " . base_url() . "</p>";
-        echo "<p><strong>Current URL:</strong> " . current_url() . "</p>";
-        
-        echo "<h3>Session Data After Login:</h3>";
-        echo "<pre>" . print_r(session()->get(), true) . "</pre>";
-        
-        echo "<h3>Auth Config Session Keys:</h3>";
-        echo "<p><strong>Session User ID Key:</strong> " . $this->authConfig->sessionUserIdKey . "</p>";
-        echo "<p><strong>Session contains user_id:</strong> " . (session('user_id') ? 'YES' : 'NO') . "</p>";
-        
-        echo "<hr>";
-        echo "<p>If you see this page, authentication is working. The issue is with redirects or AuthFilter.</p>";
-        echo "<p>Try manually navigating to:</p>";
+        // NO REDIRECT - Just show success message
+        echo "<!DOCTYPE html><html><head><title>Login Success</title></head><body>";
+        echo "<h1>✅ LOGIN SUCCESSFUL!</h1>";
+        echo "<p>Username: " . ($user['username'] ?? 'Unknown') . "</p>";
+        echo "<p>Email: " . ($user['email'] ?? 'Unknown') . "</p>";
+        echo "<p>User ID: " . ($user['id'] ?? 'Unknown') . "</p>";
+        echo "<p>Session set successfully!</p>";
+        echo "<h2>Manual Navigation:</h2>";
         echo "<ul>";
-        echo "<li><a href='" . base_url() . "'>Home: " . base_url() . "</a></li>";
-        echo "<li><a href='" . base_url('dashboard') . "'>Dashboard: " . base_url('dashboard') . "</a></li>";
-        echo "<li><a href='" . base_url('test') . "'>Test: " . base_url('test') . "</a></li>";
+        echo "<li><a href='/simple-test'>Simple Test</a></li>";
+        echo "<li><a href='/dashboard'>Dashboard</a></li>";
+        echo "<li><a href='/'>Home</a></li>";
         echo "</ul>";
+        echo "</body></html>";
         exit;
         
         // Original redirect code (commented for now)
