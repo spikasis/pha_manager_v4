@@ -11,14 +11,14 @@
     <title><?= isset($title) ? esc($title) : 'PHA Manager v4' ?></title>
 
     <!-- Custom fonts for this template-->
-    <link href="<?= base_url('vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('public/vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="<?= base_url('sbladmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet">
+    <link href="<?= base_url('public/sbadmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="<?= base_url('vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+    <link href="<?= base_url('public/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
@@ -163,21 +163,21 @@
     </a>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="<?= base_url('vendor/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= base_url('vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= base_url('public/vendor/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= base_url('public/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="<?= base_url('vendor/jquery-easing/jquery.easing.min.js') ?>"></script>
+    <script src="<?= base_url('public/vendor/jquery-easing/jquery.easing.min.js') ?>"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="<?= base_url('sbladmin2/js/sb-admin-2.min.js') ?>"></script>
+    <script src="<?= base_url('public/sbadmin2/js/sb-admin-2.min.js') ?>"></script>
 
     <!-- DataTables JavaScript-->
-    <script src="<?= base_url('vendor/datatables/jquery.dataTables.min.js') ?>"></script>
-    <script src="<?= base_url('vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
+    <script src="<?= base_url('public/vendor/datatables/jquery.dataTables.min.js') ?>"></script>
+    <script src="<?= base_url('public/vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
 
     <!-- Chart.js -->
-    <script src="<?= base_url('vendor/chart.js/Chart.min.js') ?>"></script>
+    <script src="<?= base_url('public/vendor/chart.js/Chart.min.js') ?>"></script>
 
     <!-- Global JavaScript -->
     <script>

@@ -149,7 +149,7 @@ if (!function_exists('get_user_avatar')) {
         
         // Use Gravatar as default
         $hash = md5(strtolower(trim($email)));
-        $default = urlencode(base_url('sbadmin2/img/undraw_profile.svg'));
+        $default = urlencode(base_url('public/sbadmin2/img/undraw_profile.svg'));
         
         return "https://www.gravatar.com/avatar/{$hash}?d={$default}&s=60";
     }
