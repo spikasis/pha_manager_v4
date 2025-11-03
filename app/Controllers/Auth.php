@@ -97,19 +97,9 @@ class Auth extends BaseController
         exit;
     }
 
-    /**
-     * Logout user - simplified
-     */
-    public function logout()
-    {
-        // Simplified logout
-        session()->destroy();
-        return redirect()->to('auth/login');
-    }
-
     private function oldAttemptLoginCode() 
     {
-        // Old code moved here for reference
+        /* Old code moved here for reference - COMMENTED OUT DUE TO UNDEFINED VARIABLES
         // Check if IP is locked out
         if ($this->loginAttemptModel->isIpLockedOut($ipAddress)) {
             $timeRemaining = $this->loginAttemptModel->getLockoutTimeRemainingForIp($ipAddress);
@@ -206,6 +196,7 @@ class Auth extends BaseController
         
         // Original redirect code (commented for now)
         // return redirect()->to($redirectUrl);
+        */
     }
 
     /**
