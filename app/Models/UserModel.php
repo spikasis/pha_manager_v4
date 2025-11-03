@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseCRUDModel;
 use Config\Auth as AuthConfig;
 
-class UserModel extends Model
+class UserModel extends BaseCRUDModel
 {
     protected $table;
     protected $primaryKey;
