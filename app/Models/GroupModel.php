@@ -5,7 +5,7 @@ namespace App\Models;
 use CodeIgniter\Model;
 use Config\Auth as AuthConfig;
 
-class GroupModel extends Model
+class GroupModel extends BaseCRUDModel
 {
     protected $table;
     protected $primaryKey;
