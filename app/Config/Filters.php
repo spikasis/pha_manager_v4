@@ -130,11 +130,9 @@ class Filters extends BaseFilters
                 'system/*'
             ]
         ],
-        // CSRF protection for forms
+        // CSRF protection for forms (excluding auth routes for now)
         'csrf' => [
             'before' => [
-                'auth/attempt-login',
-                'auth/attempt-register',
                 'customers/store',
                 'customers/update/*',
                 'customers/delete/*'

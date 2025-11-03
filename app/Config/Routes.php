@@ -13,9 +13,11 @@ $routes->get('/', 'Auth::login'); // Redirect home to login
 $routes->group('auth', function($routes) {
     $routes->get('login', 'Auth::login');
     $routes->post('login', 'Auth::attemptLogin');
+    $routes->post('attempt-login', 'Auth::attemptLogin'); // Support dash format
     $routes->get('logout', 'Auth::logout');
     $routes->get('register', 'Auth::register');
     $routes->post('register', 'Auth::attemptRegister');
+    $routes->post('attempt-register', 'Auth::attemptRegister'); // Support dash format
     $routes->get('forgot-password', 'Auth::forgotPassword');
     $routes->post('forgot-password', 'Auth::attemptForgotPassword');
     $routes->get('reset-password/(:segment)', 'Auth::resetPassword/$1');
