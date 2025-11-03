@@ -4,8 +4,15 @@
  * This script checks database connectivity and authentication tables
  */
 
-// Load CodeIgniter environment
-require_once 'vendor/autoload.php';
+// Define paths and load CodeIgniter
+define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
+define('SYSTEMPATH', __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'codeigniter4' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR);
+define('APPPATH', __DIR__ . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR);
+define('WRITEPATH', __DIR__ . DIRECTORY_SEPARATOR . 'writable' . DIRECTORY_SEPARATOR);
+define('TESTPATH', __DIR__ . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR);
+define('CI_DEBUG', 1);
+
+require_once SYSTEMPATH . 'bootstrap.php';
 
 use Config\Database;
 use Config\Services;
