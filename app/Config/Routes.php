@@ -31,6 +31,15 @@ $routes->get('logout', 'Auth::logout');
 // Protected routes (authentication required)
 $routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
 
+// Branch-specific dashboards
+$routes->group('dashboard', ['filter' => 'auth'], function($routes) {
+    $routes->get('thiva', 'Dashboard::thiva');
+    $routes->get('levadia', 'Dashboard::levadia');
+    $routes->get('service', 'Dashboard::service');
+    $routes->get('selling-points', 'Dashboard::sellingPoints');
+    $routes->get('lab', 'Dashboard::lab');
+});
+
 // Database analyzer (temporary - for migration)
 $routes->get('analyze', 'DatabaseAnalyzer::index');
 

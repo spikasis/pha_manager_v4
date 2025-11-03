@@ -4,10 +4,22 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <div>
+                            <h1 class="h3 mb-0 text-gray-800">Dashboard - <?= esc($branch_name ?? 'PHA Manager v4') ?></h1>
+                            <p class="mb-0 text-muted">Καλώς ήρθατε, <?= esc($user_data['full_name'] ?? $user['username'] ?? 'Χρήστη') ?></p>
+                        </div>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
+
+                    <!-- User Info Alert (if not admin) -->
+                    <?php if (!($user_data['is_admin'] ?? false)): ?>
+                    <div class="alert alert-info mb-4" role="alert">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Υποκατάστημα:</strong> <?= esc($branch_name ?? 'Κεντρική Διοίκηση') ?> 
+                        | <strong>Ρόλος:</strong> <?= implode(', ', array_column($user_data['groups'] ?? [], 'name')) ?>
+                    </div>
+                    <?php endif; ?>
 
                     <!-- Content Row -->
                     <div class="row">
