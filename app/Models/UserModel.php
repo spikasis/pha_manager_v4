@@ -7,8 +7,8 @@ use Config\Auth as AuthConfig;
 
 class UserModel extends BaseCRUDModel
 {
-    protected $table;
-    protected $primaryKey;
+    protected $table = 'users';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
@@ -70,10 +70,8 @@ class UserModel extends BaseCRUDModel
      */
     public function findByLogin(string $login)
     {
-        return $this->groupStart()
-                   ->where('email', $login)
+        return $this->where('email', $login)
                    ->orWhere('username', $login)
-                   ->groupEnd()
                    ->first();
     }
 
@@ -170,7 +168,9 @@ class UserModel extends BaseCRUDModel
      */
     public function updateLastLogin(int $userId): bool
     {
-        return $this->update($userId, ['last_login' => date('Y-m-d H:i:s')]);
+        return $this->update($userId, [
+            'last_login' => date('Y-m-d H:i:s')
+        ]);
     }
 
     /**
