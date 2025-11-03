@@ -40,6 +40,9 @@ $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::attemptLogin');
 $routes->get('logout', 'Auth::logout');
 
+// Simple dashboard route
+$routes->get('dashboard-simple', 'DashboardSimple::index');
+
 // Protected routes (authentication required)
 $routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
 
