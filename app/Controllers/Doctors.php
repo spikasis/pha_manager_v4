@@ -111,14 +111,12 @@ class Doctors extends BaseCRUD
         ]
     ];
     
-    public function __construct()
+    public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
-        parent::__construct();
+        parent::initController($request, $response, $logger);
         
-        // Check authentication
-        if (!$this->checkAuth()) {
-            return;
-        }
+        // Initialize model
+        $this->model = new \App\Models\DoctorModel();
     }
     
     /**
@@ -198,7 +196,7 @@ class Doctors extends BaseCRUD
     }
     
     /**
-     * Override getData to add custom formatting
+     * Get data for DataTables AJAX
      */
     public function getData()
     {
@@ -206,53 +204,97 @@ class Doctors extends BaseCRUD
             throw new \CodeIgniter\Exceptions\PageNotFoundException();
         }
         
-        $response = parent::getData();
-        $data = json_decode($response->getBody(), true);
+        // DataTables parameters
+        $draw = intval($this->request->getPost('draw'));
+        $start = intval($this->request->getPost('start'));
+        $length = intval($this->request->getPost('length'));
+        $search = $this->request->getPost('search')['value'];
+        $order = $this->request->getPost('order');
+        $columns = $this->request->getPost('columns');
         
-        // Format the data for better display
-        if (isset($data['data'])) {
-            foreach ($data['data'] as &$row) {
-                // Format price
-                if (isset($row['doc_price']) && $row['doc_price'] !== null) {
-                    $row['doc_price'] = '€' . number_format($row['doc_price'], 2);
-                } else {
-                    $row['doc_price'] = '-';
-                }
-                
-                // Format phone numbers
-                if (empty($row['doc_phone_work'])) {
-                    $row['doc_phone_work'] = '-';
-                }
-                if (empty($row['doc_phone_mobile'])) {
-                    $row['doc_phone_mobile'] = '-';
-                }
-                
-                // Format city
-                if (empty($row['doc_city'])) {
-                    $row['doc_city'] = '-';
-                }
-                
-                // Add action buttons
-                $row['actions'] = sprintf(
-                    '<div class="btn-group btn-group-sm" role="group">
-                        <a href="%s" class="btn btn-info btn-sm" title="Προβολή">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="%s" class="btn btn-warning btn-sm" title="Επεξεργασία">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteRecord(%d)" title="Διαγραφή">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>',
-                    base_url($this->module . '/show/' . $row['id']),
-                    base_url($this->module . '/edit/' . $row['id']),
-                    $row['id']
-                );
-            }
+        // Get total count
+        $totalRecords = $this->model->countAllResults(false);
+        
+        // Build query with search
+        $query = $this->model;
+        if (!empty($search)) {
+            $query = $query->groupStart();
+            $query = $query->like('doc_name', $search);
+            $query = $query->orLike('doc_city', $search);
+            $query = $query->orLike('doc_phone_work', $search);
+            $query = $query->orLike('doc_phone_mobile', $search);
+            $query = $query->orLike('doc_address', $search);
+            $query = $query->groupEnd();
         }
         
-        return $this->response->setJSON($data);
+        // Get filtered count
+        $filteredRecords = $query->countAllResults(false);
+        
+        // Apply ordering
+        if (!empty($order)) {
+            $columnIndex = $order[0]['column'];
+            $columnName = $this->datatableColumns[$columnIndex]['data'];
+            $orderDir = $order[0]['dir'];
+            
+            if ($columnName !== 'actions') {
+                $query = $query->orderBy($columnName, $orderDir);
+            }
+        } else {
+            $query = $query->orderBy('doc_name', 'ASC');
+        }
+        
+        // Get the data
+        $data = $query->findAll($length, $start);
+        
+        // Format the data for display
+        foreach ($data as &$row) {
+            // Format price
+            if (isset($row['doc_price']) && $row['doc_price'] !== null) {
+                $row['doc_price'] = '€' . number_format($row['doc_price'], 2);
+            } else {
+                $row['doc_price'] = '-';
+            }
+            
+            // Format phone numbers
+            if (empty($row['doc_phone_work'])) {
+                $row['doc_phone_work'] = '-';
+            }
+            if (empty($row['doc_phone_mobile'])) {
+                $row['doc_phone_mobile'] = '-';
+            }
+            
+            // Format city
+            if (empty($row['doc_city'])) {
+                $row['doc_city'] = '-';
+            }
+            
+            // Add action buttons
+            $row['actions'] = sprintf(
+                '<div class="btn-group btn-group-sm" role="group">
+                    <a href="%s" class="btn btn-info btn-sm" title="Προβολή">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="%s" class="btn btn-warning btn-sm" title="Επεξεργασία">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteRecord(%d)" title="Διαγραφή">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>',
+                base_url($this->module . '/show/' . $row['id']),
+                base_url($this->module . '/edit/' . $row['id']),
+                $row['id']
+            );
+        }
+        
+        $result = [
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
+            'data' => $data
+        ];
+        
+        return $this->response->setJSON($result);
     }
     
     /**

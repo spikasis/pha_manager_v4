@@ -136,6 +136,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('groups/getData', 'Groups::getData');
     $routes->post('groups/checkUnique', 'Groups::checkUnique');
     $routes->get('groups/getStatistics', 'Groups::getStatistics');
+    
+    // Doctors CRUD (Lookup Table)
+    $routes->resource('doctors', ['controller' => 'Doctors']);
+    $routes->get('doctors/getData', 'Doctors::getData');
+    $routes->get('doctors/getStatistics', 'Doctors::getStatistics');
+    $routes->get('doctors/getForSelect', 'Doctors::getForSelect');
 });
 
 // Test routes for debugging
