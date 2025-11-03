@@ -118,29 +118,37 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin User</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?= esc(session()->get('first_name') . ' ' . session()->get('last_name')) ?>
+                                </span>
                                 <img class="img-profile rounded-circle"
-                                    src="<?= base_url('sbadmin2/img/undraw_profile.svg') ?>">
+                                    src="<?= base_url('sbladmin2/img/undraw_profile.svg') ?>">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
+                                <div class="dropdown-header text-center">
+                                    <strong><?= esc(session()->get('first_name') . ' ' . session()->get('last_name')) ?></strong><br>
+                                    <small class="text-muted"><?= esc(session()->get('email')) ?></small><br>
+                                    <small class="badge badge-primary"><?= esc(session()->get('user_group')) ?></small>
+                                </div>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
+                                    Προφίλ
                                 </a>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Settings
+                                    Ρυθμίσεις
                                 </a>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
+                                    Ιστορικό Δραστηριότητας
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="<?= base_url('logout') ?>">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Αποσύνδεση
                                 </a>
                             </div>
                         </li>
