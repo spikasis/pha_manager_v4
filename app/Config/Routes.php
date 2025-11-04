@@ -40,10 +40,17 @@ $routes->get('auth-fixed/login', 'AuthFixed::login');
 $routes->post('auth-fixed/attempt-login', 'AuthFixed::attemptLogin');
 $routes->get('auth-fixed/logout', 'AuthFixed::logout');
 
+// BYPASS AUTH ROUTES (EMERGENCY - bypasses broken attemptLogin)
+$routes->group('auth-bypass', function($routes) {
+    $routes->get('login', 'AuthBypass::login');
+    $routes->post('attempt-login', 'AuthBypass::attemptLogin');
+    $routes->get('logout', 'AuthBypass::logout');
+});
+
 // Alternative routes without prefix for backward compatibility
-$routes->get('login', 'AuthFixed::login');
-$routes->post('login', 'AuthFixed::attemptLogin');
-$routes->get('logout', 'AuthFixed::logout');
+$routes->get('login', 'AuthBypass::login');
+$routes->post('login', 'AuthBypass::attemptLogin');
+$routes->get('logout', 'AuthBypass::logout');
 
 // Simple dashboard route
 $routes->get('dashboard-simple', 'DashboardSimple::index');
