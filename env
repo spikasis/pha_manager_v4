@@ -20,10 +20,10 @@
 # APP
 #--------------------------------------------------------------------
 
-# app.baseURL = ''
+app.baseURL = 'https://manager.pikasishearing.gr/'
 # If you have trouble with `.`, you could also use `_`.
 # app_baseURL = ''
-# app.forceGlobalSecureRequests = false
+app.forceGlobalSecureRequests = true
 # app.CSPEnabled = false
 
 #--------------------------------------------------------------------

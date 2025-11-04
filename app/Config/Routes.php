@@ -8,8 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 
 // Public routes (no authentication required)
 $routes->get('/', function() {
-    return redirect()->to('/safe_login.php');
-}); // Redirect to pure PHP safe login
+    return redirect()->to('/login');
+}); // Redirect to login
 
 // Authentication routes with auth prefix
 $routes->group('auth', function($routes) {
@@ -35,10 +35,15 @@ $routes->group('auth-emergency', function($routes) {
     $routes->get('logout', 'AuthEmergency::logout');
 });
 
+// FIXED AUTH ROUTES (use these for working login)
+$routes->get('auth-fixed/login', 'AuthFixed::login');
+$routes->post('auth-fixed/attempt-login', 'AuthFixed::attemptLogin');
+$routes->get('auth-fixed/logout', 'AuthFixed::logout');
+
 // Alternative routes without prefix for backward compatibility
-$routes->get('login', 'Auth::login');
-$routes->post('login', 'Auth::attemptLogin');
-$routes->get('logout', 'Auth::logout');
+$routes->get('login', 'AuthFixed::login');
+$routes->post('login', 'AuthFixed::attemptLogin');
+$routes->get('logout', 'AuthFixed::logout');
 
 // Simple dashboard route
 $routes->get('dashboard-simple', 'DashboardSimple::index');

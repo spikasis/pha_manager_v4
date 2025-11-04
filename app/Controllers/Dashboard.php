@@ -28,50 +28,56 @@ class Dashboard extends BaseController
     
     public function index()
     {
+        // Simple check if logged in
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+
         // Get current user data
         $userId = session()->get('user_id');
-        $user = $this->userModel->find($userId);
         
-        if (!$user) {
-            session()->destroy();
+        if (!$userId) {
             return redirect()->to('/login');
         }
         
-        // Get user data from session
-        $userData = session()->get('user_data');
-        $userGroups = $userData['groups'] ?? [];
-        $groupNames = array_column($userGroups, 'name');
-        
-        // Initialize models
-        $customerModel = new CustomerModel();
-        $doctorModel = new DoctorModel();
-        $serviceModel = new ServiceModel();
-        
-        // Get statistics (TODO: Add branch filtering in future)
-        $branchFilter = $this->getBranchFilter($groupNames, $user['username']);
-        $customerStats = $customerModel->getDashboardStats();
-        $doctorStats = $doctorModel->getDashboardStats();
-        $serviceStats = $serviceModel->getDashboardStats();
-        
-        // Get recent data (TODO: Add branch filtering in future)
-        $recentServices = $serviceModel->getRecentServices(5);
-        $customersWithDebt = $customerModel->getCustomersWithDebt();
-        $expiringGuarantees = $customerModel->getCustomersWithExpiringGuarantee(30);
-        
-        $data = [
-            'title' => 'Dashboard - PHA Manager v4',
-            'user' => $user,
-            'user_data' => $userData,
-            'branch_name' => $this->getBranchName($groupNames, $user['username']),
-            'customer_stats' => $customerStats,
-            'doctor_stats' => $doctorStats,
-            'service_stats' => $serviceStats,
-            'recent_services' => $recentServices,
-            'customers_with_debt' => count($customersWithDebt),
-            'expiring_guarantees' => count($expiringGuarantees)
-        ];
-        
-        return view('dashboard/index', $data);
+        try {
+            $user = $this->userModel->find($userId);
+            
+            if (!$user) {
+                session()->destroy();
+                return redirect()->to('/login');
+            }
+            
+            // Simple data for dashboard
+            $data = [
+                'title' => 'Dashboard - PHA Manager',
+                'user' => $user,
+                'customer_count' => 0, // Will add later
+                'doctor_count' => 0,   // Will add later
+                'service_count' => 0   // Will add later
+            ];
+            
+            // Try to get basic stats
+            try {
+                $customerModel = new CustomerModel();
+                $data['customer_count'] = $customerModel->countAllResults();
+            } catch (\Exception $e) {
+                log_message('warning', 'Could not get customer count: ' . $e->getMessage());
+            }
+            
+            try {
+                $doctorModel = new DoctorModel();
+                $data['doctor_count'] = $doctorModel->countAllResults();
+            } catch (\Exception $e) {
+                log_message('warning', 'Could not get doctor count: ' . $e->getMessage());
+            }
+            
+            return view('dashboard/simple', $data);
+            
+        } catch (\Exception $e) {
+            log_message('error', 'Dashboard error: ' . $e->getMessage());
+            return view('dashboard/simple', $data);
+        }
     }
 
     /**

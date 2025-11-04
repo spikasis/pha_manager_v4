@@ -44,77 +44,64 @@ class Auth extends BaseController
     }
 
     /**
-     * Process login attempt
+     * Process login attempt - SIMPLIFIED VERSION
      */
     public function attemptLogin()
     {
-        // Validate input
-        $rules = [
-            'login' => [
-                'label' => 'Email/Username',
-                'rules' => 'required'
-            ],
-            'password' => [
-                'label' => 'Password',
-                'rules' => 'required'
-            ]
-        ];
-
-        if (!$this->validate($rules)) {
-            session()->setFlashdata('validation', $this->validator);
-            return redirect()->back()->withInput();
-        }
-
+        // Basic validation
         $login = $this->request->getPost('login');
         $password = $this->request->getPost('password');
-        $remember = (bool) $this->request->getPost('remember');
+
+        if (empty($login) || empty($password)) {
+            session()->setFlashdata('error', 'Παρακαλώ συμπληρώστε όλα τα πεδία');
+            return redirect()->back()->withInput();
+        }
 
         try {
             // Find user
             $user = $this->userModel->findByLogin($login);
 
-            if (!$user || !password_verify($password, $user['password'])) {
-                session()->setFlashdata('error', $this->authConfig->messages['login_unsuccessful']);
+            if (!$user) {
+                session()->setFlashdata('error', 'Δεν βρέθηκε χρήστης με αυτά τα στοιχεία');
                 return redirect()->back()->withInput();
             }
 
-            // Check if user is active
+            // Verify password
+            if (!password_verify($password, $user['password'])) {
+                session()->setFlashdata('error', 'Λάθος κωδικός');
+                return redirect()->back()->withInput();
+            }
+
+            // Check if active
             if (!$user['active']) {
-                session()->setFlashdata('error', 'Ο λογαριασμός δεν είναι ενεργός. Επικοινωνήστε με τον διαχειριστή.');
+                session()->setFlashdata('error', 'Ο λογαριασμός δεν είναι ενεργός');
                 return redirect()->back();
             }
 
-            // Set remember me cookie if requested
-            if ($remember) {
-                $rememberCode = $this->userModel->generateRememberCode();
-                $this->userModel->setRememberCode($user['id'], $rememberCode);
-                
-                $cookieValue = $user['id'] . ':' . $rememberCode;
-                $cookie = [
-                    'name' => $this->authConfig->cookies['remember'],
-                    'value' => $cookieValue,
-                    'expire' => $this->authConfig->rememberMeDuration
-                ];
-                $this->response->setCookie($cookie);
+            // Update last login (simple version)
+            try {
+                $this->userModel->updateLastLogin($user['id']);
+            } catch (\Exception $e) {
+                // Don't fail login if this fails
+                log_message('warning', 'Could not update last login: ' . $e->getMessage());
             }
 
-            // Update last login
-            $this->userModel->updateLastLogin($user['id']);
+            // Set simple session
+            session()->set([
+                'user_id' => $user['id'],
+                'username' => $user['username'],
+                'email' => $user['email'],
+                'logged_in' => true
+            ]);
 
-            // Set session data
-            $this->setUserSession($user);
-
-            session()->setFlashdata('success', $this->authConfig->messages['login_successful']);
+            session()->setFlashdata('success', 'Καλώς ήρθατε!');
             
-            // Determine redirect URL based on user role and groups
-            $redirectUrl = session('redirect_url') ?? $this->getDashboardRedirectUrl($user);
-            session()->remove('redirect_url');
-            
-            return redirect()->to($redirectUrl);
+            // Simple redirect to dashboard
+            return redirect()->to('/dashboard');
             
         } catch (\Exception $e) {
             log_message('error', 'Login error: ' . $e->getMessage());
-            session()->setFlashdata('error', 'Προέκυψε σφάλμα κατά τη σύνδεση. Δοκιμάστε ξανά.');
+            session()->setFlashdata('error', 'Σφάλμα σύνδεσης: ' . $e->getMessage());
             return redirect()->back();
         }
     }
