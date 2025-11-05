@@ -1,374 +1,714 @@
-<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 
-<html lang="el">
+<html lang="el"><html lang="el">
 
-<head><html lang="el"><html lang="el">
+<head><head>
 
-    <meta charset="utf-8">
+    <meta charset="utf-8">    <meta charset="utf-8">
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"><head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title><?= $title ?? 'Σύνδεση - PHA Manager v4' ?></title>    <meta charset="utf-8"><head>
+    <title><?= $title ?? 'Σύνδεση - PHA Manager v4' ?></title>    <title><?= $title ?? 'Σύνδεση - PHA Manager v4' ?></title>
 
 
 
-    <!-- Custom fonts -->    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <meta charset="utf-8">
+    <!-- Custom fonts -->    <!-- Custom fonts -->
 
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS -->    <!-- Bootstrap CSS -->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <title><?= $title ?? 'Σύνδεση - PHA Manager v4' ?></title>    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    
+        
 
-    <!-- FontAwesome -->    <title>Σύνδεση - PHA Manager v4</title>
+    <!-- FontAwesome -->    <!-- FontAwesome -->
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-        <!-- Custom fonts -->
 
-    <style>
 
-        :root {    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">    <!-- Bootstrap CSS -->
+    <style>        <!-- Custom fonts -->
 
-            --primary-color: #4e73df;
+        :root {
 
-            --secondary-color: #858796;        <!-- Bootstrap CSS -->
+            --primary-color: #4e73df;    <style>
 
-            --success-color: #1cc88a;
+            --secondary-color: #858796;
 
-            --info-color: #36b9cc;    <!-- Bootstrap CSS -->    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+            --success-color: #1cc88a;        :root {    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">    <!-- Bootstrap CSS -->
 
-            --warning-color: #f6c23e;
+            --info-color: #36b9cc;
 
-            --danger-color: #e74a3b;    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <!-- FontAwesome -->
+            --warning-color: #f6c23e;            --primary-color: #4e73df;
 
-            --light-color: #f8f9fc;
+            --danger-color: #e74a3b;
 
-            --dark-color: #5a5c69;        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+            --light-color: #f8f9fc;            --secondary-color: #858796;        <!-- Bootstrap CSS -->
+
+            --dark-color: #5a5c69;
+
+        }            --success-color: #1cc88a;
+
+
+
+        body {            --info-color: #36b9cc;    <!-- Bootstrap CSS -->    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+
+            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);            --warning-color: #f6c23e;
+
+            min-height: 100vh;
+
+            display: flex;            --danger-color: #e74a3b;    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <!-- FontAwesome -->
+
+            align-items: center;
+
+        }            --light-color: #f8f9fc;
+
+
+
+        .login-card {            --dark-color: #5a5c69;        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+
+            border: none;
+
+            border-radius: 20px;        }
+
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+
+            backdrop-filter: blur(10px);    <!-- FontAwesome -->    <!-- SB Admin 2 -->
+
+            background: rgba(255, 255, 255, 0.95);
+
+            max-width: 450px;        body {
+
+            margin: 0 auto;
+
+        }            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" crossorigin="anonymous">
+
+
+
+        .login-header {            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+
+            color: white;            min-height: 100vh;    
+
+            padding: 2rem;
+
+            border-radius: 20px 20px 0 0;            display: flex;
+
+            text-align: center;
+
+        }            align-items: center;    <!-- SB Admin 2 CSS -->    <style>
+
+
+
+        .login-header.success {        }
+
+            background: linear-gradient(135deg, var(--success-color), var(--info-color));
+
+        }    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet">        body {
+
+
+
+        .login-body {        .login-card {
+
+            padding: 2rem;
+
+        }            border: none;                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+
+
+        .btn-login {            border-radius: 20px;
+
+            background: linear-gradient(45deg, var(--primary-color), var(--info-color));
+
+            border: none;            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);    <style>            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+
+            border-radius: 25px;
+
+            padding: 0.875rem 2rem;            backdrop-filter: blur(10px);
+
+            font-size: 1.1rem;
+
+            font-weight: 600;            background: rgba(255, 255, 255, 0.95);        :root {        }
+
+            color: white;
+
+            width: 100%;            max-width: 450px;
+
+            transition: all 0.3s;
+
+        }            margin: 0 auto;            --primary-color: #4e73df;        
+
+
+
+        .btn-login:hover {        }
+
+            background: linear-gradient(45deg, var(--info-color), var(--primary-color));
+
+            transform: translateY(-2px);            --secondary-color: #858796;        .login-container {
+
+            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);
+
+            color: white;        .login-header {
 
         }
-
-    <!-- FontAwesome -->    <!-- SB Admin 2 -->
-
-        body {
-
-            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" crossorigin="anonymous">
-
-            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
-
-            min-height: 100vh;    
-
-            display: flex;
-
-            align-items: center;    <!-- SB Admin 2 CSS -->    <style>
-
-        }
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet">        body {
-
-        .login-card {
-
-            border: none;                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-            border-radius: 20px;
-
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);    <style>            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-
-            backdrop-filter: blur(10px);
-
-            background: rgba(255, 255, 255, 0.95);        :root {        }
-
-            max-width: 450px;
-
-            margin: 0 auto;            --primary-color: #4e73df;        
-
-        }
-
-            --secondary-color: #858796;        .login-container {
-
-        .login-header {
 
             background: linear-gradient(135deg, var(--primary-color), var(--info-color));            --success-color: #1cc88a;            min-height: 100vh;
 
-            color: white;
+        .login-footer {
 
-            padding: 2rem;            --info-color: #36b9cc;            display: flex;
+            background-color: #f8f9fc;            color: white;
 
-            border-radius: 20px 20px 0 0;
+            padding: 1.5rem 2rem;
+
+            border-radius: 0 0 20px 20px;            padding: 2rem;            --info-color: #36b9cc;            display: flex;
+
+            text-align: center;
+
+            border-top: 1px solid #e3e6f0;            border-radius: 20px 20px 0 0;
+
+        }
 
             text-align: center;            --warning-color: #f6c23e;            align-items: center;
 
-        }
+        .system-info {
 
-            --danger-color: #e74a3b;            justify-content: center;
+            font-size: 0.85rem;        }
 
-        .login-header.success {
+            color: var(--secondary-color);
 
-            background: linear-gradient(135deg, var(--success-color), var(--info-color));            --light-color: #f8f9fc;            padding: 2rem 0;
+        }            --danger-color: #e74a3b;            justify-content: center;
 
-        }
 
-            --dark-color: #5a5c69;        }
 
-        .login-body {
+        .brand-icon {        .login-header.success {
 
-            padding: 2rem;        }        
+            font-size: 3rem;
 
-        }
+            margin-bottom: 1rem;            background: linear-gradient(135deg, var(--success-color), var(--info-color));            --light-color: #f8f9fc;            padding: 2rem 0;
 
-        .login-card {
-
-        .btn-login {
-
-            background: linear-gradient(45deg, var(--primary-color), var(--info-color));        body {            background: rgba(255, 255, 255, 0.95);
-
-            border: none;
-
-            border-radius: 25px;            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;            border-radius: 15px;
-
-            padding: 0.875rem 2rem;
-
-            font-size: 1.1rem;            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-
-            font-weight: 600;
-
-            color: white;            min-height: 100vh;            backdrop-filter: blur(10px);
-
-            width: 100%;
-
-            transition: all 0.3s;            display: flex;            border: 1px solid rgba(255, 255, 255, 0.2);
-
-        }
-
-            align-items: center;        }
-
-        .btn-login:hover {
-
-            background: linear-gradient(45deg, var(--info-color), var(--primary-color));        }        
-
-            transform: translateY(-2px);
-
-            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);        .brand-logo {
-
-            color: white;
-
-        }        .login-card {            color: #4e73df;
-
-
-
-        .login-footer {            border: none;            font-size: 3rem;
-
-            background-color: #f8f9fc;
-
-            padding: 1.5rem 2rem;            border-radius: 20px;            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-
-            border-radius: 0 0 20px 20px;
-
-            text-align: center;            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);        }
-
-            border-top: 1px solid #e3e6f0;
-
-        }            backdrop-filter: blur(10px);        
-
-
-
-        .system-info {            background: rgba(255, 255, 255, 0.95);        .brand-text {
-
-            font-size: 0.85rem;
-
-            color: var(--secondary-color);            max-width: 450px;            color: #5a5c69;
-
-        }
-
-            margin: 0 auto;            font-weight: 800;
-
-        .brand-icon {
-
-            font-size: 3rem;        }            font-size: 1.75rem;
-
-            margin-bottom: 1rem;
-
-            color: rgba(255, 255, 255, 0.9);        }
-
-        }
-
-        .login-header {        
-
-        .alert {
-
-            border-radius: 15px;            background: linear-gradient(135deg, var(--primary-color), var(--info-color));        .form-control-user {
-
-            border: none;
-
-            margin-bottom: 1.5rem;            color: white;            border-radius: 10rem;
-
-        }
-
-            padding: 2rem;            padding: 1.5rem 1rem;
-
-        .floating-shapes {
-
-            position: fixed;            border-radius: 20px 20px 0 0;            border: 1px solid #e3e6f0;
-
-            top: 0;
-
-            left: 0;            text-align: center;            font-size: 0.9rem;
-
-            width: 100%;
-
-            height: 100%;        }        }
-
-            overflow: hidden;
-
-            z-index: -1;        
-
-        }
-
-        .login-body {        .form-control-user:focus {
-
-        .floating-shapes div {
-
-            position: absolute;            padding: 2rem;            border-color: #4e73df;
-
-            border-radius: 50%;
-
-            background: rgba(255, 255, 255, 0.1);        }            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-
-            animation: float 6s ease-in-out infinite;
+            color: rgba(255, 255, 255, 0.9);
 
         }        }
 
 
 
-        .floating-shapes div:nth-child(1) {        .form-control {        
+        .alert {            --dark-color: #5a5c69;        }
 
-            width: 80px;
+            border-radius: 15px;
 
-            height: 80px;            border-radius: 25px;        .btn-user {
+            border: none;        .login-body {
 
-            top: 20%;
+            margin-bottom: 1.5rem;
 
-            left: 10%;            padding: 0.875rem 1.125rem;            border-radius: 10rem;
-
-            animation-delay: 0s;
-
-        }            border: 2px solid #e3e6f0;            padding: 0.75rem 1rem;
+        }            padding: 2rem;        }        
 
 
 
-        .floating-shapes div:nth-child(2) {            font-size: 1rem;            font-size: 0.9rem;
+        .floating-shapes {        }
 
-            width: 120px;
+            position: fixed;
 
-            height: 120px;        }            font-weight: 800;
+            top: 0;        .login-card {
 
-            top: 60%;
+            left: 0;
 
-            right: 10%;            letter-spacing: 0.1rem;
+            width: 100%;        .btn-login {
 
-            animation-delay: 2s;
+            height: 100%;
 
-        }        .form-control:focus {            text-transform: uppercase;
+            overflow: hidden;            background: linear-gradient(45deg, var(--primary-color), var(--info-color));        body {            background: rgba(255, 255, 255, 0.95);
 
+            z-index: -1;
 
-
-        .floating-shapes div:nth-child(3) {            border-color: var(--primary-color);        }
-
-            width: 60px;
-
-            height: 60px;            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);        
-
-            bottom: 20%;
-
-            left: 20%;        }        .divider {
-
-            animation-delay: 4s;
-
-        }            position: relative;
+        }            border: none;
 
 
 
-        @keyframes float {        .btn-login {            text-align: center;
+        .floating-shapes div {            border-radius: 25px;            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;            border-radius: 15px;
 
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            position: absolute;
 
-            50% { transform: translateY(-20px) rotate(180deg); }            background: linear-gradient(45deg, var(--primary-color), var(--info-color));            margin: 1.5rem 0;
+            border-radius: 50%;            padding: 0.875rem 2rem;
+
+            background: rgba(255, 255, 255, 0.1);
+
+            animation: float 6s ease-in-out infinite;            font-size: 1.1rem;            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 
         }
 
-            border: none;        }
+            font-weight: 600;
 
-        .fade-in {
+        .floating-shapes div:nth-child(1) {
 
-            animation: fadeIn 0.8s ease-in;            border-radius: 25px;        
+            width: 80px;            color: white;            min-height: 100vh;            backdrop-filter: blur(10px);
+
+            height: 80px;
+
+            top: 20%;            width: 100%;
+
+            left: 10%;
+
+            animation-delay: 0s;            transition: all 0.3s;            display: flex;            border: 1px solid rgba(255, 255, 255, 0.2);
 
         }
 
-            padding: 0.875rem 2rem;        .divider::before {
+        }
 
-        @keyframes fadeIn {
+        .floating-shapes div:nth-child(2) {
 
-            from { opacity: 0; transform: translateY(30px); }            font-size: 1.1rem;            content: '';
+            width: 120px;            align-items: center;        }
 
-            to { opacity: 1; transform: translateY(0); }
+            height: 120px;
 
-        }            font-weight: 600;            position: absolute;
+            top: 60%;        .btn-login:hover {
+
+            right: 10%;
+
+            animation-delay: 2s;            background: linear-gradient(45deg, var(--info-color), var(--primary-color));        }        
+
+        }
+
+            transform: translateY(-2px);
+
+        .floating-shapes div:nth-child(3) {
+
+            width: 60px;            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);        .brand-logo {
+
+            height: 60px;
+
+            bottom: 20%;            color: white;
+
+            left: 20%;
+
+            animation-delay: 4s;        }        .login-card {            color: #4e73df;
+
+        }
 
 
 
-        .session-info {            color: white;            top: 50%;
+        @keyframes float {
+
+            0%, 100% { transform: translateY(0px) rotate(0deg); }        .login-footer {            border: none;            font-size: 3rem;
+
+            50% { transform: translateY(-20px) rotate(180deg); }
+
+        }            background-color: #f8f9fc;
+
+
+
+        .fade-in {            padding: 1.5rem 2rem;            border-radius: 20px;            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+
+            animation: fadeIn 0.8s ease-in;
+
+        }            border-radius: 0 0 20px 20px;
+
+
+
+        @keyframes fadeIn {            text-align: center;            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);        }
+
+            from { opacity: 0; transform: translateY(30px); }
+
+            to { opacity: 1; transform: translateY(0); }            border-top: 1px solid #e3e6f0;
+
+        }
+
+        }            backdrop-filter: blur(10px);        
+
+        .session-info {
 
             background: #f8f9fc;
 
-            border-radius: 10px;            width: 100%;            left: 0;
+            border-radius: 10px;
 
-            padding: 1rem;
+            padding: 1rem;        .system-info {            background: rgba(255, 255, 255, 0.95);        .brand-text {
 
-            margin-bottom: 1rem;            transition: all 0.3s;            right: 0;
+            margin-bottom: 1rem;
 
-        }
+        }            font-size: 0.85rem;
 
-    </style>        }            height: 1px;
+    </style>
 
-</head>
+</head>            color: var(--secondary-color);            max-width: 450px;            color: #5a5c69;
 
-            background: #e3e6f0;
 
-<body>
 
-    <!-- Floating Background Shapes -->        .btn-login:hover {        }
+<body>        }
 
-    <div class="floating-shapes">
+    <!-- Floating Background Shapes -->
 
-        <div></div>            background: linear-gradient(45deg, var(--info-color), var(--primary-color));        
+    <div class="floating-shapes">            margin: 0 auto;            font-weight: 800;
 
         <div></div>
 
-        <div></div>            transform: translateY(-2px);        .divider span {
+        <div></div>        .brand-icon {
 
-    </div>
+        <div></div>
 
-            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);            background: white;
+    </div>            font-size: 3rem;        }            font-size: 1.75rem;
 
-    <div class="container">
 
-        <div class="row justify-content-center">            color: white;            padding: 0 1rem;
+
+    <div class="container">            margin-bottom: 1rem;
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-6">            color: rgba(255, 255, 255, 0.9);        }
+
+                <div class="login-card fade-in">
+
+                    <!-- Login Header -->        }
+
+                    <div class="login-header <?= (isset($already_logged_in) && $already_logged_in) ? 'success' : '' ?>">
+
+                        <div class="brand-icon">        .login-header {        
+
+                            <i class="fas fa-assistive-listening-systems"></i>
+
+                        </div>        .alert {
+
+                        <h2 class="mb-1">PHA Manager</h2>
+
+                        <p class="mb-0 opacity-75">Professional Hearing Aid Management System v4</p>            border-radius: 15px;            background: linear-gradient(135deg, var(--primary-color), var(--info-color));        .form-control-user {
+
+                    </div>
+
+            border: none;
+
+                    <!-- Login Body -->
+
+                    <div class="login-body">            margin-bottom: 1.5rem;            color: white;            border-radius: 10rem;
+
+                        <!-- Flash Messages -->
+
+                        <?php if (session()->getFlashdata('error')): ?>        }
+
+                            <div class="alert alert-danger">
+
+                                <i class="fas fa-exclamation-triangle me-2"></i>            padding: 2rem;            padding: 1.5rem 1rem;
+
+                                <?= session()->getFlashdata('error') ?>
+
+                            </div>        .floating-shapes {
+
+                        <?php endif; ?>
+
+            position: fixed;            border-radius: 20px 20px 0 0;            border: 1px solid #e3e6f0;
+
+                        <?php if (session()->getFlashdata('success')): ?>
+
+                            <div class="alert alert-success">            top: 0;
+
+                                <i class="fas fa-check-circle me-2"></i>
+
+                                <?= session()->getFlashdata('success') ?>            left: 0;            text-align: center;            font-size: 0.9rem;
+
+                            </div>
+
+                        <?php endif; ?>            width: 100%;
+
+
+
+                        <?php if (session()->getFlashdata('info')): ?>            height: 100%;        }        }
+
+                            <div class="alert alert-info">
+
+                                <i class="fas fa-info-circle me-2"></i>            overflow: hidden;
+
+                                <?= session()->getFlashdata('info') ?>
+
+                            </div>            z-index: -1;        
+
+                        <?php endif; ?>
+
+        }
+
+                        <?php if (isset($already_logged_in) && $already_logged_in): ?>
+
+                            <!-- Already Logged In -->        .login-body {        .form-control-user:focus {
+
+                            <div class="text-center mb-4">
+
+                                <h5 class="text-success">Είστε ήδη συνδεδεμένος!</h5>        .floating-shapes div {
+
+                                <div class="session-info">
+
+                                    <p class="mb-2">            position: absolute;            padding: 2rem;            border-color: #4e73df;
+
+                                        <strong><i class="fas fa-user me-2"></i>Χρήστης:</strong> <?= esc($username) ?>
+
+                                    </p>            border-radius: 50%;
+
+                                    <p class="mb-0">
+
+                                        <strong><i class="fas fa-clock me-2"></i>Σύνδεση:</strong> <?= esc($login_time) ?>            background: rgba(255, 255, 255, 0.1);        }            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+
+                                    </p>
+
+                                </div>            animation: float 6s ease-in-out infinite;
+
+                            </div>
+
+        }        }
+
+                            <div class="d-grid gap-3">
+
+                                <a href="<?= site_url('dashboard') ?>" class="btn btn-success" style="border-radius: 25px; font-weight: 600;">
+
+                                    <i class="fas fa-tachometer-alt me-2"></i>
+
+                                    Συνέχεια στο Dashboard        .floating-shapes div:nth-child(1) {        .form-control {        
+
+                                </a>
+
+                                            width: 80px;
+
+                                <a href="<?= site_url('auth/logout') ?>" class="btn btn-outline-danger" style="border-radius: 25px;">
+
+                                    <i class="fas fa-sign-out-alt me-2"></i>            height: 80px;            border-radius: 25px;        .btn-user {
+
+                                    Αποσύνδεση
+
+                                </a>            top: 20%;
+
+                            </div>
+
+            left: 10%;            padding: 0.875rem 1.125rem;            border-radius: 10rem;
+
+                            <div class="text-center mt-3">
+
+                                <small>            animation-delay: 0s;
+
+                                    <a href="<?= site_url('auth?force_logout=1') ?>" class="text-muted">
+
+                                        <i class="fas fa-broom me-1"></i>        }            border: 2px solid #e3e6f0;            padding: 0.75rem 1rem;
+
+                                        Καθαρισμός Session
+
+                                    </a>
+
+                                </small>
+
+                            </div>        .floating-shapes div:nth-child(2) {            font-size: 1rem;            font-size: 0.9rem;
+
+                        <?php else: ?>
+
+                            <!-- Fresh Login -->            width: 120px;
+
+                            <div class="text-center mb-4">
+
+                                <h5 class="text-primary">Σύνδεση στο Σύστημα</h5>            height: 120px;        }            font-weight: 800;
+
+                                <p class="text-muted small">Κλικ για άμεση είσοδο στο PHA Manager v4</p>
+
+                            </div>            top: 60%;
+
+
+
+                            <div class="d-grid gap-3">            right: 10%;            letter-spacing: 0.1rem;
+
+                                <a href="<?= site_url('auth/login') ?>" class="btn btn-login" id="quickLoginBtn">
+
+                                    <i class="fas fa-sign-in-alt me-2"></i>            animation-delay: 2s;
+
+                                    Είσοδος στο Σύστημα
+
+                                </a>        }        .form-control:focus {            text-transform: uppercase;
+
+                            </div>
+
+
+
+                            <!-- Alternative Access -->
+
+                            <div class="row mt-4">        .floating-shapes div:nth-child(3) {            border-color: var(--primary-color);        }
+
+                                <div class="col-6">
+
+                                    <a href="<?= site_url('help') ?>" class="btn btn-outline-info w-100" style="border-radius: 20px;">            width: 60px;
+
+                                        <i class="fas fa-question-circle me-1"></i>
+
+                                        Βοήθεια            height: 60px;            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);        
+
+                                    </a>
+
+                                </div>            bottom: 20%;
+
+                                <div class="col-6">
+
+                                    <a href="<?= site_url('auth?force_logout=1') ?>" class="btn btn-outline-warning w-100" style="border-radius: 20px;">            left: 20%;        }        .divider {
+
+                                        <i class="fas fa-broom me-1"></i>
+
+                                        Reset Session            animation-delay: 4s;
+
+                                    </a>
+
+                                </div>        }            position: relative;
+
+                            </div>
+
+                        <?php endif; ?>
+
+                    </div>
+
+        @keyframes float {        .btn-login {            text-align: center;
+
+                    <!-- Login Footer -->
+
+                    <div class="login-footer">            0%, 100% { transform: translateY(0px) rotate(0deg); }
+
+                        <div class="system-info">
+
+                            <div class="mb-2">            50% { transform: translateY(-20px) rotate(180deg); }            background: linear-gradient(45deg, var(--primary-color), var(--info-color));            margin: 1.5rem 0;
+
+                                <i class="fas fa-shield-alt text-success me-2"></i>
+
+                                <strong>Ασφαλής Σύνδεση</strong> |         }
+
+                                <i class="fas fa-server text-info me-2 ms-2"></i>
+
+                                <strong>Παραγωγικό Περιβάλλον</strong>            border: none;        }
+
+                            </div>
+
+                            <div class="mb-2">        .fade-in {
+
+                                <i class="fas fa-globe me-2"></i>
+
+                                <?= base_url() ?>            animation: fadeIn 0.8s ease-in;            border-radius: 25px;        
+
+                            </div>
+
+                            <div class="text-primary">        }
+
+                                <small>© <?= date('Y') ?> Pikas Hearing Aid Center - Powered by CodeIgniter 4</small>
+
+                            </div>            padding: 0.875rem 2rem;        .divider::before {
+
+                        </div>
+
+                    </div>        @keyframes fadeIn {
+
+                </div>
+
+            </div>            from { opacity: 0; transform: translateY(30px); }            font-size: 1.1rem;            content: '';
+
+        </div>
+
+    </div>            to { opacity: 1; transform: translateY(0); }
+
+
+
+    <!-- Scripts -->        }            font-weight: 600;            position: absolute;
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script>        .session-info {            color: white;            top: 50%;
+
+        $(document).ready(function() {
+
+            // Add loading animation to login button            background: #f8f9fc;
+
+            $('#quickLoginBtn').on('click', function(e) {
+
+                var btn = $(this);            border-radius: 10px;            width: 100%;            left: 0;
+
+                var originalText = btn.html();
+
+                            padding: 1rem;
+
+                btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Σύνδεση...');
+
+                btn.prop('disabled', true);            margin-bottom: 1rem;            transition: all 0.3s;            right: 0;
+
+                
+
+                // Re-enable after 3 seconds if something goes wrong        }
+
+                setTimeout(function() {
+
+                    btn.html(originalText);    </style>        }            height: 1px;
+
+                    btn.prop('disabled', false);
+
+                }, 3000);</head>
+
+            });
+
+            background: #e3e6f0;
+
+            // Auto-dismiss alerts
+
+            setTimeout(function() {<body>
+
+                $('.alert').fadeOut('slow');
+
+            }, 5000);    <!-- Floating Background Shapes -->        .btn-login:hover {        }
+
+
+
+            // Add hover effect to buttons    <div class="floating-shapes">
+
+            $('.btn').hover(
+
+                function() {        <div></div>            background: linear-gradient(45deg, var(--info-color), var(--primary-color));        
+
+                    $(this).addClass('shadow-lg');
+
+                },        <div></div>
+
+                function() {
+
+                    $(this).removeClass('shadow-lg');        <div></div>            transform: translateY(-2px);        .divider span {
+
+                }
+
+            );    </div>
+
+
+
+            // Focus management for better UX            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);            background: white;
+
+            $(document).keydown(function(e) {
+
+                if (e.key === 'Enter' && $('#quickLoginBtn').length) {    <div class="container">
+
+                    $('#quickLoginBtn')[0].click();
+
+                }        <div class="row justify-content-center">            color: white;            padding: 0 1rem;
+
+            });
 
             <div class="col-md-6">
 
-                <div class="login-card fade-in">        }            color: #858796;
+            // Show session status if needed
 
-                    <!-- Login Header -->
+            <?php if (isset($already_logged_in) && $already_logged_in): ?>                <div class="login-card fade-in">        }            color: #858796;
 
-                    <div class="login-header <?= (isset($already_logged_in) && $already_logged_in) ? 'success' : '' ?>">            font-size: 0.85rem;
+                console.log('User already logged in: <?= esc($username) ?>');
 
-                        <div class="brand-icon">
+            <?php endif; ?>                    <!-- Login Header -->
+
+        });
+
+    </script>                    <div class="login-header <?= (isset($already_logged_in) && $already_logged_in) ? 'success' : '' ?>">            font-size: 0.85rem;
+
+</body>
+
+</html>                        <div class="brand-icon">
 
                             <i class="fas fa-assistive-listening-systems"></i>        .form-floating > label {        }
 
