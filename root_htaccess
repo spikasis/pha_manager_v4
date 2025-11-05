@@ -1,0 +1,18 @@
+# PHA Manager v4 - Root Redirect
+# This .htaccess should be placed in the web root (public_html)
+
+RewriteEngine On
+
+# If the request is for the root directory, redirect to the CodeIgniter public folder
+RewriteCond %{REQUEST_URI} ^/?$
+RewriteRule ^(.*)$ /pha_manager_v4/public/ [L,R=301]
+
+# For all other requests, check if they exist in the CodeIgniter public folder
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/pha_manager_v4/public/
+RewriteRule ^(.*)$ /pha_manager_v4/public/$1 [L,QSA]
+
+# Prevent direct access to the application folder
+RewriteCond %{REQUEST_URI} ^/pha_manager_v4/(?!public/).*
+RewriteRule ^(.*)$ - [F,L]
