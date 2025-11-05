@@ -8,22 +8,22 @@ use CodeIgniter\Router\RouteCollection;
 
 // Public routes (no authentication required)
 $routes->get('/', function() {
-    return redirect()->to('/direct-login');
-}); // Redirect to direct login
+    return redirect()->to('/auth');
+}); // Redirect to auth login
 
-// DIRECT LOGIN ROUTES (working solution)
-$routes->get('direct-login', 'DirectLogin::index');
-$routes->get('direct-login/login', 'DirectLogin::login');
-$routes->get('direct-login/logout', 'DirectLogin::logout');
+// AUTHENTICATION ROUTES
+$routes->group('auth', function($routes) {
+    $routes->get('/', 'AuthController::index');
+    $routes->get('login', 'AuthController::login');
+    $routes->get('logout', 'AuthController::logout');
+    $routes->get('check', 'AuthController::checkAuth');
+    $routes->post('keep-alive', 'AuthController::keepAlive');
+});
 
-// Alternative routes without prefix for backward compatibility
-$routes->get('login', 'DirectLogin::index');
-$routes->post('login', 'AuthFixed::attemptLogin');
-$routes->get('logout', 'DirectLogin::logout');
-$routes->get('direct-login/logout', 'DirectLogin::logout');
-
-// Simple dashboard route
-$routes->get('dashboard-simple', 'DashboardSimple::index');
+// Alternative routes for backward compatibility
+$routes->get('login', 'AuthController::index');
+$routes->get('logout', 'AuthController::logout');
+$routes->get('direct-login', 'AuthController::index'); // Backward compatibility
 
 
 
@@ -42,17 +42,7 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
 // Database analyzer (temporary - for migration)
 $routes->get('analyze', 'DatabaseAnalyzer::index');
 
-// Patients routes
-$routes->group('patients', function($routes) {
-    $routes->get('/', 'Patients::index');
-    $routes->get('create', 'Patients::create');
-    $routes->post('store', 'Patients::store');
-    $routes->get('show/(:num)', 'Patients::show/$1');
-    $routes->get('edit/(:num)', 'Patients::edit/$1');
-    $routes->post('update/(:num)', 'Patients::update/$1');
-    $routes->delete('delete/(:num)', 'Patients::delete/$1');
-    $routes->get('search', 'Patients::search');
-});
+
 
 // Customers routes (protected)
 $routes->group('customers', ['filter' => 'auth'], function($routes) {
@@ -98,8 +88,7 @@ $routes->group('admin', ['filter' => 'admin'], function($routes) {
     $routes->post('settings', 'Admin\Settings::update');
 });
 
-// REST API routes (optional)
-$routes->resource('api/patients', ['controller' => 'API\Patients']);
+
 
 // Login attempts (security monitoring) - READ-ONLY
 $routes->group('login-attempts', ['filter' => 'auth'], function($routes) {

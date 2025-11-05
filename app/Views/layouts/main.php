@@ -465,7 +465,7 @@
                                     Βοήθεια
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?= site_url('logout') ?>">
+                                <a class="dropdown-item" href="<?= site_url('auth/logout') ?>">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
                                     Αποσύνδεση
                                 </a>
