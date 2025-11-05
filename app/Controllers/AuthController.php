@@ -8,13 +8,27 @@ class AuthController extends BaseController
     
     public function index()
     {
-        // If already logged in, redirect to dashboard
+        // Check for force logout parameter
+        if ($this->request->getGet('force_logout')) {
+            session()->destroy();
+            session()->setFlashdata('info', 'Η session καθαρίστηκε επιτυχώς.');
+            return redirect()->to(site_url('auth'));
+        }
+
+        // If already logged in, show option to continue or logout
         if (session()->get('logged_in') || session()->get('user_id')) {
-            return redirect()->to(site_url('dashboard'));
+            $data = [
+                'title' => 'Ήδη Συνδεδεμένος - PHA Manager v4',
+                'already_logged_in' => true,
+                'username' => session()->get('username') ?: 'Χρήστης',
+                'login_time' => session()->get('login_time') ? date('d/m/Y H:i', session()->get('login_time')) : 'Άγνωστο'
+            ];
+            return view('auth/login', $data);
         }
 
         $data = [
-            'title' => 'Σύνδεση - PHA Manager v4'
+            'title' => 'Σύνδεση - PHA Manager v4',
+            'already_logged_in' => false
         ];
 
         return view('auth/login', $data);
