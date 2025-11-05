@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use Config\Auth as AuthConfig;
 
 class GroupModel extends BaseCRUDModel
 {
@@ -40,14 +39,11 @@ class GroupModel extends BaseCRUDModel
     // Display field for dropdowns
     protected $displayField = 'name';
 
-    protected $authConfig;
-
     public function __construct()
     {
         parent::__construct();
-        $this->authConfig = new AuthConfig();
-        $this->table = $this->authConfig->tables['groups'];
-        $this->primaryKey = $this->authConfig->columns['groups']['id'];
+        $this->table = 'groups';
+        $this->primaryKey = 'id';
     }
 
     /**
@@ -97,7 +93,7 @@ class GroupModel extends BaseCRUDModel
     public function addUserToGroup(int $groupId, int $userId): bool
     {
         // Check if user is already in group
-        $existing = $this->db->table($this->authConfig->tables['users_groups'])
+        $existing = $this->db->table('users_groups')
                             ->where('group_id', $groupId)
                             ->where('user_id', $userId)
                             ->get()
@@ -112,7 +108,7 @@ class GroupModel extends BaseCRUDModel
             'user_id' => $userId
         ];
 
-        return $this->db->table($this->authConfig->tables['users_groups'])->insert($data);
+        return $this->db->table('users_groups')->insert($data);
     }
 
     /**
@@ -120,7 +116,7 @@ class GroupModel extends BaseCRUDModel
      */
     public function removeUserFromGroup(int $groupId, int $userId): bool
     {
-        return $this->db->table($this->authConfig->tables['users_groups'])
+        return $this->db->table('users_groups')
                        ->where('group_id', $groupId)
                        ->where('user_id', $userId)
                        ->delete();
@@ -251,12 +247,12 @@ class GroupModel extends BaseCRUDModel
             'groups_with_users' => $this->db->query("
                 SELECT COUNT(DISTINCT g.id) 
                 FROM {$this->table} g 
-                INNER JOIN {$this->authConfig->tables['users_groups']} ug ON g.id = ug.group_id
+                INNER JOIN users_groups ug ON g.id = ug.group_id
             ")->getRow()->{'COUNT(DISTINCT g.id)'},
             'empty_groups' => $this->db->query("
                 SELECT COUNT(g.id) 
                 FROM {$this->table} g 
-                LEFT JOIN {$this->authConfig->tables['users_groups']} ug ON g.id = ug.group_id 
+                LEFT JOIN users_groups ug ON g.id = ug.group_id 
                 WHERE ug.group_id IS NULL
             ")->getRow()->{'COUNT(g.id)'}
         ];

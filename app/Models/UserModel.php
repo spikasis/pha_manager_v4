@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\BaseCRUDModel;
-use Config\Auth as AuthConfig;
 
 class UserModel extends BaseCRUDModel
 {
@@ -44,14 +43,11 @@ class UserModel extends BaseCRUDModel
     protected $beforeDelete = [];
     protected $afterDelete = [];
 
-    protected $authConfig;
-
     public function __construct()
     {
         parent::__construct();
-        $this->authConfig = new AuthConfig();
-        $this->table = $this->authConfig->tables['users'];
-        $this->primaryKey = $this->authConfig->columns['users']['id'];
+        $this->table = 'users';
+        $this->primaryKey = 'id';
     }
 
     /**
