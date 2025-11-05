@@ -59,6 +59,36 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
+        .sidebar .collapse-inner {
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .sidebar .collapse-item {
+            padding: 0.5rem 1rem;
+            margin: 0.125rem 0;
+            display: block;
+            color: #3a3b45;
+            text-decoration: none;
+            border-radius: 0.35rem;
+            white-space: nowrap;
+        }
+
+        .sidebar .collapse-item:hover {
+            background-color: #eaecf4;
+        }
+
+        .sidebar .collapse-header {
+            margin: 0;
+            white-space: nowrap;
+            color: #6e707e;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.075em;
+            padding: 1.5rem 1rem 0.5rem;
+        }
+
         .topbar {
             height: 4.375rem;
             background-color: #fff;
@@ -69,6 +99,34 @@
             color: var(--primary-color);
             font-weight: 800;
             font-size: 1.25rem;
+        }
+
+        .dropdown-list {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .dropdown-list .dropdown-header {
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05rem;
+        }
+
+        .icon-circle {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .content-wrapper {
@@ -205,7 +263,7 @@
             <hr class="sidebar-divider">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item <?= uri_string() == 'dashboard' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'dashboard' || service('uri')->getSegment(1) == '') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('dashboard') ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -218,7 +276,7 @@
             <div class="nav-section-title">ΒΑΣΙΚΑ ΔΕΔΟΜΕΝΑ</div>
 
             <!-- Nav Item - Customers -->
-            <li class="nav-item <?= uri_string() == 'customers' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'customers') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('customers') ?>">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Πελάτες</span>
@@ -226,7 +284,7 @@
             </li>
 
             <!-- Nav Item - Doctors -->
-            <li class="nav-item <?= uri_string() == 'doctors' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'doctors') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('doctors') ?>">
                     <i class="fas fa-fw fa-user-md"></i>
                     <span>Γιατροί</span>
@@ -237,10 +295,32 @@
             <hr class="sidebar-divider">
 
             <!-- Heading -->
+            <div class="nav-section-title">ΑΠΟΘΗΚΗ & ΠΩΛΗΣΕΙΣ</div>
+
+            <!-- Nav Item - Stocks -->
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'stocks') ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= base_url('stocks') ?>">
+                    <i class="fas fa-fw fa-boxes"></i>
+                    <span>Αποθέματα</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Low Stock Alert -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('stocks/low-stock') ?>">
+                    <i class="fas fa-fw fa-exclamation-triangle text-warning"></i>
+                    <span>Χαμηλά Αποθέματα</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
             <div class="nav-section-title">ΑΝΑΦΟΡΑ ΠΙΝΑΚΕΣ</div>
 
             <!-- Nav Item - Insurances -->
-            <li class="nav-item <?= uri_string() == 'insurances' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'insurances') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('insurances') ?>">
                     <i class="fas fa-fw fa-shield-alt"></i>
                     <span>Ασφαλιστικά Ταμεία</span>
@@ -248,18 +328,10 @@
             </li>
 
             <!-- Nav Item - Customer Statuses -->
-            <li class="nav-item <?= uri_string() == 'customer-statuses' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'customer-statuses') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('customer-statuses') ?>">
                     <i class="fas fa-fw fa-tags"></i>
                     <span>Καταστάσεις Πελατών</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Stocks -->
-            <li class="nav-item <?= uri_string() == 'stocks' ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('stocks') ?>">
-                    <i class="fas fa-fw fa-boxes"></i>
-                    <span>Αποθέματα</span>
                 </a>
             </li>
 
@@ -270,7 +342,7 @@
             <div class="nav-section-title">ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ</div>
 
             <!-- Nav Item - Users -->
-            <li class="nav-item <?= uri_string() == 'users' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'users') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('users') ?>">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Χρήστες</span>
@@ -278,7 +350,7 @@
             </li>
 
             <!-- Nav Item - Groups -->
-            <li class="nav-item <?= uri_string() == 'groups' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'groups') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('groups') ?>">
                     <i class="fas fa-fw fa-users-cog"></i>
                     <span>Ομάδες</span>
@@ -286,7 +358,7 @@
             </li>
 
             <!-- Nav Item - Login Attempts -->
-            <li class="nav-item <?= uri_string() == 'login-attempts' ? 'active' : '' ?>">
+            <li class="nav-item <?= (service('uri')->getSegment(1) == 'login-attempts') ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= base_url('login-attempts') ?>">
                     <i class="fas fa-fw fa-shield-alt"></i>
                     <span>Προσπάθειες Σύνδεσης</span>
@@ -301,14 +373,16 @@
 
             <!-- Nav Item - Settings -->
             <li class="nav-item">
-                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Ρυθμίσεις</span>
                 </a>
-                <div id="collapseSettings" class="collapse">
+                <div id="collapseSettings" class="collapse" data-bs-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Γενικές Ρυθμίσεις</a>
-                        <a class="collapse-item" href="#">Ασφάλεια</a>
+                        <h6 class="collapse-header">Ρυθμίσεις Συστήματος:</h6>
+                        <a class="collapse-item" href="<?= base_url('settings/general') ?>">Γενικές Ρυθμίσεις</a>
+                        <a class="collapse-item" href="<?= base_url('settings/security') ?>">Ασφάλεια</a>
+                        <a class="collapse-item" href="<?= base_url('settings/backup') ?>">Αντίγραφα Ασφαλείας</a>
                     </div>
                 </div>
             </li>
@@ -339,29 +413,60 @@
                     </button>
 
                     <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ms-auto">
+
+                        <!-- Nav Item - Alerts Dropdown (Optional) -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts (optional) -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Ειδοποιήσεις
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="<?= base_url('stocks/low-stock') ?>">
+                                    <div class="me-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">Αποθέματα</div>
+                                        <span class="font-weight-bold">Χαμηλά αποθέματα προϊόντων</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="<?= base_url('notifications') ?>">Όλες οι Ειδοποιήσεις</a>
+                            </div>
+                        </li>
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline text-gray-600 small">
                                     <?= session()->get('username') ?: 'Χρήστης' ?>
                                 </span>
                                 <i class="fas fa-user-circle fa-lg text-gray-400"></i>
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                            <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+                                <a class="dropdown-item" href="<?= base_url('profile') ?>">
+                                    <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
                                     Προφίλ
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Ρυθμίσεις
+                                <a class="dropdown-item" href="<?= base_url('settings/account') ?>">
+                                    <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>
+                                    Ρυθμίσεις Λογαριασμού
+                                </a>
+                                <a class="dropdown-item" href="<?= base_url('help') ?>">
+                                    <i class="fas fa-question-circle fa-sm fa-fw me-2 text-gray-400"></i>
+                                    Βοήθεια
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?= base_url('logout') ?>">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
                                     Αποσύνδεση
                                 </a>
                             </div>
@@ -504,6 +609,50 @@
             $(document).click(function(e) {
                 if (!$(e.target).closest('#accordionSidebar, #sidebarToggleTop').length) {
                     $('#accordionSidebar').removeClass('show');
+                }
+            });
+
+            // Improve dropdown functionality
+            $('.dropdown-toggle').on('click', function(e) {
+                e.preventDefault();
+                var dropdownMenu = $(this).next('.dropdown-menu');
+                dropdownMenu.toggleClass('show');
+            });
+
+            // Close dropdowns when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown-menu').removeClass('show');
+                }
+            });
+
+            // Sidebar collapse functionality
+            $('.nav-link[data-bs-toggle="collapse"]').on('click', function(e) {
+                e.preventDefault();
+                var target = $($(this).attr('data-bs-target'));
+                target.toggleClass('show');
+                
+                // Close other open collapses
+                $('.collapse.show').not(target).removeClass('show');
+            });
+
+            // Add active class to current menu item
+            var currentPath = window.location.pathname;
+            $('.sidebar .nav-link').each(function() {
+                var linkPath = $(this).attr('href');
+                if (linkPath && currentPath.includes(linkPath.replace(window.location.origin, ''))) {
+                    $(this).closest('.nav-item').addClass('active');
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            $('a[href^="#"]').on('click', function(event) {
+                var target = $(this.getAttribute('href'));
+                if (target.length) {
+                    event.preventDefault();
+                    $('html, body').stop().animate({
+                        scrollTop: target.offset().top - 100
+                    }, 1000);
                 }
             });
         });

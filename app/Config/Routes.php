@@ -148,4 +148,24 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('stocks/update-quantity/(:num)', 'Stocks::updateQuantity/$1');
 });
 
+// Additional system routes
+$routes->group('', ['filter' => 'auth'], function($routes) {
+    // Profile and settings
+    $routes->get('profile', 'Profile::index');
+    $routes->post('profile', 'Profile::update');
+    $routes->get('settings/account', 'Settings::account');
+    $routes->post('settings/account', 'Settings::updateAccount');
+    $routes->get('settings/general', 'Settings::general');
+    $routes->post('settings/general', 'Settings::updateGeneral');
+    $routes->get('settings/security', 'Settings::security');
+    $routes->post('settings/security', 'Settings::updateSecurity');
+    $routes->get('settings/backup', 'Settings::backup');
+    $routes->post('settings/backup', 'Settings::createBackup');
+    
+    // Help and notifications
+    $routes->get('help', 'Help::index');
+    $routes->get('notifications', 'Notifications::index');
+    $routes->post('notifications/mark-read/(:num)', 'Notifications::markRead/$1');
+});
+
 
