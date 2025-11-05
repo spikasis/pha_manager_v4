@@ -7,31 +7,18 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Public routes (no authentication required)
-$routes->get('/', function() {
-    return redirect()->to('/auth');
-}); // Redirect to auth login
+$routes->get('/', 'Home::index');
 
-// AUTHENTICATION ROUTES
-$routes->group('auth', function($routes) {
-    $routes->get('/', 'AuthController::index');
-    $routes->get('login', 'AuthController::login');
-    $routes->get('logout', 'AuthController::logout');
-    $routes->get('check', 'AuthController::checkAuth');
-    $routes->post('keep-alive', 'AuthController::keepAlive');
-});
-
-// Alternative routes for backward compatibility
-$routes->get('login', 'AuthController::index');
-$routes->get('logout', 'AuthController::logout');
-$routes->get('direct-login', 'AuthController::index'); // Backward compatibility
+// Temporary home page while rebuilding authentication
+$routes->get('home', 'Home::index');
 
 
 
-// Protected routes (authentication required)
-$routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
+// Dashboard routes (temporarily without auth filters)
+$routes->get('dashboard', 'Dashboard::index');
 
 // Branch-specific dashboards
-$routes->group('dashboard', ['filter' => 'auth'], function($routes) {
+$routes->group('dashboard', function($routes) {
     $routes->get('thiva', 'Dashboard::thiva');
     $routes->get('levadia', 'Dashboard::levadia');
     $routes->get('service', 'Dashboard::service');
@@ -44,8 +31,8 @@ $routes->get('analyze', 'DatabaseAnalyzer::index');
 
 
 
-// Customers routes (protected)
-$routes->group('customers', ['filter' => 'auth'], function($routes) {
+// Customers routes (temporarily without auth filter)
+$routes->group('customers', function($routes) {
     $routes->get('/', 'Customers::index');
     $routes->get('create', 'Customers::create');
     $routes->post('/', 'Customers::store');
@@ -57,8 +44,8 @@ $routes->group('customers', ['filter' => 'auth'], function($routes) {
     $routes->get('export', 'Customers::exportCustomers');
 });
 
-// Admin only routes
-$routes->group('admin', ['filter' => 'admin'], function($routes) {
+// Admin routes (temporarily without auth filter)
+$routes->group('admin', function($routes) {
     // User management
     $routes->group('users', function($routes) {
         $routes->get('/', 'Admin\Users::index');
@@ -90,17 +77,10 @@ $routes->group('admin', ['filter' => 'admin'], function($routes) {
 
 
 
-// Login attempts (security monitoring) - READ-ONLY
-$routes->group('login-attempts', ['filter' => 'auth'], function($routes) {
-    $routes->get('/', 'LoginAttempts::index');
-    $routes->get('getData', 'LoginAttempts::getData');
-    $routes->get('show/(:num)', 'LoginAttempts::show/$1');
-    $routes->get('getStatistics', 'LoginAttempts::getStatistics');
-    $routes->post('cleanup', 'LoginAttempts::cleanup');
-});
+// Login attempts removed - will be rebuilt
 
-// CRUD Management Routes (new system)
-$routes->group('', ['filter' => 'auth'], function($routes) {
+// CRUD Management Routes (temporarily without auth filter)
+$routes->group('', function($routes) {
     // Users CRUD
     $routes->resource('users', ['controller' => 'Users']);
     $routes->get('users/getData', 'Users::getData');
@@ -138,8 +118,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('stocks/update-quantity/(:num)', 'Stocks::updateQuantity/$1');
 });
 
-// Additional system routes
-$routes->group('', ['filter' => 'auth'], function($routes) {
+// Additional system routes (temporarily without auth filter)
+$routes->group('', function($routes) {
     // Profile and settings
     $routes->get('profile', 'Profile::index');
     $routes->post('profile', 'Profile::update');
