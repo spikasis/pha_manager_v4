@@ -41,17 +41,59 @@ class Dashboard extends BaseController
             'first_name' => session()->get('first_name') ?: 'Spiros',
             'last_name' => session()->get('last_name') ?: 'Pikasis'
         ];
-        
-        // Simple data for dashboard
-        $data = [
-            'title' => 'Dashboard - PHA Manager',
-            'user' => $userData,
-            'customer_count' => 0,
-            'doctor_count' => 0,
-            'service_count' => 0
+
+        // Try to get basic stats safely
+        $stats = [
+            'customers' => 0,
+            'doctors' => 0,
+            'users' => 0
+        ];
+
+        // Available CRUD modules
+        $crud_modules = [
+            [
+                'title' => 'Πελάτες',
+                'description' => 'Διαχείριση πελατών και στοιχείων επικοινωνίας',
+                'url' => 'customers',
+                'icon' => 'fas fa-users'
+            ],
+            [
+                'title' => 'Γιατροί',
+                'description' => 'Διαχείριση γιατρών και συνεργατών',
+                'url' => 'doctors',
+                'icon' => 'fas fa-user-md'
+            ],
+            [
+                'title' => 'Χρήστες',
+                'description' => 'Διαχείριση χρηστών συστήματος',
+                'url' => 'users',
+                'icon' => 'fas fa-user-shield'
+            ],
+            [
+                'title' => 'Ομάδες',
+                'description' => 'Διαχείριση ρόλων και δικαιωμάτων',
+                'url' => 'groups',
+                'icon' => 'fas fa-users-cog'
+            ],
+            [
+                'title' => 'Προσπάθειες Σύνδεσης',
+                'description' => 'Παρακολούθηση ασφάλειας συστήματος',
+                'url' => 'login-attempts',
+                'icon' => 'fas fa-shield-alt'
+            ]
         ];
         
-        return view('dashboard/simple', $data);
+        // Dashboard data
+        $data = [
+            'title' => 'Dashboard - PHA Manager v4',
+            'page_title' => 'Dashboard',
+            'page_description' => 'Κεντρικός πίνακας διαχείρισης συστήματος',
+            'user' => $userData,
+            'stats' => $stats,
+            'crud_modules' => $crud_modules
+        ];
+        
+        return view('dashboard/index', $data);
     }
 
     /**

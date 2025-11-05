@@ -11,43 +11,7 @@ $routes->get('/', function() {
     return redirect()->to('/direct-login');
 }); // Redirect to direct login
 
-// Authentication routes with auth prefix
-$routes->group('auth', function($routes) {
-    $routes->get('login', 'Auth::login');
-    $routes->post('login', 'Auth::attemptLogin');
-    $routes->post('attempt-login', 'Auth::attemptLogin'); // Support dash format
-    $routes->get('logout', 'Auth::logout');
-    $routes->get('register', 'Auth::register');
-    $routes->post('register', 'Auth::attemptRegister');
-    $routes->post('attempt-register', 'Auth::attemptRegister'); // Support dash format
-    $routes->get('forgot-password', 'Auth::forgotPassword');
-    $routes->post('forgot-password', 'Auth::attemptForgotPassword');
-    $routes->get('reset-password/(:segment)', 'Auth::resetPassword/$1');
-    $routes->post('reset-password/(:segment)', 'Auth::attemptResetPassword/$1');
-    $routes->get('activate-account/(:segment)', 'Auth::activateAccount/$1');
-});
-
-// Emergency authentication routes (for production issues)
-$routes->group('auth-emergency', function($routes) {
-    $routes->get('login', 'AuthEmergency::login');
-    $routes->post('login', 'AuthEmergency::attemptLogin');
-    $routes->post('attempt-login', 'AuthEmergency::attemptLogin');
-    $routes->get('logout', 'AuthEmergency::logout');
-});
-
-// FIXED AUTH ROUTES (use these for working login)
-$routes->get('auth-fixed/login', 'AuthFixed::login');
-$routes->post('auth-fixed/attempt-login', 'AuthFixed::attemptLogin');
-$routes->get('auth-fixed/logout', 'AuthFixed::logout');
-
-// BYPASS AUTH ROUTES (EMERGENCY - bypasses broken attemptLogin)
-$routes->group('auth-bypass', function($routes) {
-    $routes->get('login', 'AuthBypass::login');
-    $routes->post('attempt-login', 'AuthBypass::attemptLogin');
-    $routes->get('logout', 'AuthBypass::logout');
-});
-
-// DIRECT LOGIN ROUTES (NO POST - bypasses post_max_size issues)
+// DIRECT LOGIN ROUTES (working solution)
 $routes->get('direct-login', 'DirectLogin::index');
 $routes->get('direct-login/login', 'DirectLogin::login');
 $routes->get('direct-login/logout', 'DirectLogin::logout');
@@ -60,9 +24,7 @@ $routes->get('logout', 'DirectLogin::logout');
 // Simple dashboard route
 $routes->get('dashboard-simple', 'DashboardSimple::index');
 
-// DEBUG ROUTES (only in development)
-$routes->get('debug', 'DebugInfo::index');
-$routes->get('debug/settings', 'DebugInfo::settings');
+
 
 // Protected routes (authentication required)
 $routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
@@ -168,22 +130,4 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('doctors/getForSelect', 'Doctors::getForSelect');
 });
 
-// Test routes for debugging
-$routes->get('test', 'Test::index');
-$routes->get('simple-test', 'SimpleTest::index');
 
-// Simple Auth routes for debugging
-$routes->get('auth-simple/login', 'AuthSimple::login');
-$routes->post('auth-simple/attempt-login', 'AuthSimple::attemptLogin');
-$routes->get('auth-simple/logout', 'AuthSimple::logout');
-
-// Ultra Simple Auth routes - no CodeIgniter dependencies
-$routes->get('auth-ultra/login', 'AuthUltraSimple::login');
-$routes->post('auth-ultra/attempt-login', 'AuthUltraSimple::attemptLogin');
-$routes->get('auth-ultra/test-db', 'AuthUltraSimple::testDb');
-$routes->get('auth-ultra/test-models', 'AuthUltraSimple::testModels');
-
-// Safe Auth routes - works without intl extension
-$routes->get('auth-safe/login', 'AuthSafe::login');
-$routes->post('auth-safe/attempt-login', 'AuthSafe::attemptLogin');
-$routes->get('auth-safe/logout', 'AuthSafe::logout');
