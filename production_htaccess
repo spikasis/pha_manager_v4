@@ -1,0 +1,25 @@
+# PHA Manager v4 - Production Redirect
+# Place this file as .htaccess in: /var/www/vhosts/asal.gr/manager.pikasishearing.gr/public/
+
+RewriteEngine On
+
+# Set the base directory for the application  
+RewriteBase /
+
+# If request is for root, redirect to pha_manager_v4/public/
+RewriteCond %{REQUEST_URI} ^/?$
+RewriteRule ^$ pha_manager_v4/public/ [L,R=301]
+
+# Handle all other requests - forward to CodeIgniter
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/pha_manager_v4/public/
+RewriteRule ^(.*)$ pha_manager_v4/public/index.php/$1 [L,QSA]
+
+# Security: Block access to application folders
+RewriteCond %{REQUEST_URI} ^/pha_manager_v4/(app|writable|tests|builds)/.*$
+RewriteRule ^(.*)$ - [F,L]
+
+# Security: Block sensitive files
+RewriteCond %{REQUEST_URI} \.(env|gitignore|composer\.json|composer\.lock)$
+RewriteRule ^(.*)$ - [F,L]

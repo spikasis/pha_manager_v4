@@ -6,27 +6,11 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Public routes (no authentication required)
-$routes->get('/', 'Auth::index');
+// Public routes - Dashboard as home
+$routes->get('/', 'Dashboard::index');
 
-// Temporary home page while rebuilding authentication
-$routes->get('home', 'Home::index');
-
-// Authentication routes
-$routes->group('auth', function($routes) {
-    $routes->get('/', 'Auth::index');
-    $routes->get('login', 'Auth::index');
-    $routes->post('login', 'Auth::login');
-    $routes->get('logout', 'Auth::logout');
-    $routes->post('logout', 'Auth::logout');
-    $routes->post('check', 'Auth::check');
-    $routes->post('keepAlive', 'Auth::keepAlive');
-});
-
-// Alternative auth routes (root level)
-$routes->get('login', 'Auth::index');
-$routes->post('login', 'Auth::login');
-$routes->get('logout', 'Auth::logout');
+// Alternative home routes
+$routes->get('home', 'Dashboard::index');
 
 
 

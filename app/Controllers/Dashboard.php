@@ -25,18 +25,14 @@ class Dashboard extends BaseController
     
     public function index()
     {
-        // Simple check if logged in
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login');
-        }
-
-        // Get current user data from session (no database needed)
+        // Default user data for dashboard (no authentication required)
         $userData = [
-            'id' => session()->get('user_id') ?: 1,
-            'username' => session()->get('username') ?: 'spikasis',
-            'email' => session()->get('email') ?: 'spikasis@gmail.com',
-            'first_name' => session()->get('first_name') ?: 'Spiros',
-            'last_name' => session()->get('last_name') ?: 'Pikasis'
+            'id' => 1,
+            'username' => 'spikasis',
+            'email' => 'spikasis@gmail.com',
+            'first_name' => 'Spiros',
+            'last_name' => 'Pikasis',
+            'full_name' => 'Spiros Pikasis'
         ];
 
         // Try to get basic stats safely
