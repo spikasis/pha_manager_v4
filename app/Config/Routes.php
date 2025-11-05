@@ -8,8 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 
 // Public routes (no authentication required)
 $routes->get('/', function() {
-    return redirect()->to('/login');
-}); // Redirect to login
+    return redirect()->to('/direct-login');
+}); // Redirect to direct login
 
 // Authentication routes with auth prefix
 $routes->group('auth', function($routes) {
@@ -47,13 +47,22 @@ $routes->group('auth-bypass', function($routes) {
     $routes->get('logout', 'AuthBypass::logout');
 });
 
+// DIRECT LOGIN ROUTES (NO POST - bypasses post_max_size issues)
+$routes->get('direct-login', 'DirectLogin::index');
+$routes->get('direct-login/login', 'DirectLogin::login');
+$routes->get('direct-login/logout', 'DirectLogin::logout');
+
 // Alternative routes without prefix for backward compatibility
-$routes->get('login', 'AuthBypass::login');
-$routes->post('login', 'AuthBypass::attemptLogin');
-$routes->get('logout', 'AuthBypass::logout');
+$routes->get('login', 'DirectLogin::index');
+$routes->post('login', 'AuthFixed::attemptLogin');
+$routes->get('logout', 'DirectLogin::logout');
 
 // Simple dashboard route
 $routes->get('dashboard-simple', 'DashboardSimple::index');
+
+// DEBUG ROUTES (only in development)
+$routes->get('debug', 'DebugInfo::index');
+$routes->get('debug/settings', 'DebugInfo::settings');
 
 // Protected routes (authentication required)
 $routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
