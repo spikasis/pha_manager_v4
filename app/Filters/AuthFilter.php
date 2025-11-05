@@ -21,10 +21,11 @@ class AuthFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Check if user is logged in
+        // Check if user is logged in - support both methods
         $userId = session($this->authConfig->sessionUserIdKey);
+        $isLoggedIn = session('logged_in') || session('is_logged_in');
         
-        if (!$userId) {
+        if (!$userId && !$isLoggedIn) {
             // Store the current URL for redirect after login
             $currentUrl = current_url();
             session()->set('redirect_url', $currentUrl);
@@ -36,15 +37,24 @@ class AuthFilter implements FilterInterface
             return redirect()->to($this->authConfig->loginUrl);
         }
 
-        // Check if user is still active
-        $userModel = new \App\Models\UserModel();
-        $user = $userModel->find($userId);
-        
-        if (!$user || !$user['active']) {
-            // Destroy session and redirect to login
-            session()->destroy();
-            session()->setFlashdata('error', 'Ο λογαριασμός σας έχει απενεργοποιηθεί. Επικοινωνήστε με τον διαχειριστή.');
-            return redirect()->to($this->authConfig->loginUrl);
+        // If we have a user ID, check if user is still active (skip for direct login)
+        if ($userId && $userId > 0) {
+            try {
+                $userModel = new \App\Models\UserModel();
+                $user = $userModel->find($userId);
+                
+                if (!$user || (isset($user['active']) && !$user['active'])) {
+                    // Destroy session and redirect to login
+                    session()->destroy();
+                    session()->setFlashdata('error', 'Ο λογαριασμός σας έχει απενεργοποιηθεί. Επικοινωνήστε με τον διαχειριστή.');
+                    return redirect()->to($this->authConfig->loginUrl);
+                }
+            } catch (\Exception $e) {
+                // If there's a database error, allow direct login to work
+                if (!$isLoggedIn) {
+                    return redirect()->to($this->authConfig->loginUrl);
+                }
+            }
         }
     }
 

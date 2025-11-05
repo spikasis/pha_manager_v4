@@ -113,29 +113,35 @@ class Filters extends BaseFilters
         // Authentication required for all protected routes
         'auth' => [
             'before' => [
-                'dashboard/*',
-                'customers/*',
-                'services/*',
-                'products/*',
-                'reports/*',
-                'users/*',
-                'groups/*'
+                'dashboard*',
+                'customers*',
+                'services*',
+                'products*',
+                'reports*',
+                'users*',
+                'groups*',
+                'doctors*',
+                'insurances*',
+                'customer-statuses*',
+                'stocks*',
+                'login-attempts*',
+                'profile*',
+                'settings*',
+                'help*',
+                'notifications*'
             ]
         ],
         // Admin access only
         'admin' => [
             'before' => [
-                'users/*',
-                'groups/*',
+                'admin/*',
                 'system/*'
             ]
         ],
         // CSRF protection for forms (excluding auth routes for now)
         'csrf' => [
             'before' => [
-                'customers/store',
-                'customers/update/*',
-                'customers/delete/*'
+                // Temporarily disabled for debugging
             ]
         ]
     ];

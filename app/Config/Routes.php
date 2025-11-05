@@ -20,6 +20,7 @@ $routes->get('direct-login/logout', 'DirectLogin::logout');
 $routes->get('login', 'DirectLogin::index');
 $routes->post('login', 'AuthFixed::attemptLogin');
 $routes->get('logout', 'DirectLogin::logout');
+$routes->get('direct-login/logout', 'DirectLogin::logout');
 
 // Simple dashboard route
 $routes->get('dashboard-simple', 'DashboardSimple::index');

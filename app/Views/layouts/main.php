@@ -252,7 +252,7 @@
         <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('dashboard') ?>">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= site_url('dashboard') ?>">
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-assistive-listening-systems"></i>
                 </div>
@@ -263,8 +263,8 @@
             <hr class="sidebar-divider">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'dashboard' || service('uri')->getSegment(1) == '') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('dashboard') ?>">
+            <li class="nav-item <?= (uri_string() == 'dashboard' || uri_string() == '') ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('dashboard') ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -276,16 +276,16 @@
             <div class="nav-section-title">ΒΑΣΙΚΑ ΔΕΔΟΜΕΝΑ</div>
 
             <!-- Nav Item - Customers -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'customers') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('customers') ?>">
+            <li class="nav-item <?= (uri_string() == 'customers' || strpos(uri_string(), 'customers') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('customers') ?>">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Πελάτες</span>
                 </a>
             </li>
 
             <!-- Nav Item - Doctors -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'doctors') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('doctors') ?>">
+            <li class="nav-item <?= (uri_string() == 'doctors' || strpos(uri_string(), 'doctors') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('doctors') ?>">
                     <i class="fas fa-fw fa-user-md"></i>
                     <span>Γιατροί</span>
                 </a>
@@ -298,16 +298,16 @@
             <div class="nav-section-title">ΑΠΟΘΗΚΗ & ΠΩΛΗΣΕΙΣ</div>
 
             <!-- Nav Item - Stocks -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'stocks') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('stocks') ?>">
+            <li class="nav-item <?= (uri_string() == 'stocks' || strpos(uri_string(), 'stocks') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('stocks') ?>">
                     <i class="fas fa-fw fa-boxes"></i>
                     <span>Αποθέματα</span>
                 </a>
             </li>
 
             <!-- Nav Item - Low Stock Alert -->
-            <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('stocks/low-stock') ?>">
+            <li class="nav-item <?= (uri_string() == 'stocks/low-stock') ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('stocks/low-stock') ?>">
                     <i class="fas fa-fw fa-exclamation-triangle text-warning"></i>
                     <span>Χαμηλά Αποθέματα</span>
                 </a>
@@ -320,16 +320,16 @@
             <div class="nav-section-title">ΑΝΑΦΟΡΑ ΠΙΝΑΚΕΣ</div>
 
             <!-- Nav Item - Insurances -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'insurances') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('insurances') ?>">
+            <li class="nav-item <?= (uri_string() == 'insurances' || strpos(uri_string(), 'insurances') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('insurances') ?>">
                     <i class="fas fa-fw fa-shield-alt"></i>
                     <span>Ασφαλιστικά Ταμεία</span>
                 </a>
             </li>
 
             <!-- Nav Item - Customer Statuses -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'customer-statuses') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('customer-statuses') ?>">
+            <li class="nav-item <?= (uri_string() == 'customer-statuses' || strpos(uri_string(), 'customer-statuses') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('customer-statuses') ?>">
                     <i class="fas fa-fw fa-tags"></i>
                     <span>Καταστάσεις Πελατών</span>
                 </a>
@@ -342,24 +342,24 @@
             <div class="nav-section-title">ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ</div>
 
             <!-- Nav Item - Users -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'users') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('users') ?>">
+            <li class="nav-item <?= (uri_string() == 'users' || strpos(uri_string(), 'users') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('users') ?>">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Χρήστες</span>
                 </a>
             </li>
 
             <!-- Nav Item - Groups -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'groups') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('groups') ?>">
+            <li class="nav-item <?= (uri_string() == 'groups' || strpos(uri_string(), 'groups') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('groups') ?>">
                     <i class="fas fa-fw fa-users-cog"></i>
                     <span>Ομάδες</span>
                 </a>
             </li>
 
             <!-- Nav Item - Login Attempts -->
-            <li class="nav-item <?= (service('uri')->getSegment(1) == 'login-attempts') ? 'active' : '' ?>">
-                <a class="nav-link" href="<?= base_url('login-attempts') ?>">
+            <li class="nav-item <?= (uri_string() == 'login-attempts' || strpos(uri_string(), 'login-attempts') === 0) ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= site_url('login-attempts') ?>">
                     <i class="fas fa-fw fa-shield-alt"></i>
                     <span>Προσπάθειες Σύνδεσης</span>
                 </a>
@@ -380,9 +380,9 @@
                 <div id="collapseSettings" class="collapse" data-bs-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ρυθμίσεις Συστήματος:</h6>
-                        <a class="collapse-item" href="<?= base_url('settings/general') ?>">Γενικές Ρυθμίσεις</a>
-                        <a class="collapse-item" href="<?= base_url('settings/security') ?>">Ασφάλεια</a>
-                        <a class="collapse-item" href="<?= base_url('settings/backup') ?>">Αντίγραφα Ασφαλείας</a>
+                        <a class="collapse-item" href="<?= site_url('settings/general') ?>">Γενικές Ρυθμίσεις</a>
+                        <a class="collapse-item" href="<?= site_url('settings/security') ?>">Ασφάλεια</a>
+                        <a class="collapse-item" href="<?= site_url('settings/backup') ?>">Αντίγραφα Ασφαλείας</a>
                     </div>
                 </div>
             </li>
@@ -427,7 +427,7 @@
                                 <h6 class="dropdown-header">
                                     Ειδοποιήσεις
                                 </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="<?= base_url('stocks/low-stock') ?>">
+                                <a class="dropdown-item d-flex align-items-center" href="<?= site_url('stocks/low-stock') ?>">
                                     <div class="me-3">
                                         <div class="icon-circle bg-warning">
                                             <i class="fas fa-exclamation-triangle text-white"></i>
@@ -438,7 +438,7 @@
                                         <span class="font-weight-bold">Χαμηλά αποθέματα προϊόντων</span>
                                     </div>
                                 </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="<?= base_url('notifications') ?>">Όλες οι Ειδοποιήσεις</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="<?= site_url('notifications') ?>">Όλες οι Ειδοποιήσεις</a>
                             </div>
                         </li>
 
@@ -452,20 +452,20 @@
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
-                                <a class="dropdown-item" href="<?= base_url('profile') ?>">
+                                <a class="dropdown-item" href="<?= site_url('profile') ?>">
                                     <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
                                     Προφίλ
                                 </a>
-                                <a class="dropdown-item" href="<?= base_url('settings/account') ?>">
+                                <a class="dropdown-item" href="<?= site_url('settings/account') ?>">
                                     <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>
                                     Ρυθμίσεις Λογαριασμού
                                 </a>
-                                <a class="dropdown-item" href="<?= base_url('help') ?>">
+                                <a class="dropdown-item" href="<?= site_url('help') ?>">
                                     <i class="fas fa-question-circle fa-sm fa-fw me-2 text-gray-400"></i>
                                     Βοήθεια
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?= base_url('logout') ?>">
+                                <a class="dropdown-item" href="<?= site_url('logout') ?>">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
                                     Αποσύνδεση
                                 </a>
@@ -487,7 +487,7 @@
                             <div class="col">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="<?= base_url('dashboard') ?>">Dashboard</a></li>
+                                        <li class="breadcrumb-item"><a href="<?= site_url('dashboard') ?>">Dashboard</a></li>
                                         <?php if (isset($breadcrumbs)): ?>
                                             <?php foreach ($breadcrumbs as $crumb): ?>
                                                 <li class="breadcrumb-item"><?= $crumb ?></li>

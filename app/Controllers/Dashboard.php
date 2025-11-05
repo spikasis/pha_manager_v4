@@ -20,10 +20,7 @@ class Dashboard extends BaseController
     {
         parent::initController($request, $response, $logger);
         
-        // Check if user is logged in (will be handled by AuthFilter)
-        if (!session()->get('user_id')) {
-            return redirect()->to(base_url('auth/login'));
-        }
+        // Authentication is handled by AuthFilter now
     }
     
     public function index()
