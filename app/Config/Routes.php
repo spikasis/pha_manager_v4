@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Public routes (no authentication required)
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Auth::index');
 
 // Temporary home page while rebuilding authentication
 $routes->get('home', 'Home::index');
