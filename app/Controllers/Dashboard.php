@@ -33,51 +33,25 @@ class Dashboard extends BaseController
             return redirect()->to('/login');
         }
 
-        // Get current user data
-        $userId = session()->get('user_id');
+        // Get current user data from session (no database needed)
+        $userData = [
+            'id' => session()->get('user_id') ?: 1,
+            'username' => session()->get('username') ?: 'spikasis',
+            'email' => session()->get('email') ?: 'spikasis@gmail.com',
+            'first_name' => session()->get('first_name') ?: 'Spiros',
+            'last_name' => session()->get('last_name') ?: 'Pikasis'
+        ];
         
-        if (!$userId) {
-            return redirect()->to('/login');
-        }
+        // Simple data for dashboard
+        $data = [
+            'title' => 'Dashboard - PHA Manager',
+            'user' => $userData,
+            'customer_count' => 0,
+            'doctor_count' => 0,
+            'service_count' => 0
+        ];
         
-        try {
-            $user = $this->userModel->find($userId);
-            
-            if (!$user) {
-                session()->destroy();
-                return redirect()->to('/login');
-            }
-            
-            // Simple data for dashboard
-            $data = [
-                'title' => 'Dashboard - PHA Manager',
-                'user' => $user,
-                'customer_count' => 0, // Will add later
-                'doctor_count' => 0,   // Will add later
-                'service_count' => 0   // Will add later
-            ];
-            
-            // Try to get basic stats
-            try {
-                $customerModel = new CustomerModel();
-                $data['customer_count'] = $customerModel->countAllResults();
-            } catch (\Exception $e) {
-                log_message('warning', 'Could not get customer count: ' . $e->getMessage());
-            }
-            
-            try {
-                $doctorModel = new DoctorModel();
-                $data['doctor_count'] = $doctorModel->countAllResults();
-            } catch (\Exception $e) {
-                log_message('warning', 'Could not get doctor count: ' . $e->getMessage());
-            }
-            
-            return view('dashboard/simple', $data);
-            
-        } catch (\Exception $e) {
-            log_message('error', 'Dashboard error: ' . $e->getMessage());
-            return view('dashboard/simple', $data);
-        }
+        return view('dashboard/simple', $data);
     }
 
     /**

@@ -85,7 +85,7 @@
 <body>
     <div class="header">
         <h1 class="welcome">🎧 PHA Manager v4 - Dashboard</h1>
-        <a href="<?= base_url('auth-simple/logout') ?>" class="logout-btn">Αποσύνδεση</a>
+        <a href="<?= base_url('logout') ?>" class="logout-btn">Αποσύνδεση</a>
     </div>
     
     <?php if (session()->getFlashdata('success')): ?>
