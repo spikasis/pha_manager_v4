@@ -128,6 +128,24 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('doctors/getData', 'Doctors::getData');
     $routes->get('doctors/getStatistics', 'Doctors::getStatistics');
     $routes->get('doctors/getForSelect', 'Doctors::getForSelect');
+    
+    // Insurances CRUD (Lookup Table)
+    $routes->resource('insurances', ['controller' => 'Insurances']);
+    $routes->get('insurances/getData', 'Insurances::getData');
+    $routes->get('insurances/getForSelect', 'Insurances::getForSelect');
+    
+    // Customer Statuses CRUD (Lookup Table)
+    $routes->resource('customer-statuses', ['controller' => 'CustomerStatuses']);
+    $routes->get('customer-statuses/getData', 'CustomerStatuses::getData');
+    $routes->get('customer-statuses/getForSelect', 'CustomerStatuses::getForSelect');
+    $routes->get('customer-statuses/getStatistics', 'CustomerStatuses::getStatistics');
+    
+    // Stocks CRUD (Inventory Management)
+    $routes->resource('stocks', ['controller' => 'Stocks']);
+    $routes->get('stocks/getData', 'Stocks::getData');
+    $routes->get('stocks/getForSelect', 'Stocks::getForSelect');
+    $routes->get('stocks/low-stock', 'Stocks::lowStock');
+    $routes->post('stocks/update-quantity/(:num)', 'Stocks::updateQuantity/$1');
 });
 
 

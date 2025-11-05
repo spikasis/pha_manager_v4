@@ -80,6 +80,24 @@ class Dashboard extends BaseController
                 'description' => 'Παρακολούθηση ασφάλειας συστήματος',
                 'url' => 'login-attempts',
                 'icon' => 'fas fa-shield-alt'
+            ],
+            [
+                'title' => 'Ασφαλιστικά Ταμεία',
+                'description' => 'Διαχείριση ασφαλιστικών ταμείων και οργανισμών',
+                'url' => 'insurances',
+                'icon' => 'fas fa-shield-alt'
+            ],
+            [
+                'title' => 'Καταστάσεις Πελατών',
+                'description' => 'Διαχείριση καταστάσεων και κατηγοριοποίησης πελατών',
+                'url' => 'customer-statuses',
+                'icon' => 'fas fa-tags'
+            ],
+            [
+                'title' => 'Αποθέματα',
+                'description' => 'Διαχείριση προϊόντων και inventory management',
+                'url' => 'stocks',
+                'icon' => 'fas fa-boxes'
             ]
         ];
         

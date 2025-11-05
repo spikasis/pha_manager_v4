@@ -19,8 +19,8 @@
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
     
-    <!-- Custom styles -->
-    <link href="<?= base_url('public/sbadmin2/css/sb-admin-2.min.css') ?>" rel="stylesheet">
+    <!-- SB Admin 2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
     
     <style>
         :root {
@@ -230,6 +230,36 @@
                 <a class="nav-link" href="<?= base_url('doctors') ?>">
                     <i class="fas fa-fw fa-user-md"></i>
                     <span>Γιατροί</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="nav-section-title">ΑΝΑΦΟΡΑ ΠΙΝΑΚΕΣ</div>
+
+            <!-- Nav Item - Insurances -->
+            <li class="nav-item <?= uri_string() == 'insurances' ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= base_url('insurances') ?>">
+                    <i class="fas fa-fw fa-shield-alt"></i>
+                    <span>Ασφαλιστικά Ταμεία</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Customer Statuses -->
+            <li class="nav-item <?= uri_string() == 'customer-statuses' ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= base_url('customer-statuses') ?>">
+                    <i class="fas fa-fw fa-tags"></i>
+                    <span>Καταστάσεις Πελατών</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Stocks -->
+            <li class="nav-item <?= uri_string() == 'stocks' ? 'active' : '' ?>">
+                <a class="nav-link" href="<?= base_url('stocks') ?>">
+                    <i class="fas fa-fw fa-boxes"></i>
+                    <span>Αποθέματα</span>
                 </a>
             </li>
 
@@ -451,7 +481,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-    <script src="<?= base_url('public/sbadmin2/js/sb-admin-2.min.js') ?>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
 
     <script>
         $(document).ready(function() {
