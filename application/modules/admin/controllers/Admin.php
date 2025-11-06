@@ -5,6 +5,8 @@ class Admin extends Admin_Controller {
     // Loaded libraries and models properties  
     public $email;
     public $ion_auth;
+    public $bcrypt;
+    public $ion_auth_model;
     public $chart;
     public $stock;
     public $customer;

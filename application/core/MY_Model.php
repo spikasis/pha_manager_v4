@@ -8,7 +8,7 @@ class MY_Model extends CI_Model {
     protected $primary_key = 'id';
 
     public function __construct() {
-        parent::__construct();
+        // parent::__construct(); // Commented out - CI_Model has no constructor in CI 3.1.14+
 
         $this->load->database();
 

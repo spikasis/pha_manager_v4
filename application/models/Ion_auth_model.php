@@ -168,6 +168,83 @@ class Ion_auth_model extends CI_Model
 	 **/
 	protected $_cache_groups = array();
 
+	/**
+	 * identity column
+	 *
+	 * @var string
+	 **/
+	public $identity_column;
+
+	/**
+	 * store salt
+	 *
+	 * @var bool
+	 **/
+	public $store_salt;
+
+	/**
+	 * salt length
+	 *
+	 * @var int
+	 **/
+	public $salt_length;
+
+	/**
+	 * join
+	 *
+	 * @var array
+	 **/
+	public $join;
+
+	/**
+	 * hash method
+	 *
+	 * @var string
+	 **/
+	public $hash_method;
+
+	/**
+	 * default rounds
+	 *
+	 * @var int
+	 **/
+	public $default_rounds;
+
+	/**
+	 * random rounds
+	 *
+	 * @var bool
+	 **/
+	public $random_rounds;
+
+	/**
+	 * min rounds
+	 *
+	 * @var int
+	 **/
+	public $min_rounds;
+
+	/**
+	 * max rounds
+	 *
+	 * @var int
+	 **/
+	public $max_rounds;
+
+	/**
+	 * message start delimiter
+	 *
+	 * @var string
+	 **/
+	public $message_start_delimiter;
+
+	/**
+	 * message end delimiter
+	 *
+	 * @var string
+	 **/
+	public $message_end_delimiter;
+
 	public function __construct()
 	{
 		// parent::__construct(); // CI_Model doesn't have constructor in CI 3.1.14+
