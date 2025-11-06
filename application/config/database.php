@@ -70,12 +70,12 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'your_username',
-	'password' => 'your_password',
+	'hostname' => 'linux2917.grserver.gr',
+	'username' => 'spik',
+	'password' => '0382sp@#',
 	'database' => 'customers_db2',
 	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
+	'dbprefix' => 3306,
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
