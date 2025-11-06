@@ -51,7 +51,7 @@
                             <i class="fa fa-pause fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge"><?php echo count($on_hold) ?></div>
+                            <div class="huge"><?php echo $on_hold ?></div>
                             <div>Εκκρεμότητες</div>
                         </div>
                     </div>
@@ -359,7 +359,7 @@
         <div class="col-lg-3">
             <div class="panel panel-default panel-warning">
             <div class="panel-heading">
-                <i class="fa fa-bell fa-fw"></i> Κατασκευές Ανοιχτές       <span class="pull-right"><strong><?php echo count($moulds) ?></strong></span>
+                <i class="fa fa-bell fa-fw"></i> Κατασκευές Ανοιχτές       <span class="pull-right"><strong><?php echo is_array($moulds) ? count($moulds) : 0 ?></strong></span>
                 </div><!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
@@ -406,7 +406,7 @@
             </div><!-- /.panel -->  
             <div class="panel panel-default panel-danger">
             <div class="panel-heading">
-                <i class="fa fa-bell fa-fw "></i> Εκκρεμότητες Barcodes       <span class="pull-right"><strong><?php echo count($stock_bc) ?></strong></span>
+                <i class="fa fa-bell fa-fw "></i> Εκκρεμότητες Barcodes       <span class="pull-right"><strong><?php echo is_array($stock_bc) ? count($stock_bc) : 0 ?></strong></span>
                 </div><!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
