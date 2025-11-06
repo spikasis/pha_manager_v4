@@ -43,9 +43,23 @@ class Admin extends Admin_Controller {
     $year = DEFAULT_STATS_YEAR;
     $year_now = CURRENT_YEAR;
 
-    $user = $this->ion_auth->get_user_id();
-    $group = $this->ion_auth->get_users_groups($user->id)->result();
-    $group_id = $group[0]->id;
+    $user_id = $this->ion_auth->get_user_id();
+    
+    // Check if user ID is valid
+    if (!$user_id || !is_numeric($user_id)) {
+        redirect('/auth', 'refresh');
+        return;
+    }
+    
+    $groups = $this->ion_auth->get_users_groups($user_id)->result();
+    
+    // Check if user has groups
+    if (empty($groups)) {
+        show_error('User has no assigned groups. Please contact administrator.');
+        return;
+    }
+    
+    $group_id = $groups[0]->id;
     $data['group_id'] = $group_id;
 
     // Αν είναι admin
