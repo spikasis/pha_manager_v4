@@ -19,6 +19,9 @@ class Admin extends Admin_Controller {
     public $service;
     public $earlab;
     public $task;
+    public $doctor;
+    public $vendor;
+    public $model;
 
     function __construct() {
         parent::__construct();        
