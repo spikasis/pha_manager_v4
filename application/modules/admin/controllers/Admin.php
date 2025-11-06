@@ -4,25 +4,44 @@ class Admin extends Admin_Controller {
 
     function __construct() {
         parent::__construct();        
-
-        $this->load->model(array('admin/chart'));
-        $this->load->model(array('admin/stock'));
-        $this->load->model(array('admin/customer'));
-        $this->load->model(array('admin/pay'));
-        $this->load->model(array('admin/company'));
-        $this->load->model(array('admin/selling_point'));
-        $this->load->model(array('admin/eopyy_pay'));
-        $this->load->model(array('admin/balance_view'));
-        $this->load->model(array('admin/debt_view'));
-        $this->load->model(array('admin/service'));    
-        $this->load->model(array('admin/earlab'));
-        $this->load->model(array('admin/task'));
+        
+        // Load models - optimized single call  
+        $this->load->model(array(
+            'admin/chart',
+            'admin/stock',
+            'admin/customer',
+            'admin/pay',
+            'admin/company',
+            'admin/selling_point',
+            'admin/eopyy_pay',
+            'admin/balance_view',
+            'admin/debt_view',
+            'admin/service',
+            'admin/earlab',
+            'admin/task'
+        ));
         
    }
    
+    /**
+     * Common method to prepare dashboard data variables
+     */
+    private function prepareDashboardData($year, $year_now, $sp_id = null) {
+        $data = array();
+        $data['year'] = $year;
+        $data['year_now'] = $year_now;
+        
+        if ($sp_id) {
+            $data['sp_id'] = $sp_id;
+            $data['selling_point'] = $this->selling_point->get($sp_id);
+        }
+        
+        return $data;
+    }
+   
     public function index() {
-    $year = 2014;
-    $year_now = date('Y');
+    $year = DEFAULT_STATS_YEAR;
+    $year_now = CURRENT_YEAR;
 
     $user = $this->ion_auth->get_user_id();
     $group = $this->ion_auth->get_users_groups($user->id)->result();
@@ -34,17 +53,16 @@ class Admin extends Admin_Controller {
         // Λήψη επιλεγμένου υποκαταστήματος από GET ή default σε 1
         $sp_id = $this->input->get('sp');
 if (!$sp_id || !is_numeric($sp_id)) {
-    $sp_id = 1; // default safe fallback
+    $sp_id = DEFAULT_SELLING_POINT; // default safe fallback
 }
 
         $sp = $this->selling_point->get($sp_id);
 
         $data = $this->data_stats($year, $year_now, $sp_id);
+        $data = array_merge($data, $this->prepareDashboardData($year, $year_now, $sp_id));
         $data['selling_point'] = $sp;
         $data['selling_points'] = $this->selling_point->get_all();
         $data['group_id'] = 1;
-        $data['year'] = $year;
-        $data['year_now'] = $year_now;
 
         // Chart-specific στατιστικά για admin
         $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
@@ -201,10 +219,10 @@ $data['selected_range'] = $range_input;
         return $statistics;
     }
 
-        public function dashboard_levadia(){
+    public function dashboard_levadia(){
         
-        $year = 2014;
-        $year_now = date('Y');
+        $year = DEFAULT_STATS_YEAR;
+        $year_now = CURRENT_YEAR;
         
         $data = $this->data_stats($year, $year_now, 1);
         $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
@@ -215,10 +233,10 @@ $data['selected_range'] = $range_input;
         
     public function dashboard_thiva(){
         
-        $year = 2014;
-        $year_now = date('Y');
+        $year = DEFAULT_STATS_YEAR;
+        $year_now = CURRENT_YEAR;
         
-        $data = $this->data_stats($year, $year_now. 2);
+        $data = $this->data_stats($year, $year_now, 2);
         $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
 
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_thiva";            
@@ -324,11 +342,20 @@ $data['selected_range'] = $range_input;
     $eopyy_total = $this->stock->get_all('SUM(eopyy) AS eopyy', $ha_total_conditions);
     $ha = $this->stock->get_all('id', $ha_total_conditions);
 
-    foreach ($ha as $list) {
-        $total[] = $this->pay->get_all('SUM(pay) AS data', 'hearing_aid=' . $list['id']);
+    // OPTIMIZED: Single query instead of N+1 queries
+    $ha_ids = array_column($ha, 'id');
+    $total_all = 0;
+    
+    if (!empty($ha_ids)) {
+        $ha_ids_string = implode(',', array_map('intval', $ha_ids));
+        $total_pays_result = $this->pay->get_all(
+            'SUM(pay) AS total_payments', 
+            'hearing_aid IN (' . $ha_ids_string . ')'
+        );
+        $total_all = !empty($total_pays_result) && isset($total_pays_result[0]['total_payments']) 
+            ? (int)$total_pays_result[0]['total_payments'] 
+            : 0;
     }
-
-    $total_all = 1;  // Εδώ κάνουμε τον υπολογισμό
 
     $data['total_pays'] = $ha_total[0]['total'] - $eopyy_total[0]['eopyy'] - $total_all;
     $data['total_all'] = $total_all;
