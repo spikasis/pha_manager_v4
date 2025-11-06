@@ -3,10 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
-| Application Constants
+| Application Constants Configuration
 |--------------------------------------------------------------------------
 | 
-| Configuration constants for the PHA Manager application
+| This file defines application constants for the PHA Manager application
+| CodeIgniter expects a configuration array, so we define constants and 
+| provide an empty config array
 |
 */
 
@@ -39,3 +41,7 @@ define('CUSTOMER_STATUS_NO_SALE', 3);
 define('DATE_FORMAT_DISPLAY', 'd/m/Y');
 define('DATE_FORMAT_DATABASE', 'Y-m-d');
 define('DATETIME_FORMAT_DISPLAY', 'd/m/Y H:i');
+
+// CodeIgniter expects a configuration array
+// We provide an empty array since we're using constants instead
+$config = array();
