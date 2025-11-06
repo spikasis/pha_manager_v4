@@ -68,7 +68,7 @@ if (!$sp_id || !is_numeric($sp_id)) {
         $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
         $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
         $data['last_pays'] = $this->off_limits();
-        $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor', 'ekapty_code=0 AND YEAR(day_in)>=2024');
+        $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor, selling_point', 'ekapty_code=0 AND YEAR(day_in)>=2024');
 
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard";
         $this->load->view($this->_container, $data);

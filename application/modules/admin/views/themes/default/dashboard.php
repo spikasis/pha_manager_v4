@@ -332,14 +332,16 @@
                                 $doc_id = $this->doctor->get($list['doctor']);?>
                         
                         <a href="<?= base_url('admin/customers/view/' . $list['id']) ?>" class="list-group-item 
-                            <?php if ($list['selling_point']== 1): 
+                            <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
                                 echo 'list-group-item-info'; 
-                                elseif ($list['selling_point']== 2):
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
                                 echo 'list-group-item-warning';
                                 else:
                                 echo ' ';
                                 endif;
-                                echo json_encode($list['selling_point']);
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
                                 ?> 
                             ">
                             
@@ -425,14 +427,16 @@
                                 $days = round($delay / (60 * 60 * 24));
                             ?>                        
                         <a href="<?= base_url('admin/stocks/edit/' . $list['id']) ?>" class="list-group-item  
-                           <?php if ($list['selling_point']== 1): 
+                           <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
                                 echo 'list-group-item-info'; 
-                                elseif ($list['selling_point']== 2):
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
                                 echo 'list-group-item-warning';
                                 else:
                                 echo ' ';
                                 endif;
-                                echo json_encode($list['selling_point']);
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
                                 ?> 
                             ">
                             <i class="fa fa-tasks fa-fw"></i> 
@@ -523,14 +527,16 @@
                                 $days = round($delay / (60 * 60 * 24));
                             ?>                        
                         <a href="<?= base_url('admin/stocks/pays/' . $list['id']) ?>" class="list-group-item
-                           <?php if ($list['selling_point']== 1): 
+                           <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
                                 echo 'list-group-item-info'; 
-                                elseif ($list['selling_point']== 2):
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
                                 echo 'list-group-item-warning';
                                 else:
                                 echo ' ';
                                 endif;
-                                echo json_encode($list['selling_point']);
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
                                 ?> 
                             ">
                             <i class="fa fa-tasks fa-fw"></i> <?php echo $name->name ?>
@@ -569,14 +575,16 @@
                                 $this->load->model(array('admin/customer'));
                                 $name = $this->customer->get($list['customer_id']);?>
                         <a href="<?= base_url('admin/stocks/pays/' . $list['id']) ?>" class="list-group-item
-                           <?php if ($list['selling_point']== 1): 
+                           <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
                                 echo 'list-group-item-info'; 
-                                elseif ($list['selling_point']== 2):
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
                                 echo 'list-group-item-warning';
                                 else:
                                 echo ' ';
                                 endif;
-                                echo json_encode($list['selling_point']);
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
                                 ?> 
                             ">
                             <i class="fa fa-tasks fa-fw"></i> <?php echo $name->name ?>
