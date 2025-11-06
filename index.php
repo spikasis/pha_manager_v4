@@ -1,4 +1,7 @@
 <?php
+// Start output buffering early to prevent header issues
+ob_start();
+
 /**
  * CodeIgniter
  *
