@@ -4,7 +4,7 @@
                     <div class="copyright text-center my-auto">
                         <span>&copy; <?= date('Y') ?> Pikasis Hearing Aid Centers. 
                         Powered by <a href="#" class="text-primary">PHA Manager v4</a> | 
-                        <?php if (isset($CI->session) && $CI->session->userdata('user_id')): ?>
+                        <?php if ($this->ion_auth->logged_in()): ?>
                             Χρήστης: <?= $this->ion_auth->user()->row()->username ?>
                         <?php endif; ?>
                         </span>
