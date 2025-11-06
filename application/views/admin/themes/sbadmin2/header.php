@@ -18,7 +18,7 @@
     <link href="<?= base_url() ?>assets/sbadmin2/css/sb-admin-2.min.css" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="<?= base_url() ?>assets/sbladmin2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="<?= base_url() ?>assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <!-- Chart.js -->
     <script src="<?= base_url() ?>assets/sbadmin2/vendor/chart.js/Chart.min.js"></script>
