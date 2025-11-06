@@ -42472,3 +42472,77 @@ INFO - 2025-11-06 22:36:10 --> Controller Class Initialized
 DEBUG - 2025-11-06 22:36:10 --> File loaded: /var/www/vhosts/asal.gr/manager.pikasishearing.gr/application/views/welcome_message.php
 INFO - 2025-11-06 22:36:10 --> Final output sent to browser
 DEBUG - 2025-11-06 22:36:10 --> Total execution time: 0.2016
+ERROR - 2025-11-06 22:20:24 --> Severity: 8192 --> Creation of dynamic property CI_URI::$config is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\URI.php 102
+ERROR - 2025-11-06 22:20:24 --> Severity: 8192 --> Creation of dynamic property MY_Router::$uri is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Router.php 128
+ERROR - 2025-11-06 22:20:24 --> Severity: Warning --> include(C:\Users\spika\PHA_MANAGER_V4\application\views\errors\html\error_general.php): Failed to open stream: No such file or directory C:\Users\spika\PHA_MANAGER_V4\system\core\Exceptions.php 187
+ERROR - 2025-11-06 22:20:24 --> Severity: Warning --> include(): Failed opening 'C:\Users\spika\PHA_MANAGER_V4\application\views\errors\html\error_general.php' for inclusion (include_path='.;C:\php\pear') C:\Users\spika\PHA_MANAGER_V4\system\core\Exceptions.php 187
+ERROR - 2025-11-06 22:22:04 --> Severity: 8192 --> Creation of dynamic property CI_URI::$config is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\URI.php 102
+ERROR - 2025-11-06 22:22:04 --> Severity: 8192 --> Creation of dynamic property MY_Router::$uri is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Router.php 128
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property CI_URI::$config is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\URI.php 102
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property MY_Router::$uri is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Router.php 128
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> strpos(): Passing null to parameter #2 ($needle) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Router.php 239
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$benchmark is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$config is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$log is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$hooks is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$utf8 is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$uri is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$exceptions is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$router is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$output is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$security is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$input is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$lang is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property CI_DB_mysqli_driver::$failover is deprecated C:\Users\spika\PHA_MANAGER_V4\system\database\DB_driver.php 372
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$db is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 109
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> strtolower(): Passing null to parameter #1 ($string) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 160
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 301
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> session_set_cookie_params(): Session cookie parameters cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 326
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 353
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 363
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 364
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 365
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 366
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 424
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> session_set_save_handler(): Session save handler cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 110
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> session_start(): Session cannot be started after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 137
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$session is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Loader.php 1302
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> strtolower(): Passing null to parameter #1 ($string) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 160
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> strtolower(): Passing null to parameter #1 ($string) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 160
+ERROR - 2025-11-06 22:22:11 --> Severity: 8192 --> Creation of dynamic property Admin::$email is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Loader.php 1302
+ERROR - 2025-11-06 22:22:11 --> Severity: error --> Exception: Cannot call constructor C:\Users\spika\PHA_MANAGER_V4\application\models\Ion_auth_model.php 173
+ERROR - 2025-11-06 22:22:11 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at C:\Users\spika\PHA_MANAGER_V4\system\core\Exceptions.php:284) C:\Users\spika\PHA_MANAGER_V4\system\core\Common.php 575
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property CI_URI::$config is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\URI.php 102
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property MY_Router::$uri is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Router.php 128
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> strpos(): Passing null to parameter #2 ($needle) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Router.php 239
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$benchmark is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$config is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$log is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$hooks is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$utf8 is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$uri is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$exceptions is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$router is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$output is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$security is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$input is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property Admin::$lang is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Controller.php 83
+ERROR - 2025-11-06 22:22:24 --> Severity: 8192 --> Creation of dynamic property CI_DB_mysqli_driver::$failover is deprecated C:\Users\spika\PHA_MANAGER_V4\system\database\DB_driver.php 372
+ERROR - 2025-11-06 22:22:25 --> Severity: 8192 --> Creation of dynamic property Admin::$db is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 109
+ERROR - 2025-11-06 22:22:25 --> Severity: 8192 --> strtolower(): Passing null to parameter #1 ($string) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 160
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 301
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> session_set_cookie_params(): Session cookie parameters cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 326
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 353
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 363
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 364
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 365
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 366
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> ini_set(): Session ini settings cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 424
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> session_set_save_handler(): Session save handler cannot be changed after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 110
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> session_start(): Session cannot be started after headers have already been sent C:\Users\spika\PHA_MANAGER_V4\system\libraries\Session\Session.php 137
+ERROR - 2025-11-06 22:22:25 --> Severity: 8192 --> Creation of dynamic property Admin::$session is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Loader.php 1302
+ERROR - 2025-11-06 22:22:25 --> Severity: 8192 --> strtolower(): Passing null to parameter #1 ($string) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 160
+ERROR - 2025-11-06 22:22:25 --> Severity: 8192 --> strtolower(): Passing null to parameter #1 ($string) of type string is deprecated C:\Users\spika\PHA_MANAGER_V4\application\third_party\MX\Loader.php 160
+ERROR - 2025-11-06 22:22:25 --> Severity: 8192 --> Creation of dynamic property Admin::$email is deprecated C:\Users\spika\PHA_MANAGER_V4\system\core\Loader.php 1302
+ERROR - 2025-11-06 22:22:25 --> Severity: error --> Exception: Cannot call constructor C:\Users\spika\PHA_MANAGER_V4\application\models\Ion_auth_model.php 173
+ERROR - 2025-11-06 22:22:25 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at C:\Users\spika\PHA_MANAGER_V4\system\core\Exceptions.php:284) C:\Users\spika\PHA_MANAGER_V4\system\core\Common.php 575
