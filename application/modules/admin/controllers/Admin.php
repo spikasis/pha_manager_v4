@@ -43,6 +43,8 @@ if (!$sp_id || !is_numeric($sp_id)) {
         $data['selling_point'] = $sp;
         $data['selling_points'] = $this->selling_point->get_all();
         $data['group_id'] = 1;
+        $data['year'] = $year;
+        $data['year_now'] = $year_now;
 
         // Chart-specific στατιστικά για admin
         $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
@@ -63,6 +65,8 @@ if (!$sp_id || !is_numeric($sp_id)) {
             $sp_id = ($group_id == 4) ? 1 : 2;
             $data = $this->data_stats($year, $year_now, $sp_id);
             $data['sp_id'] = $sp_id;
+            $data['year'] = $year;
+            $data['year_now'] = $year_now;
             $data['selling_point'] = $this->selling_point->get($sp_id);
             $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_sp";
             $this->load->view($this->_container, $data);
@@ -70,6 +74,8 @@ if (!$sp_id || !is_numeric($sp_id)) {
 
         case 6:
             $data = $this->data_stats($year, $year_now, 'selling_point');
+            $data['year'] = $year;
+            $data['year_now'] = $year_now;
             $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
             $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
             $data['last_pays'] = $this->off_limits();
