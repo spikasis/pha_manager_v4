@@ -1,0 +1,191 @@
+<?php
+$CI =& get_instance();
+$user_id = $CI->ion_auth->get_user_id();
+$group = $CI->ion_auth->get_users_groups($user_id)->row();
+$group_id = $group->id;
+?>
+
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('admin/dashboard') ?>">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-headphones"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Pikasis <sup>CRM</sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'dashboard') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/dashboard') ?>">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Αρχική</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Διαχείριση
+    </div>
+
+    <?php if ($group_id == 1): // Admin ?>
+    
+    <!-- Nav Item - Customers -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/customers') ?>">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Πελάτες</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Stock Management Collapse Menu -->
+    <li class="nav-item <?= in_array($this->uri->segment(2), ['stocks', 'inventory']) ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStock" aria-expanded="true" aria-controls="collapseStock">
+            <i class="fas fa-fw fa-boxes"></i>
+            <span>Αποθήκη</span>
+        </a>
+        <div id="collapseStock" class="collapse <?= in_array($this->uri->segment(2), ['stocks', 'inventory']) ? 'show' : '' ?>" aria-labelledby="headingStock" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Διαχείριση Αποθήκης:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Όλα τα Ακουστικά</a>
+                <a class="collapse-item <?= ($this->uri->segment(3) == 'create') ? 'active' : '' ?>" href="<?= base_url('admin/stocks/create') ?>">Νέο Ακουστικό</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_onstock') ?>">Διαθέσιμα</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/on_debt') ?>">Σε Χρέωση</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Κατηγορίες:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/vendors') ?>">Κατασκευαστές</a>
+                <a class="collapse-item" href="<?= base_url('admin/models') ?>">Μοντέλα</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Services -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'services') ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServices" aria-expanded="true" aria-controls="collapseServices">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Επισκευές</span>
+        </a>
+        <div id="collapseServices" class="collapse <?= ($this->uri->segment(2) == 'services') ? 'show' : '' ?>" aria-labelledby="headingServices" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Διαχείριση Επισκευών:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/services') ?>">Όλες οι Επισκευές</a>
+                <a class="collapse-item" href="<?= base_url('admin/services/create') ?>">Νέα Επισκευή</a>
+                <a class="collapse-item" href="<?= base_url('admin/services/list_open') ?>">Ανοιχτές</a>
+                <a class="collapse-item" href="<?= base_url('admin/services/list_completed') ?>">Ολοκληρωμένες</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Laboratory -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'earlabs') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/earlabs') ?>">
+            <i class="fas fa-fw fa-flask"></i>
+            <span>Εργαστήριο</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Financial -->
+    <li class="nav-item <?= in_array($this->uri->segment(2), ['pays', 'eopyy_pays', 'financial']) ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFinancial" aria-expanded="true" aria-controls="collapseFinancial">
+            <i class="fas fa-fw fa-euro-sign"></i>
+            <span>Οικονομικά</span>
+        </a>
+        <div id="collapseFinancial" class="collapse <?= in_array($this->uri->segment(2), ['pays', 'eopyy_pays', 'financial']) ? 'show' : '' ?>" aria-labelledby="headingFinancial" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Διαχείριση:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/pays') ?>">Πληρωμές</a>
+                <a class="collapse-item" href="<?= base_url('admin/eopyy_pays') ?>">ΕΟΠΥΥ</a>
+                <a class="collapse-item" href="<?= base_url('admin/financial/reports') ?>">Αναφορές</a>
+            </div>
+        </div>
+    </li>
+
+    <?php elseif ($group_id == 2): // Υποκατάστημα ?>
+    
+    <!-- Nav Item - Customers (Branch) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/customers') ?>">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Πελάτες</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Sales (Branch) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'stocks') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/stocks') ?>">
+            <i class="fas fa-fw fa-shopping-cart"></i>
+            <span>Πωλήσεις</span>
+        </a>
+    </li>
+
+    <?php elseif ($group_id == 3): // Εργαστήριο ?>
+    
+    <!-- Nav Item - Repairs (Lab) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'services') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/services') ?>">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Επισκευές</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Tasks (Lab) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'tasks') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/tasks') ?>">
+            <i class="fas fa-fw fa-tasks"></i>
+            <span>Εργασίες</span>
+        </a>
+    </li>
+
+    <?php endif; ?>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Αναφορές & Ρυθμίσεις
+    </div>
+
+    <!-- Nav Item - Reports -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'reports') ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseReports">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Αναφορές</span>
+        </a>
+        <div id="collapseReports" class="collapse" aria-labelledby="headingReports" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Στατιστικά:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/reports/sales') ?>">Πωλήσεις</a>
+                <a class="collapse-item" href="<?= base_url('admin/reports/customers') ?>">Πελάτες</a>
+                <a class="collapse-item" href="<?= base_url('admin/reports/financial') ?>">Οικονομικά</a>
+            </div>
+        </div>
+    </li>
+
+    <?php if ($group_id == 1): // Only Admin sees settings ?>
+    <!-- Nav Item - Settings -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'settings') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/settings') ?>">
+            <i class="fas fa-fw fa-cogs"></i>
+            <span>Ρυθμίσεις</span>
+        </a>
+    </li>
+    <?php endif; ?>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+<!-- End of Sidebar -->
