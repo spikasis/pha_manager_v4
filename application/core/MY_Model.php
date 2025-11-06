@@ -30,7 +30,9 @@ class MY_Model extends CI_Model {
             $this->db->select($fields);
         }
 
-        if (count($where)) {
+        if (is_array($where) && count($where) > 0) {
+            $this->db->where($where);
+        } elseif (is_string($where) && $where != '') {
             $this->db->where($where);
         }
 

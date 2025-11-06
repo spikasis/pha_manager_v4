@@ -167,9 +167,11 @@ if (!$sp_id || !is_numeric($sp_id)) {
     $data['this_year_test'] = $this->chart->get_monthly_data($year, 1, 3, 2);
 
     // Μεμονωμένα KPIs
-    $data['current_sales'] = count($this->stock->get_all('id', 'YEAR(day_out)=' . $year_now . ' AND selling_point=' . $selling_point . ' AND (status=4 OR status=3)'));
+    $current_sales_result = $this->stock->get_all('id', 'YEAR(day_out)=' . $year_now . ' AND selling_point=' . $selling_point . ' AND (status=4 OR status=3)');
+    $data['current_sales'] = is_array($current_sales_result) ? count($current_sales_result) : 0;
     $data['stock_available'] = $this->stock_av();
-    $data['in_debt_customers'] = count($this->debt_view->get_all('id', 'balance<>0 AND selling_point=' . $selling_point));
+    $in_debt_result = $this->debt_view->get_all('id', 'balance<>0 AND selling_point=' . $selling_point);
+    $data['in_debt_customers'] = is_array($in_debt_result) ? count($in_debt_result) : 0;
     $data['on_hold'] = $this->on_hold($selling_point);
     $data['stock_ha'] = $this->stock->get_all('id, manufacturer', 'status=1');
 
@@ -460,14 +462,14 @@ $data['selected_range'] = $range_input;
     
     public function stock_av() {
         $stock = $this->stock->get_all('id, manufacturer', 'status=1');
-        $stock = count($stock);
+        $stock = is_array($stock) ? count($stock) : 0;
         return $stock;
     }
 
     public function on_hold($selling_point) {
         //$on_hold = $this->customer->get_all('id', 'status=5 AND selling_point = ' . $selling_point);
         $on_hold = $this->customer->get_all('id', 'pending=pending AND selling_point = ' . $selling_point);
-        $on_hold = count($on_hold);
+        $on_hold = is_array($on_hold) ? count($on_hold) : 0;
         return $on_hold;
         
     }
