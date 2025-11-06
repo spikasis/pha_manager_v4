@@ -170,7 +170,7 @@ class Ion_auth_model extends CI_Model
 
 	public function __construct()
 	{
-		parent::__construct();
+		// parent::__construct(); // CI_Model doesn't have constructor in CI 3.1.14+
 		$this->load->database();
 		$this->load->config('ion_auth', TRUE);
 		$this->load->helper('cookie');

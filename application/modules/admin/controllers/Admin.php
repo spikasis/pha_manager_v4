@@ -2,6 +2,22 @@
 
 class Admin extends Admin_Controller {
 
+    // Loaded libraries and models properties  
+    public $email;
+    public $ion_auth;
+    public $chart;
+    public $stock;
+    public $customer;
+    public $pay;
+    public $company;
+    public $selling_point;
+    public $eopyy_pay;
+    public $balance_view;
+    public $debt_view;
+    public $service;
+    public $earlab;
+    public $task;
+
     function __construct() {
         parent::__construct();        
         
