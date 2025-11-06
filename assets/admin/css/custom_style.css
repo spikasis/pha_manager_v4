@@ -1,0 +1,46 @@
+@page {
+    size: A4;
+    margin: 20mm 15mm 20mm 15mm; /* Πάνω, Δεξιά, Κάτω, Αριστερά */
+}
+body {
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    margin: 0;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.table, .table td, .table th {
+    border: 1px solid black;
+}
+.table td, .table th {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+.table th {
+    background-color: #f2f2f2;
+}
+hr {
+    border: 1px solid black;
+    margin: 20px 0;
+}
+.header-img {
+    height: 80px;
+    margin-bottom: 20px;
+}
+.section-title {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+}
+.bold {
+    font-weight: bold;
+}
+.terms {
+    font-size: 10pt;
+    font-style: italic;
+}

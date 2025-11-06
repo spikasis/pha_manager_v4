@@ -1,0 +1,503 @@
+<?php
+
+class Admin extends Admin_Controller {
+
+    function __construct() {
+        parent::__construct();        
+
+        $this->load->model(array('admin/chart'));
+        $this->load->model(array('admin/stock'));
+        $this->load->model(array('admin/customer'));
+        $this->load->model(array('admin/pay'));
+        $this->load->model(array('admin/company'));
+        $this->load->model(array('admin/selling_point'));
+        $this->load->model(array('admin/eopyy_pay'));
+        $this->load->model(array('admin/balance_view'));
+        $this->load->model(array('admin/debt_view'));
+        $this->load->model(array('admin/service'));    
+        $this->load->model(array('admin/earlab'));
+   }
+
+   
+   
+    public function index() {
+        
+        global $year;
+        global $year_now;
+        global $current_user;
+        
+        //prequestities...............
+        $year = 2014;
+        $year_now = date('Y');  
+        
+        //$this->db->query("CALL update_balance(1)");
+        //$this->db->query("CALL update_debt()");
+        
+        $user = $this->ion_auth->get_user_id();
+        $group = $this->ion_auth->get_users_groups($user->id)->result();
+        $data['group'] = $group;
+        
+        
+        $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
+        $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
+        $data['last_pays'] = $this->off_limits();
+        
+        //data for header indicators
+        $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor', 'ekapty_code=0 AND YEAR(day_in)>=' . $year_now);
+        $data['services'] = $this->service->get_all('id, ha_service, day_in', 'status = 2');
+        $data['on_hold'] = $this->on_hold('selling_point');
+        $data['moulds'] = $this->earlab->get_all('id, customer_id,date_order', 'date_delivery=0');
+        
+       
+          
+    
+        switch ($group[0]->id)
+        {
+            case 1:                
+                $data = $this->data_stats($year, $year_now, 'selling_point');
+                $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor', 'ekapty_code=0 AND YEAR(day_in)>=2024');
+                
+                $data['debt_count'] = $this->stock->getStocksWithRemainingBalance();
+                $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
+                $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
+                $data['last_pays'] = $this->off_limits();                
+                
+                $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard";
+                $this->load->view($this->_container, $data);
+            break;
+            case 4 : 
+                $data['group_id'] = $group[0]->id;
+                $data = $this->data_stats($year, $year_now, 1);
+                $data['sp_id'] = 1;
+                
+                $data['debt_count'] = $this->stock->getStocksWithRemainingBalance(1);
+                $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_sp";
+                $this->load->view($this->_container, $data); 
+            break;    
+            case 5 :               
+                $data['group_id'] = $group[0]->id;
+                $data = $this->data_stats($year, $year_now, 2);
+                $data['sp_id'] = 2;
+                
+                $data['debt_count'] = $this->stock->getStocksWithRemainingBalance(2);
+                $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_sp";
+                $this->load->view($this->_container, $data);
+                
+                break;
+            case 6:
+                
+                $data = $this->data_stats($year, $year_now, 'selling_point');
+                $data['group_id'] = $group[0]->id;
+                $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
+                $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
+                $data['last_pays'] = $this->off_limits();  
+                //$data['moulds'] = $this->earlab->get_all('id, customer_id,date_order', 'date_delivery=0');
+                
+                $data['debt_count'] = $this->stock->getStocksWithRemainingBalance();
+                $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard";
+                $this->load->view($this->_container, $data);
+
+                //$data['services'] = $this->service->get_all('id, ha_service, day_in', 'status = 2');
+                //$data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "service_list";
+                //$this->load->view($this->_container, $data);
+            break;
+        case 7 :               
+                $data['group_id'] = $group[0]->id;
+                $data = $this->data_stats($year, $year_now, 2);
+                $data['sp_id'] = 2;
+                
+                $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_sp";
+                $this->load->view($this->_container, $data);
+                
+                break;
+        }
+                        
+    }
+    
+    public function calendar(){
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "calendar"; 
+        $this->load->view($this->_container, $data);
+    }
+        
+    public function data_stats($year, $year_now, $selling_point){
+        
+        //  code for chart        
+        for ($year; $year <= $year_now; $year++) {
+            $statistics_general[] = $this->year_stats_general($year);
+        }
+        
+        if ($selling_point == 'selling_point') {$data['sp'] = 'selling_point';}
+        else {
+            $sp = $this->selling_point->get($selling_point);
+            $data['sp'] = $sp->id;
+            $data['selling_point'] = $sp;
+        }
+                
+        $data['statistics_general'] = $statistics_general;
+        
+        //this year stats
+        $data['this_year'] = $this->this_year($year_now);
+        $data['this_year_test'] = $this->chart->get_monthly_data($year, 1, 3, 2);
+        
+        //single numbers.........................
+        //$data['current_sales'] = $this->stock->get_all('COUNT(id) AS sales', ' YEAR(day_out)= ' . $year_now . ' AND selling_point = ' . $selling_point . ' AND status=4');
+        $data['current_sales'] = count($this->stock->get_all('id', ' YEAR(day_out)= ' . $year_now . ' AND selling_point = ' . $selling_point . ' AND (status = 4 OR status = 3)'));
+        //$data['current_sales_levadia'] = $this->year_stats($year_now, 1);
+        
+        //$data['current_sales_thiva'] = $this->year_stats($year_now, 2);
+        
+        $data['stock_available'] = $this->stock_av();
+        
+        $data['in_debt_customers'] = count($this->debt_view->get_all('id', 'balance<>0 AND selling_point = ' . $selling_point));
+        
+        $data['on_hold'] = $this->on_hold($selling_point);
+        $data['stock_ha'] = $this->stock->get_all('id, manufacturer', 'status=1');
+
+        $data['stock_debt'] = $this->debt_view->get_all('' , 'balance <> 0 AND day_out<>0 AND selling_point = ' . $selling_point );        
+
+        $data['on_hold_debt'] = $this->debt_view->get_all('' , 'balance<>0 AND day_out=0 AND selling_point=' . $selling_point );         
+
+        $data['on_hold_names'] = $this->customer->get_all('id, name, doctor, status, selling_point', 'pending=pending AND selling_point=' . $selling_point );        
+        
+        //financial data--------------------------------------------------------
+        $data['pays'] = $this->pay->get_all('id, customer, date, pay');
+
+        $debt_now = $this->debt_view->get_all('SUM(balance) AS data', 'YEAR(day_out)= ' . $year_now . ' AND selling_point=' . $selling_point);
+        $data['sum_debt'] = $debt_now;
+        $data['sum_debt_on_hold'] = $this->debt_view->get_all('SUM(balance) AS data', 'day_out = 0 AND selling_point=' . $selling_point );
+        
+        $data['on_test'] = $this->stock->get_all('id, manufacturer, customer_id, day_out', 'status = 6');
+        
+        $data['avg_price'] = $this->stock->get_all('ROUND(AVG(ha_price), 0) AS data', 'YEAR(day_out) = ' . $year_now . ' AND (stocks.status=4 OR stocks.status=3)'); 
+
+        $data['year_now'] = $year_now;
+               
+        //$full_debt = $this->debt_view->get_all('SUM(balance) AS data');
+        $old_debt = $this->debt_view->get_all('SUM(balance) AS data', ' YEAR(day_out)< ' . $year_now . ' AND YEAR(day_out)<>0 ');
+        $data['old_debt'] = $old_debt[0];
+        // endof code for chart 
+        
+        //eopyy        
+        $data['eopyy_sum'] = $this->stock->get_all('SUM(eopyy) AS data', 'day_out<>0 ');
+        $data['eopyy_pays'] = $this->eopyy_pay->get_all('SUM(price) AS data');        
+        $data['eopyy_now'] = array_sum($data['eopyy_sum'][0])-array_sum( $data['eopyy_pays'][0]);               
+        //endof_eopyy 
+        
+        $data['services'] = $this->service->get_all('id, ha_service, day_in', 'status = 2');       
+        $data['moulds'] = $this->earlab->get_all('id, customer_id,date_order', 'date_delivery=0');
+        $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor, selling_point', 'ekapty_code=0 AND YEAR(day_in)>=2024 AND selling_point=' . $selling_point);
+        $data['year_debt_sp'] = $this->stock->get_all('SUM(debt)', 'YEAR(day_out)=' . $year . ' AND selling_point=' . $selling_point);
+        
+        return $data;
+    }
+    
+    public function statistics_levadia($year, $selling_point, $year_now)
+    {
+        for ($year; $year <= $year_now; $year++) {
+            $statistics_levadia[] = $this->year_stats($year, $selling_point);
+        }        
+    
+        return $statistics_levadia;
+    }
+    
+    public function statistics($year, $selling_point, $year_now)
+    {
+        for ($year; $year <= $year_now; $year++) {
+            $this_year = json_encode($year);
+            $statistics[] = $this->stock->get_all('COUNT(id) ', 'YEAR(day_out)=' . $year . ' AND selling_point=' . $selling_point);
+        } 
+        return $statistics;
+    }
+
+        public function dashboard_levadia(){
+        
+        $year = 2014;
+        $year_now = date('Y');
+        
+        $data = $this->data_stats($year, $year_now, 1);
+        $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
+
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_levadia";            
+        $this->load->view($this->_container, $data);        
+    }
+        
+    public function dashboard_thiva(){
+        
+        $year = 2014;
+        $year_now = date('Y');
+        
+        $data = $this->data_stats($year, $year_now. 2);
+        $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
+
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_thiva";            
+        $this->load->view($this->_container, $data);        
+    }
+    
+    public function off_limits()
+    {
+        $series = $this->stock->get_all('', 'debt<>0');
+        foreach ($series as $list):            
+            $last_pays[] = $this->pay->get_all('id, customer, date', ' customer=' . $list['customer_id'], '', '', '', 'customer');
+            
+        endforeach;
+        
+        return $last_pays;
+    }
+    
+    
+    public function dashboard($selling_point = null, $year = null)
+{
+    // Προεπιλογή για το τρέχον έτος
+    $current_year = date('Y');
+    $data['year'] = $year ? $year : 'all';  // Αν δεν υπάρχει έτος, επιλέγουμε "all" για συνολικά στοιχεία
+    $data['selling_point'] = $selling_point;
+
+    // Δημιουργία των συνθηκών για το query για τον πίνακα `stocks`
+    $conditions = array();
+
+    // Αν έχει επιλεγεί selling_point
+    if (!is_null($selling_point)) {
+        $conditions[] = 'selling_point = ' . $selling_point;
+    }
+
+    // Αν έχει επιλεγεί έτος, προσθέτουμε τη συνθήκη στο query
+    if (!is_null($year) && $year != "all") {
+        $conditions[] = 'YEAR(day_out) = ' . $year;
+    }
+
+    // Δημιουργία του where condition αν υπάρχουν συνθήκες για τον πίνακα `stocks`
+    $where = !empty($conditions) ? implode(' AND ', $conditions) : null;
+
+    // Δημιουργία των συνθηκών για το query για τον πίνακα `customers`
+    $customer_conditions = array();
+
+    // Έλεγχος για το έτος για τον πίνακα `customers`
+    if (!is_null($year) && $year != "all") {
+        $customer_conditions[] = 'YEAR(first_visit) = ' . $year;
+    }
+
+    // Έλεγχος για το selling_point για τον πίνακα `customers`
+    if (!is_null($selling_point)) {
+        $customer_conditions[] = 'selling_point = ' . $selling_point;
+    }
+
+    // Δημιουργία του where condition αν υπάρχουν συνθήκες για τον πίνακα `customers`
+    $customer_where = !empty($customer_conditions) ? implode(' AND ', $customer_conditions) : null;
+
+    // Κλήση του μοντέλου με τις παραμέτρους για τις πωλήσεις
+    $data['sales'] = $this->stock->get_all('COUNT(id) AS data', $where);
+
+    // Κλήση του μοντέλου για τα συνολικά χρέη
+    $data['debt'] = $this->stock->get_all('SUM(debt) AS data', $where);
+
+    // Κλήση του μοντέλου για τις μη πωλήσεις
+    $no_sales_conditions = $customer_where ? $customer_where . ' AND status = 3' : 'status = 3';
+    $data['no_sales'] = $this->customer->get_all('COUNT(id) AS data', $no_sales_conditions);
+
+    // Κλήση του μοντέλου για τη μέση τιμή
+    $avg_price_conditions = $where ? $where . ' AND stocks.status = 4' : 'stocks.status = 4';
+    $data['avg_price'] = $this->stock->get_all('ROUND(AVG(ha_price), 0) AS data', $avg_price_conditions);
+
+    // Στατιστικά τύπων ακουστικών
+    $data['stock_type_stats'] = $this->stock->getStockByHaType($year, $selling_point);
+
+    // Γραφήματα για κάθε μήνα
+    for($i = 1; $i <= 12; $i++) {
+        $monthly_conditions = $where ? $where . ' AND MONTH(day_out) = ' . $i : 'MONTH(day_out) = ' . $i;
+        $sales_graph[] = $this->stock->get_all('COUNT(id) AS data', $monthly_conditions);
+
+        $monthly_no_sales_conditions = $no_sales_conditions . ' AND MONTH(first_visit) = ' . $i;
+        $nosales_graph[] = $this->customer->get_all('COUNT(id) AS data', $monthly_no_sales_conditions);
+
+        $visits_conditions = $customer_where ? $customer_where . ' AND MONTH(first_visit) = ' . $i : 'MONTH(first_visit) = ' . $i;
+        $visits[] = $this->customer->get_all('COUNT(id) AS data', $visits_conditions);
+    }
+
+    // Προετοιμασία δεδομένων για τα γραφήματα
+    $data['sales_graph'] = $this->chart->clean_column(json_encode($sales_graph));
+    $data['nosales_graph'] = $this->chart->clean_column(json_encode($nosales_graph));
+    $data['visits'] = $this->chart->clean_column(json_encode($visits));
+
+    // Δεδομένα για τα γραφήματα κατασκευαστών και γιατρών
+    $data['brands_graph'] = $this->chart->clean_pie(json_encode($this->chart->get_manufacturer_data($year, $selling_point)));
+    $data['doc_dat'] = $this->chart->clean_pie(json_encode($this->chart->get_doctor_data($year, $selling_point)));
+
+    // Χρέη που δεν έχουν πληρωθεί
+    $debt_conditions = $where ? $where . ' AND balance <> 0' : 'balance <> 0';
+    $data['debt_new'] = $this->stock->get_all('SUM(debt) as data', $debt_conditions);
+
+    // Υπολογισμός χρέους για το έτος
+    $ha_total_conditions = $where ? $where : '';
+    $ha_total = $this->stock->get_all('SUM(ha_price) AS total', $ha_total_conditions);
+    $eopyy_total = $this->stock->get_all('SUM(eopyy) AS eopyy', $ha_total_conditions);
+    $ha = $this->stock->get_all('id', $ha_total_conditions);
+
+    foreach ($ha as $list) {
+        $total[] = $this->pay->get_all('SUM(pay) AS data', 'hearing_aid=' . $list['id']);
+    }
+
+    $total_all = 1;  // Εδώ κάνουμε τον υπολογισμό
+
+    $data['total_pays'] = $ha_total[0]['total'] - $eopyy_total[0]['eopyy'] - $total_all;
+    $data['total_all'] = $total_all;
+
+    // Δεδομένα για τα γραφήματα
+    $data['chart_data'] = $this->stock->fetchChartData($year, $selling_point);
+    $data['sp'] = $this->selling_point->get($selling_point);
+
+    // Ορισμός του τίτλου ανάλογα με την επιλογή έτους ή "συνολικά"
+    if ($year === null || $year == 'all') {
+        $data['title'] = 'Συνολικά Στατιστικά';
+    } else {
+        $data['title'] = 'Στατιστικά Έτους ' . $year;
+    }
+
+    // Φόρτωση του view
+    $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_year";
+    $this->load->view($this->_container, $data);
+}
+
+
+    
+    public function year_stats($year, $selling_point) {
+        
+        $series_data1 = $this->chart->get_monthly_data($year, $selling_point, 4, 3);
+        $series_data1 = json_encode($series_data1);
+        $series_data1 = $this->chart->clean_column($series_data1);
+        
+        $series_data2 = $this->chart->get_monthly_nosale($year, $selling_point, 3);
+        $series_data2 = json_encode($series_data2);
+        $series_data2 = $this->chart->clean_column($series_data2);
+        
+        $data = array(
+            'year' => $year,
+            'sales' => array_sum(json_decode($series_data1)),
+            'nosales' => array_sum(json_decode($series_data2)),
+        );
+
+        return $data;
+    }
+    
+    public function year_stats_general($year) {
+        
+        $series_data1 = $this->chart->get_monthly_data($year, 1, 4, 3);
+        $series_data2 = $this->chart->get_monthly_data($year, 2, 4, 3);
+        
+        $series_data1 = json_encode($series_data1);
+        $series_data2 = json_encode($series_data2);
+        
+        $series_data1 = $this->chart->clean_column($series_data1);
+        $series_data2 = $this->chart->clean_column($series_data2);
+        
+        $series_data3 = $this->chart->get_monthly_nosale($year, 1, 3);
+        $series_data4 = $this->chart->get_monthly_nosale($year, 2, 3);
+        
+        $series_data3 = json_encode($series_data3);
+        $series_data4 = json_encode($series_data4);
+        
+        $series_data3 = $this->chart->clean_column($series_data3);
+        $series_data4 = $this->chart->clean_column($series_data4);
+        
+        $data = array(
+                'year' => $year,
+                'sales' => array_sum(json_decode($series_data1))+array_sum(json_decode($series_data2)),
+                'nosales' => array_sum(json_decode($series_data3))+array_sum(json_decode($series_data4)),
+            );
+
+        return $data;
+    }
+    
+    public function stock_av() {
+        $stock = $this->stock->get_all('id, manufacturer', 'status=1');
+        $stock = count($stock);
+        return $stock;
+    }
+
+    public function on_hold($selling_point) {
+        //$on_hold = $this->customer->get_all('id', 'status=5 AND selling_point = ' . $selling_point);
+        $on_hold = $this->customer->get_all('id', 'pending=pending AND selling_point = ' . $selling_point);
+        $on_hold = count($on_hold);
+        return $on_hold;
+        
+    }
+    
+    public function pending_full() {
+        //$on_hold = $this->customer->get_all('id', 'status=5 AND selling_point = ' . $selling_point);
+        $on_hold = $this->customer->get_all('*', 'pending=pending');
+        
+        return $on_hold;
+    }
+    
+    /*
+    public function debt($year) {
+        //$debt_tmp = $this->chart->get_debt_sum();
+        $debt1 = $this->chart->get_debt_sum($year);
+        $debt2 = json_encode($debt1);
+        $debt = $this->chart->clean_column($debt2);
+        
+        $data = array(            
+            'debt' => array_sum(json_decode($debt)),
+        );
+        
+        return $data;
+    }
+    */
+    public function eopyy_sum() {
+        //$debt_tmp = $this->chart->get_debt_sum();
+        $debt1 = $this->chart->get_debt_eopyy();
+        $debt2 = json_encode($debt1);
+        $debt = $this->chart->clean_column($debt2);
+        
+        $data = array(            
+            'debt' => array_sum(json_decode($debt)),
+        );
+        
+        return $data;
+    }  
+    
+    public function eopyy_pays(){
+        $debt1 = $this->chart->get_pays_eopyy();
+        $debt2 = json_encode($debt1);
+        $debt = $this->chart->clean_column($debt2);
+        
+        $data = array(            
+            'pays' => array_sum(json_decode($debt)),
+        );
+        
+        return $data;        
+    }
+
+
+    public function this_year($year){
+                $tmp = json_encode($this->chart->get_monthly_data($year, 1, 4, 3)); 
+                //$tmp2 = json_encode($this->chart->get_monthly_data($year, 2, 4, 3)); 
+                
+                //$tmp = var_dump($tmp1 + $tmp2);
+                $data = $this->chart->clean_column_dash($tmp);
+                /*for($i=1; $i<=12; $i++)
+                {
+                    $data = $this->stock->get_all('COUNT(stocks.id) AS pcs', 'MONTH(stocks.day_out) =' . $i . ' AND YEAR(stocks.day_out) =' . $year);
+                }
+                */
+                return $data;
+    }
+    
+    public function avg_price($year, $selling_point){
+        
+        $tmp = $this->chart->get_debt_avg($year, $selling_point);  
+        
+        $data = number_format($tmp[0]->mprice, 0, '.', '');
+
+        return $data;        
+    }
+    
+    public function ha_type_stats($year, $selling_point, $type){
+        
+        $tmp = $this->chart->get_ha_type_stats($year, $selling_point, $type);  
+        
+        $data = number_format($tmp[0]->mprice, 0, '.', '');
+
+        return $data;
+    }
+
+}
