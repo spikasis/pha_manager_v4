@@ -1,287 +1,311 @@
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">
-        Στοιχεία <?= isset($year_now) ? $year_now : date('Y') ?> - Θήβα
-    </h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="window.print()">
-        <i class="fas fa-download fa-sm text-white-50"></i> Εκτύπωση
-    </a>
-</div>
-
-<!-- Flash Messages -->
-<?php if ($this->session->flashdata('message')): ?>
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <?= $this->session->flashdata('message') ?>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-<?php endif; ?>
-
-<!-- Selling Point Selector (για Admin) -->
-<?php if (isset($selling_points) && is_array($selling_points) && count($selling_points) > 1): ?>
-<div class="row mb-4">
-    <div class="col-lg-3 col-md-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <label for="selling_point" class="font-weight-bold text-info">Υποκατάστημα:</label>
-                <select id="selling_point" name="selling_point" class="form-control" onchange="changeSellingPoint(this.value)">
-                    <option value="">-- Επιλέξτε --</option>
-                    <?php foreach ($selling_points as $sp): ?>
-                        <option value="<?= $sp['id'] ?>" <?= ($sp['id'] == $selected_selling_point ? 'selected' : '') ?>>
-                            <?= $sp['city'] ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Στατιστικά Θήβας</h1>
+            <?php //echo json_encode($statistics) ?>
+        </div><!-- /.col-lg-12 -->
+    </div><!-- /.row -->
+    <div class="row">
+        <?php if ($this->session->flashdata('message')): ?>
+            <div class="col-lg-12 col-md-12">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <?= $this->session->flashdata('message') ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-check-square fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $current_sales_thiva['sales'] ?></div>
+                            <div>Πωλήσεις Θήβα</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/customers/get_sold') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
-</div>
-<?php endif; ?>
-
-<!-- Quick Actions Row -->
-<div class="row">
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a href="<?= base_url('admin/customers/create') ?>" class="btn btn-primary btn-block shadow-sm py-4 text-decoration-none">
-            <div class="text-center">
-                <i class="fas fa-user-plus fa-2x mb-2"></i>
-                <div class="font-weight-bold">Νέος Πελάτης</div>
-            </div>
-        </a>
-    </div>
-    
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a href="<?= base_url('admin/stocks/create') ?>" class="btn btn-success btn-block shadow-sm py-4 text-decoration-none">
-            <div class="text-center">
-                <i class="fas fa-headphones fa-2x mb-2"></i>
-                <div class="font-weight-bold">Νέο Ακουστικό</div>
-            </div>
-        </a>
-    </div>
-    
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a href="<?= base_url('admin/services/create') ?>" class="btn btn-info btn-block shadow-sm py-4 text-decoration-none">
-            <div class="text-center">
-                <i class="fas fa-wrench fa-2x mb-2"></i>
-                <div class="font-weight-bold">Νέα Επισκευή</div>
-            </div>
-        </a>
-    </div>
-    
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a href="<?= base_url('admin/tasks/create') ?>" class="btn btn-warning btn-block shadow-sm py-4 text-decoration-none">
-            <div class="text-center">
-                <i class="fas fa-clipboard-list fa-2x mb-2"></i>
-                <div class="font-weight-bold">Νέα Εργασία</div>
-            </div>
-        </a>
-    </div>
-</div>
-
-<!-- Tables Row -->
-<div class="row">
-
-    <!-- Ανοιχτές Εργασίες -->
-    <div class="col-xl-4 col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-warning">
-                    <i class="fas fa-clipboard-list"></i> Ανοιχτές Εργασίες
-                </h6>
-                <span class="badge badge-warning badge-pill">
-                    <?= isset($tasks) && is_array($tasks) ? count($tasks) : '0' ?>
-                </span>
-            </div>
-            <div class="card-body p-0">
-                <?php if (isset($tasks) && !empty($tasks)): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" width="100%" cellspacing="0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th class="border-0">Πελάτης</th>
-                                    <th class="border-0">Ημερομηνία</th>
-                                    <th class="border-0">Κατάσταση</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach (array_slice($tasks, 0, 5) as $task): ?>
-                                <tr>
-                                    <td>
-                                        <div class="font-weight-bold text-dark">
-                                            <?= isset($task['customer_name']) ? $task['customer_name'] : 'Κ/Α' ?>
-                                        </div>
-                                        <small class="text-muted">
-                                            <?= isset($task['acoustic_serial']) ? 'S/N: ' . $task['acoustic_serial'] : '' ?>
-                                        </small>
-                                    </td>
-                                    <td class="text-muted">
-                                        <?= isset($task['created_at']) ? date('d/m/Y', strtotime($task['created_at'])) : 'Κ/Α' ?>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-warning">Ενεργή</span>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php if (count($tasks) > 5): ?>
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <a href="<?= base_url('admin/tasks') ?>" class="btn btn-sm btn-outline-warning">
-                                            Προβολή όλων (<?= count($tasks) ?>)
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-shopping-cart fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $on_hold ?></div>
+                            <div>Εκκρεμείς Παραγγελίες</div>
+                        </div>
                     </div>
-                <?php else: ?>
-                    <div class="p-3 text-center text-muted">
-                        <i class="fas fa-clipboard-list fa-2x mb-2 opacity-50"></i>
-                        <p class="mb-0">Δεν υπάρχουν ανοιχτές εργασίες</p>
+                </div>
+                <a href="<?= base_url('admin/customers/get_onhold') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
                     </div>
-                <?php endif; ?>
+                </a>
             </div>
         </div>
-    </div>
-
-    <!-- Ανοιχτές Κατασκευές -->
-    <div class="col-xl-4 col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-info">
-                    <i class="fas fa-flask"></i> Ανοιχτές Κατασκευές
-                </h6>
-                <span class="badge badge-info badge-pill">
-                    <?= isset($moulds) && is_array($moulds) ? count($moulds) : '0' ?>
-                </span>
-            </div>
-            <div class="card-body p-0">
-                <?php if (isset($moulds) && !empty($moulds)): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" width="100%" cellspacing="0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th class="border-0">Πελάτης</th>
-                                    <th class="border-0">Παραγγελία</th>
-                                    <th class="border-0">Κατάσταση</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach (array_slice($moulds, 0, 5) as $mould): ?>
-                                <tr>
-                                    <td>
-                                        <div class="font-weight-bold text-dark">
-                                            <?= isset($mould['customer_name']) ? $mould['customer_name'] : 'Πελάτης #' . $mould['customer_id'] ?>
-                                        </div>
-                                    </td>
-                                    <td class="text-muted">
-                                        <?= isset($mould['date_order']) ? date('d/m/Y', strtotime($mould['date_order'])) : 'Κ/Α' ?>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-info">Κατασκευή</span>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php if (count($moulds) > 5): ?>
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <a href="<?= base_url('admin/earlabs') ?>" class="btn btn-sm btn-outline-info">
-                                            Προβολή όλων (<?= count($moulds) ?>)
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bomb fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $in_debt_customers; //$current_sales['nosales'] ?></div>
+                            <div>Οφειλέτες</div>
+                        </div>
                     </div>
-                <?php else: ?>
-                    <div class="p-3 text-center text-muted">
-                        <i class="fas fa-flask fa-2x mb-2 opacity-50"></i>
-                        <p class="mb-0">Δεν υπάρχουν ανοιχτές κατασκευές</p>
+                </div>
+                <a href="<?= base_url('admin/customers/get_all_pays') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
                     </div>
-                <?php endif; ?>
+                </a>
             </div>
         </div>
-    </div>
-
-    <!-- Ακουστικά σε Εκκρεμότητα -->
-    <div class="col-xl-4 col-lg-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-danger">
-                    <i class="fas fa-exclamation-triangle"></i> Ακουστικά Εκκρεμότητας
-                </h6>
-                <span class="badge badge-danger badge-pill">
-                    <?= isset($stock_bc) && is_array($stock_bc) ? count($stock_bc) : '0' ?>
-                </span>
-            </div>
-            <div class="card-body p-0">
-                <?php if (isset($stock_bc) && !empty($stock_bc)): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" width="100%" cellspacing="0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th class="border-0">Serial</th>
-                                    <th class="border-0">Μοντέλο</th>
-                                    <th class="border-0">Παραλαβή</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach (array_slice($stock_bc, 0, 5) as $stock): ?>
-                                <tr>
-                                    <td>
-                                        <div class="font-weight-bold text-dark">
-                                            <?= isset($stock['serial']) ? $stock['serial'] : 'Κ/Α' ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted">
-                                            <?= isset($stock['ha_model']) ? $stock['ha_model'] : 'Κ/Α' ?>
-                                        </div>
-                                        <small class="text-muted">
-                                            <?= isset($stock['vendor']) ? $stock['vendor'] : '' ?>
-                                        </small>
-                                    </td>
-                                    <td class="text-muted">
-                                        <?= isset($stock['day_in']) ? date('d/m/Y', strtotime($stock['day_in'])) : 'Κ/Α' ?>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php if (count($stock_bc) > 5): ?>
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <a href="<?= base_url('admin/stocks') ?>" class="btn btn-sm btn-outline-danger">
-                                            Προβολή όλων (<?= count($stock_bc) ?>)
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-barcode fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $stock_available ?></div>
+                            <div>Διαθέσιμα Αποθήκης</div>
+                        </div>
                     </div>
-                <?php else: ?>
-                    <div class="p-3 text-center text-muted">
-                        <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
-                        <p class="mb-0">Όλα τα ακουστικά επεξεργάστηκαν</p>
+                </div>
+                <a href="<?= base_url('admin/stocks/get_onstock') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
                     </div>
-                <?php endif; ?>
+                </a>
             </div>
         </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-users fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $current_sales['nosales'] ?></div>
+<!--                        <div class="huge"><?php echo $current_sales_thiva['sales'] ?></div>  -->
+                            <div>Ενδιαφερόμενοι</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/get_nosales') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-euro fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $eopyy_now ?></div>
+                            <div>Οφειλές ΕΟΠΥΥ</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/customers/get_all_pays') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>        
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bank fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">€ <?php echo array_sum($sum_debt) ?></div>
+                            <div>Οφειλές Πελατών</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/get_all_pays') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div> 
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-euro fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $avg_price ?></div>
+                            <div>Μέση Τιμή</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/get_onstock') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div> 
     </div>
-
-</div>
-
-
-
-<!-- JavaScript -->
+<!--start of graphs ---------------->    
+    <div class="row">        
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Ετήσια Στατιστικά Πωλήσεων 
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="<?php $stats = 'chart-year' ?>">Λιβαδειά</a></li>
+                                <li><a href="<?php //$stats = 'chart-year2' ?>">Θήβα</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- /.panel-heading -->
+                <div id="panel-body">
+                    <div id="<?php echo $stats ?>"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Πωλήσεις Τρέχοντος Έτους
+                    <div class="pull-right">
+                        <div class="btn-group">
+                           <!-- <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions
+                                <span class="caret"></span>
+                            </button> -->
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#">Πόλη</a>
+                                </li>
+                                <li><a href="#">Λιβαδειά</a>
+                                </li>
+                                <li><a href="#">Θήβα</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- /.panel-heading -->
+                <div id="panel-body">
+                    <div id="chart-this-year"><?php //echo $this_year ?></div>
+                </div>
+            </div>
+        </div>        
+    </div>
+<!--endof graphs section------------------------------------------------------->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Βιβλιάρια σε εκκρεμότητα
+                </div><!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <?php foreach ($on_hold_names as $key => $list): ?>
+                        <?php  
+                                $this->load->model(array('admin/doctor'));
+                                $doc_id = $this->doctor->get($list['doctor']);?>
+                        <a href="<?= base_url('admin/customers/view/' . $list['id']) ?>" class="list-group-item">
+                            <i class="fa fa-tasks fa-fw"></i> <?php echo $list['name'] ?>
+                            <span class="pull-right text-muted small"><em><?php echo $doc_id->doc_name ?></em></span>
+                        </a>
+                        <?php endforeach; ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/customers/get_onhold') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->   
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Εκκρεμότητες Δόσεων      <span class="pull-right"><strong>€ <?php echo array_sum($sum_debt) ?></strong></span>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <?php foreach ($stock_debt as $key => $list): ?>
+                        <?php  
+                                $this->load->model(array('admin/customer'));
+                                $name = $this->customer->get($list['customer_id']);?>
+                        <a href="<?= base_url('admin/stocks/pays/' . $list['id']) ?>" class="list-group-item">
+                            <i class="fa fa-tasks fa-fw"></i> <?php echo $name->name ?>
+                            <span class="pull-right text-muted small"><em>€<?php echo $list['debt'] ?></em></span>
+                        </a>                        
+                        <?php endforeach; ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/customers/get_all_pays') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->   
+        </div>
+    </div>  
+</div><!-- /#page-wrapper -->
 <script>
-<?php if (isset($selling_points) && is_array($selling_points) && count($selling_points) > 1): ?>
-function changeSellingPoint(id) {
-    if (!id || isNaN(id)) return;
-    const year = <?= json_encode(isset($year_now) ? $year_now : date('Y')) ?>;
-    window.location.href = "<?= base_url('admin/dashboard/index') ?>?sp=" + id;
-}
-<?php endif; ?>
-
-
+    new Morris.Bar({
+        element: 'chart-year',
+        data: <?php echo json_encode($statistics_thiva) ?>,       
+        xkey: 'year',
+        ykeys: ['sales', 'nosales'],
+        labels: ['Sales', 'Missed Sales'],
+        xLabels: ['year']
+    });
+    new Morris.Bar({
+        element: 'chart-this-year',
+        data: <?php echo $this_year ?> ,
+        xkey: 'month',
+        ykeys: ['data'],
+        labels: ['Μηνιαίες Πωλήσεις']
+    });  
 </script>

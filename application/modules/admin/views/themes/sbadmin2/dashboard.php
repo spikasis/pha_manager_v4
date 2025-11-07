@@ -1,390 +1,636 @@
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Αρχική Σελίδα</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-download fa-sm text-white-50"></i> Εξαγωγή Αναφοράς
-    </a>
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Customers Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Συνολικοί Πελάτες</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= isset($total_customers) ? number_format($total_customers) : '0' ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                    </div>
+<div id="page-wrapper" id="hidden_div">
+    <div class="row">
+        <div class="col-lg-12" >
+            <h1 class="page-header" >Γενικά Στοιχεία    
+                <button type="button" class="btn btn-success  hidden-print" onclick="hideFunction('hidden_div')" style="float: right">Εμφάνιση</button>
+                <!--
+                <a  href="<?= base_url('admin/customers/create') ?>" class="btn btn-success  hidden-print" style="float: right">Νέος Πελάτης</a>
+                <a  href="<?= base_url('admin/stocks/create') ?>" class="btn btn-warning" style="float: right">Νέο Ακουστικό</a>
+                <a  href="<?= base_url('admin/services/create') ?>" class="btn btn-info hidden-print" style="float: right">Προσθήκη Επισκευής</a>                
+                -->
+                </h1>            
+            </div><!-- /.col-lg-12 -->
+        </div><!-- /.row -->
+        <div class="row" id="hidden_div" >
+        <?php if ($this->session->flashdata('message')): ?>
+            <div class="col-lg-12 col-md-12">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <?= $this->session->flashdata('message') ?>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Stock Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Διαθέσιμα Ακουστικά</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= isset($available_stock) ? number_format($available_stock) : '0' ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-boxes fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Services Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Ανοιχτές Επισκευές</div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= isset($open_services) ? number_format($open_services) : '0' ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-info" role="progressbar" 
-                                         style="width: <?= isset($services_progress) ? $services_progress : '0' ?>%" 
-                                         aria-valuenow="<?= isset($services_progress) ? $services_progress : '0' ?>" 
-                                         aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
+        <?php endif; ?>
+        <?php if ($this->is_admin): ?>     
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-check-square fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo json_encode($current_sales) ?></div>
+                            <div>Πωλήσεις Συνολικά</div>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-wrench fa-2x text-gray-300"></i>
-                    </div>
                 </div>
+                <a href="<?= base_url('admin/stocks/get_sold_thisYear_sp/' . $year) ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
-
-    <!-- Revenue Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Μηνιαίος Τζίρος</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">€<?= isset($monthly_revenue) ? number_format($monthly_revenue, 2) : '0.00' ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Area Chart -->
-    <div class="col-xl-8 col-lg-7">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Επισκόπηση Εσόδων</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Επιλογές:</div>
-                        <a class="dropdown-item" href="#">Εξαγωγή PDF</a>
-                        <a class="dropdown-item" href="#">Εξαγωγή Excel</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Κάτι άλλο εδώ</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pie Chart -->
-    <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Κατανομή Πωλήσεων</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Επιλογές:</div>
-                        <a class="dropdown-item" href="#">Εξαγωγή PDF</a>
-                        <a class="dropdown-item" href="#">Εξαγωγή Excel</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Κάτι άλλο εδώ</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="myPieChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Ακουστικά
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Επισκευές
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Αξεσουάρ
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Recent Activity -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Πρόσφατη Δραστηριότητα</h6>
-            </div>
-            <div class="card-body">
-                <div class="list-group list-group-flush">
-                    <?php if (isset($recent_activities) && !empty($recent_activities)): ?>
-                        <?php foreach ($recent_activities as $activity): ?>
-                        <div class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1"><?= $activity['title'] ?></h6>
-                                <small><?= $activity['time'] ?></small>
-                            </div>
-                            <p class="mb-1"><?= $activity['description'] ?></p>
-                            <small class="text-muted"><?= $activity['user'] ?></small>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-pause fa-5x"></i>
                         </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="list-group-item">
-                            <p class="mb-1 text-muted">Δεν υπάρχει πρόσφατη δραστηριότητα.</p>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $on_hold ?></div>
+                            <div>Εκκρεμότητες</div>
                         </div>
-                    <?php endif; ?>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/customers/get_onhold_full') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bomb fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $in_debt_customers; //$current_sales['nosales'] ?></div>
+                            <div>Οφειλέτες</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/on_debt') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-barcode fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $stock_available ?></div>
+                            <div>Διαθέσιμα Αποθήκης</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/get_onstock') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-credit-card fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $old_debt['data']//$old_debt_2016['debt']+$old_debt_2015['debt']+$old_debt_2014['debt']+$old_debt_2017['debt'] ?></div>
+                            <div>Παλαιά Χρέη (έως <?php echo $year_now -1; ?>)</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/on_debt_old/' . $year_now) ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-euro fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $eopyy_now//(array_sum($sum_eopyy)- array_sum($eopyy_pays)) ?></div>
+                            <div>Οφειλές ΕΟΠΥΥ</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/eopyy_pays') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>        
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bank fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">€ <?php echo $sum_debt[0]['data'] ?></div>
+                            <div>Οφειλές Πελατών <?php echo $year_now ?></div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/view_stock_on_debt/' . $year_now . '/' . '1/2')?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div> 
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-euro fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $avg_price[0]['data'] ?></div>
+                            <div>Μέση Τιμή</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/stocks/get_onstock') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div> 
+    </div>
+<!--start of graphs ---------------->    
+
+<div class="row">        
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Ετήσια Στατιστικά Πωλήσεων Σύνολο
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" onclick="hideFunction('panel-body-month')" style="float: right">Εμφάνιση</button>
+                            <!--<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="<?php $stats = 'chart-year' ?>">Λιβαδειά</a></li>
+                                <li><a href="<?php $stats = 'chart-year2' ?>">Θήβα</a></li>
+                            </ul>-->
+                        </div>
+                    </div>
+                </div><!-- /.panel-heading -->
+                <div id="panel-body-month" >
+                    <div id="year-general"></div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Πωλήσεις Τρέχοντος Έτους ανα Μήνα
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" onclick="hideFunction('panel-body-year')" style="float: right">Εμφάνιση</button>
+                            
+                           <!-- <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions
+                                <span class="caret"></span>
+                            </button>                             <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#">Πόλη</a>
+                                </li>
+                                <li><a href="#">Λιβαδειά</a>
+                                </li>
+                                <li><a href="#">Θήβα</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a>
+                                </li>
+                            </ul>
+                           -->
 
-    <!-- Quick Actions -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Γρήγορες Ενέργειες</h6>
+                        </div>
+                    </div>
+                </div><!-- /.panel-heading -->
+                <div id="panel-body-year" >
+                    <div id="chart-this-year"></div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/customers/create') ?>" class="btn btn-primary btn-block">
-                            <i class="fas fa-user-plus"></i><br>
-                            Νέος Πελάτης
-                        </a>
+        </div>        
+    </div>
+<div class="row">        
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Ετήσια Στατιστικά Λιβαδειάς 
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" onclick="hideFunction('panel-body-levadia')" style="float: right">Εμφάνιση</button>
+<!--
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="<?php $stats = 'chart-year' ?>">Λιβαδειά</a></li>
+                                <li><a href="<?php $stats = 'chart-year2' ?>">Θήβα</a></li>
+                            </ul>
+-->
+                        </div>
                     </div>
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/stocks/create') ?>" class="btn btn-success btn-block">
-                            <i class="fas fa-plus"></i><br>
-                            Νέο Ακουστικό
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/services/create') ?>" class="btn btn-info btn-block">
-                            <i class="fas fa-wrench"></i><br>
-                            Νέα Επισκευή
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/reports/daily') ?>" class="btn btn-warning btn-block">
-                            <i class="fas fa-chart-line"></i><br>
-                            Ημερήσια Αναφορά
-                        </a>
-                    </div>
+                </div><!-- /.panel-heading -->
+                <div id="panel-body-levadia" >
+                    <div id="year-levadia"></div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Ετήσια Στατιστικά Θήβα
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" onclick="hideFunction('panel-body-thiva')" style="float: right">Εμφάνιση</button>
+                           <!-- <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions
+                                <span class="caret"></span>
+                            </button> 
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#">Πόλη</a>
+                                </li>
+                                <li><a href="#">Λιβαδειά</a>
+                                </li>
+                                <li><a href="#">Θήβα</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a>
+                                </li>
+                            </ul>
+                           -->
+                        </div>
+                    </div>
+                </div><!-- /.panel-heading -->
+                <div id="panel-body-thiva" >
+                    <div id="year-thiva"></div>
+                </div>
+            </div>
+        </div>        
     </div>
-
-</div>
-
-<!-- Chart.js Scripts -->
-<script src="<?= base_url('assets/sbadmin2/vendor/chart.js/Chart.min.js') ?>"></script>
+    <?php endif; ?>
+<!--endof graphs section------------------------------------------------------->
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="panel panel-default panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Σε Εκκρεμότητα 
+                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" onclick="hideFunction('panel-body-todo-levadia')" style="float: right">Εμφάνιση</button>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body" id="panel-body-todo-levadia" >
+                    <div class="list-group">
+                        <?php foreach ($on_hold_names as $key => $list): ?>
+                        <?php  
+                                $this->load->model(array('admin/doctor'));
+                                $doc_id = $this->doctor->get($list['doctor']);?>
+                        
+                        <a href="<?= base_url('admin/customers/view/' . $list['id']) ?>" class="list-group-item 
+                            <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
+                                echo 'list-group-item-info'; 
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
+                                echo 'list-group-item-warning';
+                                else:
+                                echo ' ';
+                                endif;
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
+                                ?> 
+                            ">
+                            
+                            <i class="fa fa-tasks fa-fw"></i> <?php echo $list['name'] ?>
+                            <span class="pull-right text-muted small"><em><?php echo $doc_id->doc_name ?></em></span>
+                        </a>
+                       
+                        <?php endforeach; ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/customers/get_onhold_full') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->
+        </div>
+        <?php //endforeach; ?>        
+        <div class="col-lg-3">
+            <div class="panel panel-default panel-warning">
+            <div class="panel-heading">
+                <i class="fa fa-bell fa-fw"></i> Κατασκευές Ανοιχτές       <span class="pull-right"><strong><?php echo is_array($moulds) ? count($moulds) : 0 ?></strong></span>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <?php foreach ($moulds as $key => $list):
+                                $this->load->model(array('admin/customer'));
+                                $this->load->model(array('admin/stock'));
+                                
+                                $date_now = time();                                
+                                
+                                $customer = $this->customer->get($list['customer_id']);
+                                
+                                
+                                $temp_date = $list['date_order'];                                
+                                $delay = $date_now -strtotime($temp_date);
+                                $days = round($delay / (60 * 60 * 24));
+                            ?>                        
+                        <a href="<?= base_url('admin/earlabs/edit/' . $list['id']) ?>" class="list-group-item  
+                           <?php if ($customer->selling_point == 1): 
+                                echo 'list-group-item-info'; 
+                                elseif ($customer->selling_point == 2):
+                                echo 'list-group-item-warning';
+                                else:
+                                echo ' ';
+                                endif;
+                                //echo json_encode($list['selling_point']);
+                                ?> 
+                            ">
+                            <i class="fa fa-tasks fa-fw"></i> 
+                                <?php echo $customer->name ?>
+                                    <?php if($days > 0 && $days < 10000): ?>
+                            <span style="color:blue" class="pull-center text-muted small">
+                                <?php    echo 'ON LAB FOR ' . $days . ' DAYS!';    ?>
+                            </span>
+                                <?php endif; ?>
+                            <span class="pull-right text-muted small">
+                                <em> απο <?php echo $list['date_order'] ?></em>
+                            </span>
+                        </a>
+                                
+                            <?php endforeach;   ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/earlabs/list_sp') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->  
+            <div class="panel panel-default panel-danger">
+            <div class="panel-heading">
+                <i class="fa fa-bell fa-fw "></i> Εκκρεμότητες Barcodes       <span class="pull-right"><strong><?php echo is_array($stock_bc) ? count($stock_bc) : 0 ?></strong></span>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <?php foreach ($stock_bc as $key => $list):
+                                $this->load->model(array('admin/customer'));
+                                $this->load->model(array('admin/stock'));
+                                $this->load->model(array('admin/vendor'));
+                                $this->load->model(array('admin/model'));
+                                
+                                $date_now = time();                                
+                                
+                                $vendor = $this->vendor->get($list['vendor']);
+                                $model = $this->model->get($list['ha_model']);
+                                
+                                
+                                $temp_date = $list['day_in'];                                
+                                $delay = $date_now -strtotime($temp_date);
+                                $days = round($delay / (60 * 60 * 24));
+                            ?>                        
+                        <a href="<?= base_url('admin/stocks/edit/' . $list['id']) ?>" class="list-group-item  
+                           <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
+                                echo 'list-group-item-info'; 
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
+                                echo 'list-group-item-warning';
+                                else:
+                                echo ' ';
+                                endif;
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
+                                ?> 
+                            ">
+                            <i class="fa fa-tasks fa-fw"></i> 
+                                <?php echo $model->model ?>-<?php echo $list['serial'] ?> - <?php echo $vendor->name ?>
+                                    <?php if($days > 0 && $days < 10000): ?>
+                            <span style="color:red" class="pull-center text-muted small">
+                                <?php    echo 'delay ' . $days . ' DAYS!';    ?>
+                            </span>
+                                <?php endif; ?>
+                            <span class="pull-right text-muted small">
+                                <em> απο <?php echo $list['day_in'] ?></em>
+                            </span>
+                        </a>  
+                            <?php endforeach;   ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/earlabs') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->
+        </div>       
+        <div class="col-lg-3">            
+            <div class="panel panel-default panel-warning">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Επισκευές Ανοιχτές       <span class="pull-right"></span>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <?php //echo json_encode($services) ?>
+                        <?php foreach ($services as $key => $list): ?>
+                            <?php  
+                                $this->load->model(array('admin/customer'));
+                                $this->load->model(array('admin/stock'));
+                                $date_now = time();
+                                
+                                $ha_service = $this->stock->get($list['ha_service']);
+                                $name = $this->customer->get($ha_service->customer_id); 
+                                
+                                $temp_date = $list['day_in'];                                
+                                $delay = $date_now -strtotime($temp_date);
+                                $days = round($delay / (60 * 60 * 24));
+                            ?>                        
+                        <a href="<?= base_url('admin/services/edit/' . $list['id']) ?>" class="list-group-item  
+                           <?php if ($ha_service->selling_point == 1): 
+                                echo 'list-group-item-info'; 
+                                elseif ($ha_service->selling_point == 2):
+                                echo 'list-group-item-warning';
+                                else:
+                                echo ' ';
+                                endif;
+                                //echo json_encode($list['selling_point']);
+                                ?> 
+                            ">
+                            <i class="fa fa-tasks fa-fw"></i> <?php echo $name->name ?>   
+                            <?php if($days > 0 && $days < 10000): ?>
+                                <span style="color:whitesmoke" class="pull-center text-muted small badge">   
+                                <?php    echo 'ON SERVICE FOR ' . $days . ' DAYS!';    ?>
+                                </span>                                
+                                <?php endif; ?>
+                            
+                            <span class="pull-left text-muted small"> 
+                                <em> απο <?php echo $list['day_in'] ?>    </em>                                
+                            </span>
+                        </a>
+                        <?php endforeach;   ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/services/list_open') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->
+            <!--doseis here -->
+            <?php if ($this->is_admin): ?>
+            <div class="panel panel-default panel-danger">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Εκκρεμότητες Δόσεων       <span class="pull-right"><strong>€ <?php echo $sum_debt[0]['data'] ?></strong></span>
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" onclick="hideFunction('panel-body-debt')" style="float: right">Εμφάνιση</button>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body" id="panel-body-debt" hidden="false">
+                    <div class="list-group">
+                        <?php foreach ($stock_debt as $key => $list): ?>
+                            <?php  
+                                $this->load->model(array('admin/customer'));
+                                $this->load->model(array('admin/pay'));
+                                $this->load->model(array('admin/stock'));
+                                $date_now = time();
+                                
+                                $hearing_aid_id = $this->stock->get($list['id']);
+                                $name = $this->customer->get($hearing_aid_id->customer_id);                                
+                                $temp_date = $this->pay->get_all('MAX(date) AS last_pay', ' customer=' . $name->id);                                
+                                $delay = $date_now -strtotime($temp_date[0]['last_pay']);
+                                $days = round($delay / (60 * 60 * 24));
+                            ?>                        
+                        <a href="<?= base_url('admin/stocks/pays/' . $list['id']) ?>" class="list-group-item
+                           <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
+                                echo 'list-group-item-info'; 
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
+                                echo 'list-group-item-warning';
+                                else:
+                                echo ' ';
+                                endif;
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
+                                ?> 
+                            ">
+                            <i class="fa fa-tasks fa-fw"></i> <?php echo $name->name ?>
+                                   
+                                <?php if($days > 30 && $days < 10000): ?>
+                                <span style="color:blue" class="pull-center text muted small">   
+                                <?php    echo 'DELAYED ' . $days . ' DAYS!';    ?>
+                                </span>
+                                <?php elseif ($days > 10000 ): ?>
+                                <span style="color:red" class="pull-center text muted small">
+                                <?php echo 'NOT PAYED YET'; ?>
+                                </span>
+                                <?php endif;        ?>
+                            </span>
+                            <span class="pull-right text-muted small"> 
+                                <em>€     
+                                <?php echo $list['balance'] ?>
+                                </em> </span>
+                        </a>
+                        <?php endforeach;   ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/customers/get_all_pays') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->
+            <?php endif; ?>
+        </div>
+        <div class="col-lg-3">
+            <div class="panel panel-default panel-success">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Προς Παράδοση - Είσπραξη      <span class="pull-right"><strong>€ <?php echo $sum_debt_on_hold[0]['data'] ?></strong></span>
+                </div><!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <?php foreach ($on_hold_debt as $key => $list): ?>
+                            <?php  
+                                $this->load->model(array('admin/customer'));
+                                $name = $this->customer->get($list['customer_id']);?>
+                        <a href="<?= base_url('admin/stocks/pays/' . $list['id']) ?>" class="list-group-item
+                           <?php if (isset($list['selling_point']) && $list['selling_point']== 1): 
+                                echo 'list-group-item-info'; 
+                                elseif (isset($list['selling_point']) && $list['selling_point']== 2):
+                                echo 'list-group-item-warning';
+                                else:
+                                echo ' ';
+                                endif;
+                                if (isset($list['selling_point'])) {
+                                    echo json_encode($list['selling_point']);
+                                }
+                                ?> 
+                            ">
+                            <i class="fa fa-tasks fa-fw"></i> <?php echo $name->name ?>
+                            <span class="pull-right text-muted small"><em>€<?php echo $list['balance'] ?></em></span>
+                        </a>
+                        <?php endforeach; ?>                        
+                    </div><!-- /.list-group -->
+                    <a href="<?= base_url('admin/customers/get_all_pays') ?>" class="btn btn-default btn-block">Όλες οι εκκρεμότητες</a>
+                </div><!-- /.panel-body -->
+            </div><!-- /.panel -->
+        </div>
+    </div>  
+<div id="vendor-stats"></div>
+</div><!-- /#page-wrapper -->
 <script>
-// Sample Chart Data - Replace with actual data from controller
-Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
+    //var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-// Area Chart
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ["Ιαν", "Φεβ", "Μαρ", "Απρ", "Μαϊ", "Ιουν", "Ιουλ", "Αυγ", "Σεπ", "Οκτ", "Νοε", "Δεκ"],
-    datasets: [{
-      label: "Έσοδα",
-      lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
-      borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
-      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
-      data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0
-      }
-    },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 7
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          padding: 10,
-          callback: function(value, index, values) {
-            return '€' + number_format(value);
-          }
-        },
-        gridLines: {
-          color: "rgb(234, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: 'index',
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': €' + number_format(tooltipItem.yLabel);
-        }
-      }
-    }
-  }
-});
-
-// Pie Chart
-var ctx2 = document.getElementById("myPieChart");
-var myPieChart = new Chart(ctx2, {
-  type: 'doughnut',
-  data: {
-    labels: ["Ακουστικά", "Επισκευές", "Αξεσουάρ"],
-    datasets: [{
-      data: [55, 30, 15],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-      hoverBorderColor: "rgba(234, 236, 244, 1)",
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
-    },
-    legend: {
-      display: false
-    },
-    cutoutPercentage: 80,
-  },
-});
-
-// Number formatting function
-function number_format(number, decimals, dec_point, thousands_sep) {
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || '';
-    s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
-}
+    new Morris.Bar({
+        element: 'year-levadia',
+        data: <?php echo json_encode($statistics_levadia) ?>,       
+        xkey: 'year',
+        ykeys: ['sales', 'nosales'],
+        labels: ['Sales', 'Missed Sales'],
+        xLabels: ['year']
+    });
+    new Morris.Bar({
+        element: 'year-thiva',
+        data: <?php echo json_encode($statistics_thiva) ?>,       
+        xkey: 'year',
+        ykeys: ['sales', 'nosales'],
+        labels: ['Sales', 'Missed Sales'],
+        xLabels: ['year']
+    });
+    new Morris.Bar({
+        element: 'year-general',
+        data: <?php echo json_encode($statistics_general) ?> ,
+        xkey: 'year',
+        ykeys: ['sales', 'nosales'],
+        labels: ['Sales', 'Missed Sales'],
+        xLabels: ['year']
+    });  
+    new Morris.Bar({
+        element: 'chart-this-year',
+        data: <?php echo $this_year?> ,
+        xkey: ['year'],
+        ykeys: ['data'],
+        labels: ['Μηνιαίες Πωλήσεις']
+    });     
 </script>

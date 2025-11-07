@@ -1,390 +1,323 @@
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Ετήσια Στατιστικά</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-download fa-sm text-white-50"></i> Εξαγωγή Αναφοράς
-    </a>
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Customers Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Συνολικοί Πελάτες</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= isset($total_customers) ? number_format($total_customers) : '0' ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Στατιστικά Στοιχεία <?php echo $year ?> -<?php echo $sp->city; ?></h1>            
+        </div><!-- /.col-lg-12 -->
+    <?php if ($this->session->flashdata('message')): ?>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="alert alert-info alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <?= $this->session->flashdata('message') ?>
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
-    <!-- Stock Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Διαθέσιμα Ακουστικά</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= isset($available_stock) ? number_format($available_stock) : '0' ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-boxes fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Services Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Ανοιχτές Επισκευές</div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= isset($open_services) ? number_format($open_services) : '0' ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-info" role="progressbar" 
-                                         style="width: <?= isset($services_progress) ? $services_progress : '0' ?>%" 
-                                         aria-valuenow="<?= isset($services_progress) ? $services_progress : '0' ?>" 
-                                         aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-check-square fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $sales[0]['data'] ?></div>
+                            <div>Πωλήσεις Ετους</div>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-wrench fa-2x text-gray-300"></i>
-                    </div>
                 </div>
+                <a href="<?= base_url('admin/customers/view_customer_list/' . $year . '/' . $selling_point) ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
 
-    <!-- Revenue Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Μηνιαίος Τζίρος</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">€<?= isset($monthly_revenue) ? number_format($monthly_revenue, 2) : '0.00' ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Area Chart -->
-    <div class="col-xl-8 col-lg-7">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Επισκόπηση Εσόδων</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Επιλογές:</div>
-                        <a class="dropdown-item" href="#">Εξαγωγή PDF</a>
-                        <a class="dropdown-item" href="#">Εξαγωγή Excel</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Κάτι άλλο εδώ</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pie Chart -->
-    <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Κατανομή Πωλήσεων</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Επιλογές:</div>
-                        <a class="dropdown-item" href="#">Εξαγωγή PDF</a>
-                        <a class="dropdown-item" href="#">Εξαγωγή Excel</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Κάτι άλλο εδώ</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="myPieChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Ακουστικά
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Επισκευές
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Αξεσουάρ
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Recent Activity -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Πρόσφατη Δραστηριότητα</h6>
-            </div>
-            <div class="card-body">
-                <div class="list-group list-group-flush">
-                    <?php if (isset($recent_activities) && !empty($recent_activities)): ?>
-                        <?php foreach ($recent_activities as $activity): ?>
-                        <div class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1"><?= $activity['title'] ?></h6>
-                                <small><?= $activity['time'] ?></small>
-                            </div>
-                            <p class="mb-1"><?= $activity['description'] ?></p>
-                            <small class="text-muted"><?= $activity['user'] ?></small>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-shopping-cart fa-5x"></i>
                         </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="list-group-item">
-                            <p class="mb-1 text-muted">Δεν υπάρχει πρόσφατη δραστηριότητα.</p>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo json_encode($total_all) ?></div>
+                            <div>Οφειλές Έτους</div>
                         </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Γρήγορες Ενέργειες</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/customers/create') ?>" class="btn btn-primary btn-block">
-                            <i class="fas fa-user-plus"></i><br>
-                            Νέος Πελάτης
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/stocks/create') ?>" class="btn btn-success btn-block">
-                            <i class="fas fa-plus"></i><br>
-                            Νέο Ακουστικό
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/services/create') ?>" class="btn btn-info btn-block">
-                            <i class="fas fa-wrench"></i><br>
-                            Νέα Επισκευή
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="<?= base_url('admin/reports/daily') ?>" class="btn btn-warning btn-block">
-                            <i class="fas fa-chart-line"></i><br>
-                            Ημερήσια Αναφορά
-                        </a>
                     </div>
                 </div>
+                <a href="<?= base_url('admin/stocks/view_stock_on_debt/' . $year . '/' . $selling_point)?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
 
-</div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bomb fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $no_sales[0]['data'] ?></div>
+                            <div>Χαμένα</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/customers/get_interested_list/' . $year . '/' . $selling_point) ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
 
-<!-- Chart.js Scripts -->
-<script src="<?= base_url('assets/sbadmin2/vendor/chart.js/Chart.min.js') ?>"></script>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-barcode fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?php echo $avg_price[0]['data'] ?></div>
+                            <div>Μέση Τιμή Έτους (Πώλησης)</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="">
+                    <div class="panel-footer">
+                        <span class="pull-left">Λεπτομέρειες</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div><!-- /.row -->
+    </div><!-- /.row -->
+
+    
+    <!-- Dropdown for year selection -->
+    <div class="row" >
+        <div class="col-lg-6">
+            <div class="dropdown" style="float: left;">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="yearDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Επιλέξτε Έτος
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="yearDropdown">
+                    <li><a href="#" class="year-select" data-year="all">Συνολικά Στοιχεία</a></li>
+        <?php for ($i = 2014; $i <= date('Y'); $i++): ?>
+                    <li><a href="#" class="year-select" data-year="<?= $i ?>"><?= $i ?></a></li>
+        <?php endfor; ?>
+                </ul>
+            </div>            
+        </div>    
+    <!-- Dropdown menu for selecting the chart -->
+    
+    <div class="col-lg-6">
+            <div class="dropdown" style="float: right;">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="chartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Επιλέξτε Γράφημα
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="chartDropdown">
+                    <li><a href="#" class="chart-select" data-chart="chart_monthly">Μηνιαίες Πωλήσεις Ακουστικών</a></li>
+                    <li><a href="#" class="chart-select" data-chart="chart_manufacturer">Πωλήσεις ανα Κατασκευαστή</a></li>
+                    <li><a href="#" class="chart-select" data-chart="chart_visits">Μηνιαίες Ενημερώσεις</a></li>
+                    <li><a href="#" class="chart-select" data-chart="chart_doctor">Πωλήσεις ανα Ιατρό</a></li>
+                    <li><a href="#" class="chart-select" data-chart="stockChart">Στατιστικά Ακουστικών</a></li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- /.row -->
+
+    <!-- Chart Containers -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="chart_monthly" class="chart-container"></div>
+            <div id="chart_manufacturer" class="chart-container" style="display:none;"></div>
+            <div id="chart_visits" class="chart-container" style="display:none;"></div>
+            <div id="chart_doctor" class="chart-container" style="display:none;"></div>
+            <div id="stockChart" class="chart-container" style="display:none;"></div>
+        </div>
+    </div><!-- /.row -->
+
+    <script>
+        $(document).ready(function () {
+            // Function to toggle between charts
+            $('.chart-select').on('click', function (e) {
+                e.preventDefault();
+                var selectedChart = $(this).data('chart');
+                $('.chart-container').hide();  // Hide all charts
+                $('#' + selectedChart).show();  // Show selected chart
+            });
+
+            // Initial chart rendering (e.g., chart_monthly is shown by default)
+            $('#chart_monthly').show();
+        });
+    </script>
+</div><!-- /#page-wrapper -->
+
 <script>
-// Sample Chart Data - Replace with actual data from controller
-Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
+    $(document).ready(function() {
+        // Function to switch between charts
+        $('.chart-select').on('click', function(event) {
+            event.preventDefault();
 
-// Area Chart
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ["Ιαν", "Φεβ", "Μαρ", "Απρ", "Μαϊ", "Ιουν", "Ιουλ", "Αυγ", "Σεπ", "Οκτ", "Νοε", "Δεκ"],
-    datasets: [{
-      label: "Έσοδα",
-      lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
-      borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
-      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
-      data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0
-      }
-    },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 7
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          padding: 10,
-          callback: function(value, index, values) {
-            return '€' + number_format(value);
-          }
-        },
-        gridLines: {
-          color: "rgb(234, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: 'index',
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': €' + number_format(tooltipItem.yLabel);
-        }
-      }
-    }
-  }
-});
+            // Get the selected chart ID
+            var selectedChart = $(this).data('chart');
 
-// Pie Chart
-var ctx2 = document.getElementById("myPieChart");
-var myPieChart = new Chart(ctx2, {
-  type: 'doughnut',
-  data: {
-    labels: ["Ακουστικά", "Επισκευές", "Αξεσουάρ"],
-    datasets: [{
-      data: [55, 30, 15],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-      hoverBorderColor: "rgba(234, 236, 244, 1)",
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
-    },
-    legend: {
-      display: false
-    },
-    cutoutPercentage: 80,
-  },
-});
+            // Hide all chart containers
+            $('.chart-container').hide();
 
-// Number formatting function
-function number_format(number, decimals, dec_point, thousands_sep) {
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || '';
-    s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
-}
+            // Show the selected chart container
+            $('#' + selectedChart).show();
+        });
+
+        // Monthly sales chart
+        Highcharts.chart('chart_monthly', {
+            chart: { type: 'column' },
+            title: { text: 'Μηνιαίες Πωλήσεις Ακουστικών' },
+            xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+            yAxis: {
+                min: 0,
+                title: { text: 'Τμχ Ακουστικών' }
+            },
+            series: [{
+                name: 'Πωλήσεις',
+                data: <?php echo $sales_graph ?>
+            }, {
+                name: 'Ενημερώσεις',
+                data: <?php echo $nosales_graph ?>
+            }]
+        });
+
+        // Manufacturer sales chart (pie)
+        Highcharts.chart('chart_manufacturer', {
+            chart: { type: 'pie' },
+            title: { text: 'Πωλήσεις ανα Κατασκευαστή' },
+            tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: { enabled: false },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Κατασκευαστές',
+                colorByPoint: true,
+                data: <?php echo $brands_graph ?>
+            }]
+        });
+
+        // Visits chart (line)
+        Highcharts.chart('chart_visits', {
+            chart: { type: 'line' },
+            title: { text: 'Μηνιαίες Ενημερώσεις (Ενδιαφερόμενοι και Πωλήσεις)' },
+            xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+            yAxis: {
+                min: 0,
+                title: { text: 'Τμχ Ακουστικών' }
+            },
+            series: [{
+                name: 'Επισκέπτες',
+                data: <?php echo $visits ?>
+            }]
+        });
+
+        // Doctor chart (pie)
+        Highcharts.chart('chart_doctor', {
+            chart: { type: 'pie' },
+            title: { text: 'Πωλήσεις ανα Ιατρό' },
+            tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: { enabled: true },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Doctors',
+                colorByPoint: true,
+                data: <?php echo $doc_dat ?>
+            }]
+        });
+
+        // Stock statistics by hearing aid type (bar)
+        var totalStocks = 0;
+        <?php if (!empty($stock_type_stats)): ?>
+            <?php foreach ($stock_type_stats as $stat): ?>
+                totalStocks += <?= $stat['total_stocks']; ?>;
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        Highcharts.chart('stockChart', {
+            chart: { type: 'bar' },
+            title: { text: 'Στατιστικά Ακουστικών ανα Τύπο' },
+            xAxis: {
+                categories: [<?php if (!empty($stock_type_stats)): ?>
+                    <?php foreach ($stock_type_stats as $stat): ?>
+                        '<?= $stat['ha_type']; ?>',
+                    <?php endforeach; ?>
+                <?php endif; ?>]
+            },
+            yAxis: { title: { text: 'Σύνολο Ακουστικών' } },
+            series: [{
+                name: 'Σύνολο Ακουστικών',
+                data: [<?php if (!empty($stock_type_stats)): ?>
+                    <?php foreach ($stock_type_stats as $stat): ?>
+                        <?= $stat['total_stocks']; ?>,
+                    <?php endforeach; ?>
+                <?php endif; ?>],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function() {
+                        var percentage = (this.y / totalStocks * 100).toFixed(2);
+                        return this.y + ' (' + percentage + '%)';
+                    }
+                }
+            }]
+        });
+    });
 </script>
+<script>
+    $(document).ready(function() {
+    // Όταν επιλέγεται ένα έτος από το dropdown
+    $('.year-select').on('click', function(e) {
+        e.preventDefault();
+        
+        // Παίρνουμε το επιλεγμένο έτος από το data attribute
+        var selectedYear = $(this).data('year');
+        var sellingPoint = "<?= $selling_point ?>"; // Παίρνουμε το τρέχον σημείο πώλησης
+
+        // Έλεγχος αν η επιλογή είναι για "Συνολικά Στοιχεία"
+        if (selectedYear === "all") {
+            window.location.href = "<?= base_url('admin/dashboard/') ?>" + sellingPoint;
+        } else {
+            // Ανακατεύθυνση στη σελίδα με το συγκεκριμένο έτος
+            window.location.href = "<?= base_url('admin/dashboard/') ?>" + sellingPoint + '/' + selectedYear;
+        }
+    });
+});
+
+</script>
+
+
