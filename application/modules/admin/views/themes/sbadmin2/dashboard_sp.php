@@ -225,9 +225,18 @@
                                     <?php foreach (array_slice($services, 0, 5) as $service): ?>
                                     <tr>
                                         <td>
-                                            <div class="font-weight-bold text-dark">
-                                                #<?= isset($service['ha_service']) ? $service['ha_service'] : 'Κ/Α' ?>
+                                            <div class="font-weight-bold text-dark" 
+                                                 data-toggle="tooltip" data-placement="top" 
+                                                 title="Πελάτης: <?= isset($service['customer']) ? htmlspecialchars($service['customer']) : 'Κ/Α' ?>">
+                                                <?php if (isset($service['ha_serial']) && !empty($service['ha_serial'])): ?>
+                                                    <?= $service['ha_serial'] ?>
+                                                <?php else: ?>
+                                                    #<?= isset($service['ha_service']) ? $service['ha_service'] : 'Κ/Α' ?>
+                                                <?php endif; ?>
                                             </div>
+                                            <?php if (isset($service['ha_model_name']) && !empty($service['ha_model_name'])): ?>
+                                                <small class="text-muted"><?= $service['ha_model_name'] ?></small>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-muted">
                                             <?= isset($service['day_in']) ? date('d/m/Y', strtotime($service['day_in'])) : 'Κ/Α' ?>
@@ -266,3 +275,10 @@
 
 </div>
 <!-- /.container-fluid -->
+
+<script>
+$(document).ready(function() {
+    // Ενεργοποίηση tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>

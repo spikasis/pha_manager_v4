@@ -31,11 +31,12 @@ class Service extends MY_Model {
     }
     
     public function get_services($selling_point = null) {
-        $this->db->select('services.*, customers.name AS customer, vendors.name AS lab_sent, stocks.selling_point AS selling_point');
+        $this->db->select('services.*, customers.name AS customer, vendors.name AS lab_sent, stocks.selling_point AS selling_point, stocks.serial AS ha_serial, models.model AS ha_model_name');
         $this->db->from('services');
         $this->db->join('stocks', 'services.ha_service = stocks.id');
         $this->db->join('customers', 'stocks.customer_id = customers.id');
-        $this->db->join('vendors', 'services.lab_sent = vendors.id');
+        $this->db->join('vendors', 'services.lab_sent = vendors.id', 'left'); // LEFT JOIN για vendors
+        $this->db->join('models', 'stocks.ha_model = models.id', 'left'); // LEFT JOIN για models
         if ($selling_point !== null) {
             $this->db->where('stocks.selling_point', $selling_point);
         }

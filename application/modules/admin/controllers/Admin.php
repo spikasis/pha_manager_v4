@@ -202,8 +202,11 @@ if (!$sp_id || !is_numeric($sp_id)) {
     $data['eopyy_pays'] = $this->eopyy_pay->get_all('SUM(price) AS data');
     $data['eopyy_now'] = array_sum($data['eopyy_sum'][0]) - array_sum($data['eopyy_pays'][0]);
 
-    // Τεχνικά / Εργαστήριο
-    $data['services'] = $this->service->get_all('id, ha_service, day_in', 'status=2');
+    // Τεχνικά / Εργαστήριο - φέρνουμε services με stock και customer data
+    $services_all = $this->service->get_services($selling_point);
+    $data['services'] = array_filter($services_all, function($service) {
+        return $service['status'] == 2; // Μόνο ανοιχτές επισκευές
+    });
     $data['moulds'] = $this->earlab->get_earlabs_by_selling_point($selling_point);
     // Φιλτράρουμε μόνο τις ανοιχτές κατασκευές (χωρίς date_delivery)
     if (isset($data['moulds']) && is_array($data['moulds'])) {
@@ -302,8 +305,11 @@ $data['selected_range'] = $range_input;
         $data['eopyy_pays'] = $this->eopyy_pay->get_all('SUM(price) AS data');
         $data['eopyy_now'] = array_sum($data['eopyy_sum'][0]) - array_sum($data['eopyy_pays'][0]);
 
-        // Τεχνικά / Εργαστήριο από όλα τα υποκαταστήματα
-        $data['services'] = $this->service->get_all('id, ha_service, day_in', 'status=2');
+        // Τεχνικά / Εργαστήριο από όλα τα υποκαταστήματα - με stock και customer data
+        $services_all = $this->service->get_services(); // null = όλα τα υποκαταστήματα
+        $data['services'] = array_filter($services_all, function($service) {
+            return $service['status'] == 2; // Μόνο ανοιχτές επισκευές
+        });
         
         // Όλες οι ανοιχτές κατασκευές (χωρίς φίλτρο selling_point)
         $all_moulds = $this->earlab->get_all('id, customer_id, date_order, date_delivery');
