@@ -484,180 +484,192 @@
 </div>
 
 <script>
-// Initialize modal events with event delegation - outside document ready
-$(document).on('click', '.viewCustomerBtn', function(e) {
-    e.preventDefault();
-    console.log('Customer button clicked!'); // Debug line
-    
-    var clientId = $(this).data('id');
-    console.log('Client ID:', clientId); // Debug line
-    
-    if (!clientId) {
-        alert('Δεν βρέθηκε ID πελάτη');
+// Wait for DOM and jQuery to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if jQuery is loaded
+    if (typeof jQuery === 'undefined') {
+        console.error('jQuery is not loaded!');
         return;
     }
     
-    // Show loading state
-    $('#customerModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
-    $('#customerModal').modal('show');
-
-    // AJAX to get customer data
-    $.ajax({
-        url: '<?= base_url("admin/customers/get_customer") ?>/' + clientId,
-        method: 'GET',
-        success: function(data) {
-            try {
-                var customer = typeof data === 'string' ? JSON.parse(data) : data;
-                
-                // Restore modal content
-                $('#customerModal .modal-body').html(`
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">Όνομα:</label>
-                                <p class="form-control-plaintext" id="customerName">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">Τηλέφωνο Σταθερό:</label>
-                                <p class="form-control-plaintext" id="customerPhoneHome">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">Τηλέφωνο Κινητό:</label>
-                                <p class="form-control-plaintext" id="customerPhoneMobile">-</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">Διεύθυνση:</label>
-                                <p class="form-control-plaintext" id="customerAddress">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">Πόλη:</label>
-                                <p class="form-control-plaintext" id="customerCity">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">AMKA:</label>
-                                <p class="form-control-plaintext" id="customerAmka">-</p>
-                            </div>
-                        </div>
-                    </div>
-                `);
-                
-                // Populate data
-                $('#customerName').text(customer.name || '-');
-                $('#customerPhoneHome').text(customer.phone_home || '-');
-                $('#customerPhoneMobile').text(customer.phone_mobile || '-');
-                $('#customerAddress').text(customer.address || '-');
-                $('#customerCity').text(customer.city || '-');
-                $('#customerAmka').text(customer.amka || '-');
-                
-                // Set button actions
-                $('#editCustomerBtn').off('click').on('click', function() {
-                    window.location.href = '<?= base_url("admin/customers/edit/") ?>' + clientId;
-                });
-                $('#viewCustomerBtn').off('click').on('click', function() {
-                    window.location.href = '<?= base_url("admin/customers/view/") ?>' + clientId;
-                });
-                
-            } catch (error) {
-                console.error('Error parsing customer data:', error);
-                $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Customer AJAX error:', error);
-            $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του πελάτη.</div>');
+    console.log('jQuery loaded, initializing modals...');
+    
+    // Initialize modal events with event delegation
+    $(document).on('click', '.viewCustomerBtn', function(e) {
+        e.preventDefault();
+        console.log('Customer button clicked!'); // Debug line
+        
+        var clientId = $(this).data('id');
+        console.log('Client ID:', clientId); // Debug line
+        
+        if (!clientId) {
+            alert('Δεν βρέθηκε ID πελάτη');
+            return;
         }
-    });
-});
+        
+        // Show loading state
+        $('#customerModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
+        $('#customerModal').modal('show');
 
-$(document).on('click', '.viewAcousticBtn', function(e) {
-    e.preventDefault();
-    console.log('Acoustic button clicked!'); // Debug line
-    
-    var acousticId = $(this).data('id');
-    console.log('Acoustic ID:', acousticId); // Debug line
-    
-    // Check if acoustic ID exists
-    if (!acousticId || acousticId === '0' || acousticId === '') {
-        alert('Δεν υπάρχει ακουστικό για προβολή.');
-        return;
-    }
-    
-    // Show loading state
-    $('#acousticModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
-    $('#acousticModal').modal('show');
-
-    // AJAX to get acoustic data
-    $.ajax({
-        url: '<?= base_url("admin/stocks/get_acoustic") ?>/' + acousticId,
-        method: 'GET',
-        success: function(data) {
-            try {
-                var acoustic = typeof data === 'string' ? JSON.parse(data) : data;
-                
-                // Restore modal content
-                $('#acousticModal .modal-body').html(`
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="font-weight-bold text-info">Serial Number:</label>
-                                <p class="form-control-plaintext" id="acousticSerialNumber">-</p>
+        // AJAX to get customer data
+        $.ajax({
+            url: '<?= base_url("admin/customers/get_customer") ?>/' + clientId,
+            method: 'GET',
+            success: function(data) {
+                try {
+                    var customer = typeof data === 'string' ? JSON.parse(data) : data;
+                    
+                    // Restore modal content
+                    $('#customerModal .modal-body').html(`
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Όνομα:</label>
+                                    <p class="form-control-plaintext" id="customerName">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Τηλέφωνο Σταθερό:</label>
+                                    <p class="form-control-plaintext" id="customerPhoneHome">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Τηλέφωνο Κινητό:</label>
+                                    <p class="form-control-plaintext" id="customerPhoneMobile">-</p>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-info">Σειρά:</label>
-                                <p class="form-control-plaintext" id="acousticSeries">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-info">Μοντέλο:</label>
-                                <p class="form-control-plaintext" id="acousticModel">-</p>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Διεύθυνση:</label>
+                                    <p class="form-control-plaintext" id="customerAddress">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Πόλη:</label>
+                                    <p class="form-control-plaintext" id="customerCity">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">AMKA:</label>
+                                    <p class="form-control-plaintext" id="customerAmka">-</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="font-weight-bold text-info">Κατασκευαστής:</label>
-                                <p class="form-control-plaintext" id="acousticManufacturer">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-info">Barcode Εκτέλεσης:</label>
-                                <p class="form-control-plaintext" id="acousticEkaptyCode">-</p>
-                            </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold text-info">Γιατρός:</label>
-                                <p class="form-control-plaintext" id="acousticDoctor">-</p>
-                            </div>
-                        </div>
-                    </div>
-                `);
-                
-                // Populate data
-                $('#acousticSerialNumber').text(acoustic.serial || '-');
-                $('#acousticSeries').text(acoustic.series_name || '-');
-                $('#acousticModel').text(acoustic.model_name || '-');
-                $('#acousticManufacturer').text(acoustic.manufacturer_name || '-');
-                $('#acousticEkaptyCode').text(acoustic.ekapty_code || '-');
-                $('#acousticDoctor').text(acoustic.doctor_name || '-');
-                
-                // Set button actions
-                $('#editAcousticBtn').off('click').on('click', function() {
-                    window.location.href = '<?= base_url("admin/stocks/edit/") ?>' + acousticId;
-                });
-                $('#viewAcousticBtn').off('click').on('click', function() {
-                    window.location.href = '<?= base_url("admin/stocks/view/") ?>' + acousticId;
-                });
-                
-            } catch (error) {
-                console.error('Error parsing acoustic data:', error);
-                $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
+                    `);
+                    
+                    // Populate data
+                    $('#customerName').text(customer.name || '-');
+                    $('#customerPhoneHome').text(customer.phone_home || '-');
+                    $('#customerPhoneMobile').text(customer.phone_mobile || '-');
+                    $('#customerAddress').text(customer.address || '-');
+                    $('#customerCity').text(customer.city || '-');
+                    $('#customerAmka').text(customer.amka || '-');
+                    
+                    // Set button actions
+                    $('#editCustomerBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/customers/edit/") ?>' + clientId;
+                    });
+                    $('#viewCustomerBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/customers/view/") ?>' + clientId;
+                    });
+                    
+                } catch (error) {
+                    console.error('Error parsing customer data:', error);
+                    $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Customer AJAX error:', error);
+                $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του πελάτη.</div>');
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Acoustic AJAX error:', error);
-            $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του ακουστικού.</div>');
-        }
+        });
     });
-});
 
+    $(document).on('click', '.viewAcousticBtn', function(e) {
+        e.preventDefault();
+        console.log('Acoustic button clicked!'); // Debug line
+        
+        var acousticId = $(this).data('id');
+        console.log('Acoustic ID:', acousticId); // Debug line
+        
+        // Check if acoustic ID exists
+        if (!acousticId || acousticId === '0' || acousticId === '') {
+            alert('Δεν υπάρχει ακουστικό για προβολή.');
+            return;
+        }
+        
+        // Show loading state
+        $('#acousticModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
+        $('#acousticModal').modal('show');
+
+        // AJAX to get acoustic data
+        $.ajax({
+            url: '<?= base_url("admin/stocks/get_acoustic") ?>/' + acousticId,
+            method: 'GET',
+            success: function(data) {
+                try {
+                    var acoustic = typeof data === 'string' ? JSON.parse(data) : data;
+                    
+                    // Restore modal content
+                    $('#acousticModal .modal-body').html(`
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Serial Number:</label>
+                                    <p class="form-control-plaintext" id="acousticSerialNumber">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Σειρά:</label>
+                                    <p class="form-control-plaintext" id="acousticSeries">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Μοντέλο:</label>
+                                    <p class="form-control-plaintext" id="acousticModel">-</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Κατασκευαστής:</label>
+                                    <p class="form-control-plaintext" id="acousticManufacturer">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Barcode Εκτέλεσης:</label>
+                                    <p class="form-control-plaintext" id="acousticEkaptyCode">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Γιατρός:</label>
+                                    <p class="form-control-plaintext" id="acousticDoctor">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    
+                    // Populate data
+                    $('#acousticSerialNumber').text(acoustic.serial || '-');
+                    $('#acousticSeries').text(acoustic.series_name || '-');
+                    $('#acousticModel').text(acoustic.model_name || '-');
+                    $('#acousticManufacturer').text(acoustic.manufacturer_name || '-');
+                    $('#acousticEkaptyCode').text(acoustic.ekapty_code || '-');
+                    $('#acousticDoctor').text(acoustic.doctor_name || '-');
+                    
+                    // Set button actions
+                    $('#editAcousticBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/stocks/edit/") ?>' + acousticId;
+                    });
+                    $('#viewAcousticBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/stocks/view/") ?>' + acousticId;
+                    });
+                    
+                } catch (error) {
+                    console.error('Error parsing acoustic data:', error);
+                    $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Acoustic AJAX error:', error);
+                $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του ακουστικού.</div>');
+            }
+        });
+    });
+}); // End of DOMContentLoaded
+
+// Wait for jQuery to be available, then initialize DataTable
 $(document).ready(function() {
     // Initialize DataTable
     $('#tasksTable').DataTable({
@@ -799,173 +811,7 @@ function exportTableToPDF() {
 }
 </style>
         
-        if (!clientId) {
-            alert('Δεν βρέθηκε ID πελάτη');
-            return;
-        }
-        
-        // Show loading state
-        $('#customerModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
-        $('#customerModal').modal('show');
 
-        // AJAX to get customer data
-        $.ajax({
-            url: '<?= base_url("admin/customers/get_customer") ?>/' + clientId,
-            method: 'GET',
-            success: function(data) {
-                try {
-                    var customer = typeof data === 'string' ? JSON.parse(data) : data;
-                    
-                    // Restore modal content
-                    $('#customerModal .modal-body').html(`
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Όνομα:</label>
-                                    <p class="form-control-plaintext" id="customerName">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Τηλέφωνο Σταθερό:</label>
-                                    <p class="form-control-plaintext" id="customerPhoneHome">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Τηλέφωνο Κινητό:</label>
-                                    <p class="form-control-plaintext" id="customerPhoneMobile">-</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Διεύθυνση:</label>
-                                    <p class="form-control-plaintext" id="customerAddress">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Πόλη:</label>
-                                    <p class="form-control-plaintext" id="customerCity">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">AMKA:</label>
-                                    <p class="form-control-plaintext" id="customerAmka">-</p>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                    
-                    // Populate data
-                    $('#customerName').text(customer.name || '-');
-                    $('#customerPhoneHome').text(customer.phone_home || '-');
-                    $('#customerPhoneMobile').text(customer.phone_mobile || '-');
-                    $('#customerAddress').text(customer.address || '-');
-                    $('#customerCity').text(customer.city || '-');
-                    $('#customerAmka').text(customer.amka || '-');
-                    
-                    // Set button actions
-                    $('#editCustomerBtn').off('click').on('click', function() {
-                        window.location.href = '<?= base_url("admin/customers/edit/") ?>' + clientId;
-                    });
-                    $('#viewCustomerBtn').off('click').on('click', function() {
-                        window.location.href = '<?= base_url("admin/customers/view/") ?>' + clientId;
-                    });
-                    
-                } catch (error) {
-                    console.error('Error parsing customer data:', error);
-                    $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Customer AJAX error:', error);
-                $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του πελάτη.</div>');
-            }
-        });
-    });
-
-    // View acoustic details modal - using event delegation for DataTable compatibility  
-    $(document).on('click', '.viewAcousticBtn', function(e) {
-        e.preventDefault();
-        console.log('Acoustic button clicked!'); // Debug line
-        
-        var acousticId = $(this).data('id');
-        console.log('Acoustic ID:', acousticId); // Debug line
-        
-        // Check if acoustic ID exists
-        if (!acousticId || acousticId === '0' || acousticId === '') {
-            alert('Δεν υπάρχει ακουστικό για προβολή.');
-            return;
-        }
-        
-        // Show loading state
-        $('#acousticModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
-        $('#acousticModal').modal('show');
-
-        // AJAX to get acoustic data
-        $.ajax({
-            url: '<?= base_url("admin/stocks/get_acoustic") ?>/' + acousticId,
-            method: 'GET',
-            success: function(data) {
-                try {
-                    var acoustic = typeof data === 'string' ? JSON.parse(data) : data;
-                    
-                    // Restore modal content
-                    $('#acousticModal .modal-body').html(`
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-info">Serial Number:</label>
-                                    <p class="form-control-plaintext" id="acousticSerialNumber">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-info">Σειρά:</label>
-                                    <p class="form-control-plaintext" id="acousticSeries">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-info">Μοντέλο:</label>
-                                    <p class="form-control-plaintext" id="acousticModel">-</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-info">Κατασκευαστής:</label>
-                                    <p class="form-control-plaintext" id="acousticManufacturer">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-info">Barcode Εκτέλεσης:</label>
-                                    <p class="form-control-plaintext" id="acousticEkaptyCode">-</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-info">Γιατρός:</label>
-                                    <p class="form-control-plaintext" id="acousticDoctor">-</p>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                    
-                    // Populate data
-                    $('#acousticSerialNumber').text(acoustic.serial || '-');
-                    $('#acousticSeries').text(acoustic.series_name || '-');
-                    $('#acousticModel').text(acoustic.model_name || '-');
-                    $('#acousticManufacturer').text(acoustic.manufacturer_name || '-');
-                    $('#acousticEkaptyCode').text(acoustic.ekapty_code || '-');
-                    $('#acousticDoctor').text(acoustic.doctor_name || '-');
-                    
-                    // Set button actions
-                    $('#editAcousticBtn').off('click').on('click', function() {
-                        window.location.href = '<?= base_url("admin/stocks/edit/") ?>' + acousticId;
-                    });
-                    $('#viewAcousticBtn').off('click').on('click', function() {
-                        window.location.href = '<?= base_url("admin/stocks/view/") ?>' + acousticId;
-                    });
-                    
-                } catch (error) {
-                    console.error('Error parsing acoustic data:', error);
-                    $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Acoustic AJAX error:', error);
-                $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του ακουστικού.</div>');
-            }
-        });
-    });
-});
 
 // Export functions
 function exportTableToExcel(tableID, filename = '') {
