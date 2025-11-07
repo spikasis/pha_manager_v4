@@ -207,7 +207,11 @@ if (!$sp_id || !is_numeric($sp_id)) {
             return empty($mould['date_delivery']) || $mould['date_delivery'] == '0000-00-00';
         });
     }
-    $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor, selling_point', 'ekapty_code=0 AND YEAR(day_in)>=2024 AND selling_point=' . $selling_point);
+    // Παίρνουμε τα ακουστικά εκκρεμότητας (ekapty_code κενό ή 0)
+    $all_stocks_sp = $this->stock->getStocksWithDetails($selling_point);
+    $data['stock_bc'] = array_filter($all_stocks_sp, function($stock) {
+        return empty($stock['ekapty_code']) || $stock['ekapty_code'] == '0' || $stock['ekapty_code'] == 0;
+    });
 
     // Ετήσιο χρέος ανά υποκατάστημα
     $data['year_debt_sp'] = $this->stock->get_all('SUM(debt)', 'YEAR(day_out)=' . $year . ' AND selling_point=' . $selling_point);
@@ -283,6 +287,21 @@ $data['selected_range'] = $range_input;
         $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
 
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_thiva";            
+        $this->load->view($this->_container, $data);        
+    }
+    
+    public function dashboard_sp(){
+        $year = DEFAULT_STATS_YEAR;
+        $year_now = CURRENT_YEAR;
+        
+        // Λήψη selling_point από user's group ή session
+        $user_id = $this->ion_auth->get_user_id();
+        $groups = $this->ion_auth->get_users_groups($user_id)->result();
+        $selling_point = isset($groups[0]->id) ? $groups[0]->id : DEFAULT_SELLING_POINT;
+        
+        $data = $this->data_stats($year, $year_now, $selling_point);
+        
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_sp";            
         $this->load->view($this->_container, $data);        
     }
     

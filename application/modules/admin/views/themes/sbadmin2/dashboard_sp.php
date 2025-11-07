@@ -222,7 +222,8 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th class="border-0">Serial</th>
-                                    <th class="border-0">Μοντέλο</th>
+                                    <th class="border-0">Μοντέλο / Εταιρία</th>
+                                    <th class="border-0">Προμηθευτής</th>
                                     <th class="border-0">Παραλαβή</th>
                                 </tr>
                             </thead>
@@ -236,10 +237,13 @@
                                     </td>
                                     <td>
                                         <div class="text-muted">
-                                            <?= isset($stock['ha_model']) ? $stock['ha_model'] : 'Κ/Α' ?>
+                                            <strong><?= isset($stock['manufacturer_name']) ? $stock['manufacturer_name'] : 'Κ/Α' ?></strong><br>
+                                            <small><?= isset($stock['model_name']) ? $stock['model_name'] : 'Κ/Α' ?></small>
                                         </div>
+                                    </td>
+                                    <td>
                                         <small class="text-muted">
-                                            <?= isset($stock['vendor']) ? $stock['vendor'] : '' ?>
+                                            <?= isset($stock['vendor_name']) ? $stock['vendor_name'] : 'Κ/Α' ?>
                                         </small>
                                     </td>
                                     <td class="text-muted">
@@ -249,7 +253,7 @@
                                 <?php endforeach; ?>
                                 <?php if (count($stock_bc) > 5): ?>
                                 <tr>
-                                    <td colspan="3" class="text-center">
+                                    <td colspan="4" class="text-center">
                                         <a href="<?= base_url('admin/stocks') ?>" class="btn btn-sm btn-outline-danger">
                                             Προβολή όλων (<?= count($stock_bc) ?>)
                                         </a>
