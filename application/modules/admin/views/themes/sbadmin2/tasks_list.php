@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // AJAX to get customer data
         $.ajax({
-            url: '<?= base_url("admin/customers/get_customer") ?>/' + clientId,
+            url: '<?= base_url("admin/tasks/get_customer/") ?>' + clientId,
             method: 'GET',
             success: function(data) {
                 try {
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // AJAX to get acoustic data
         $.ajax({
-            url: '<?= base_url("admin/stocks/get_acoustic") ?>/' + acousticId,
+            url: '<?= base_url("admin/tasks/get_acoustic/") ?>' + acousticId,
             method: 'GET',
             success: function(data) {
                 try {

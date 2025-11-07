@@ -276,17 +276,22 @@ class Customers extends Admin_Controller {
     
     
     public function get_customer($id) {
-    // Εύρεση του πελάτη από τη βάση δεδομένων
-    $customer = $this->customer->get($id);
-    
-    if ($customer) {
-        // Επιστροφή των δεδομένων του πελάτη σε μορφή JSON
-        echo json_encode($customer);
-    } else {
-        // Αν δεν βρεθεί πελάτης, επιστροφή σφάλματος
-        echo json_encode(['error' => 'Ο πελάτης δεν βρέθηκε']);
+        // Set JSON header
+        header('Content-Type: application/json');
+        
+        // Εύρεση του πελάτη από τη βάση δεδομένων
+        $customer = $this->customer->get($id);
+        
+        if ($customer) {
+            // Επιστροφή των δεδομένων του πελάτη σε μορφή JSON
+            echo json_encode($customer);
+        } else {
+            // Αν δεν βρεθεί πελάτης, επιστροφή σφάλματος
+            http_response_code(404);
+            echo json_encode(['error' => 'Ο πελάτης δεν βρέθηκε']);
+        }
+        exit(); // Prevent further output
     }
-}
 
 public function update_pending_status() {
     $customerId = $this->input->post('id');
