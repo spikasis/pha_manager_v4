@@ -7,14 +7,29 @@
     </button>
 
     <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" 
+          method="GET" action="<?= base_url('admin/search') ?>">
         <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Αναζήτηση..." aria-label="Search" aria-describedby="basic-addon2">
+            <input type="text" name="q" class="form-control bg-light border-0 small" 
+                   placeholder="Αναζήτηση πελατών, ακουστικών..." 
+                   aria-label="Search" aria-describedby="basic-addon2"
+                   id="topbar-search-input" autocomplete="off">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="submit">
                     <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>
+        </div>
+        <!-- Search Results Dropdown -->
+        <div id="search-dropdown" class="dropdown-menu dropdown-menu-left shadow" style="width: 350px; display: none;">
+            <h6 class="dropdown-header">Γρήγορα Αποτελέσματα</h6>
+            <div id="search-results-container">
+                <!-- AJAX results will be inserted here -->
+            </div>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-center" href="#" id="view-all-results">
+                <i class="fas fa-search fa-sm"></i> Προβολή όλων των αποτελεσμάτων
+            </a>
         </div>
     </form>
 
