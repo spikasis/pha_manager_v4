@@ -714,10 +714,15 @@ $(document).ready(function() {
                     icon.removeClass('text-success').addClass('text-muted');
                 }
                 
+                // Notification sent - update notification counter if available
+                if (typeof loadNotificationCount === 'function') {
+                    setTimeout(loadNotificationCount, 1000);
+                }
+                
                 // Refresh the page to update progress
                 setTimeout(function() {
                     location.reload();
-                }, 500);
+                }, 1500);
             },
             error: function() {
                 alert('Σφάλμα κατά την ενημέρωση');
@@ -742,10 +747,15 @@ $(document).ready(function() {
                 value: value
             },
             success: function(response) {
+                // Notification sent - update notification counter if available
+                if (typeof loadNotificationCount === 'function') {
+                    setTimeout(loadNotificationCount, 1000);
+                }
+                
                 // Refresh the page to update progress
                 setTimeout(function() {
                     location.reload();
-                }, 500);
+                }, 1500);
             },
             error: function() {
                 alert('Σφάλμα κατά την ενημέρωση ημερομηνίας');
