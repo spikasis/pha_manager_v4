@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJAX Test για Tasks Update</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Test AJAX Update Field</h2>
+    <button id="testButton">Δοκιμή Update Task</button>
+    <div id="results"></div>
+    
+    <script>
+    $(document).ready(function() {
+        $('#testButton').click(function() {
+            console.log('Starting AJAX test...');
+            
+            $.ajax({
+                url: 'admin/tasks/update_field',
+                method: 'POST',
+                data: {
+                    id: 1, // Test task ID
+                    field: 'test_field',
+                    value: 1
+                },
+                success: function(response) {
+                    console.log('Success:', response);
+                    $('#results').append('<p>Success: ' + JSON.stringify(response) + '</p>');
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error:', xhr.responseText);
+                    $('#results').append('<p>Error: ' + xhr.responseText + '</p>');
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

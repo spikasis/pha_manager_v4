@@ -667,10 +667,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-}); // End of DOMContentLoaded
-
-// Wait for jQuery to be available, then initialize DataTable
-$(document).ready(function() {
     // Initialize DataTable
     $('#tasksTable').DataTable({
         "responsive": true,
@@ -691,13 +687,18 @@ $(document).ready(function() {
         placement: 'top'
     });
 
-    // Update checkbox handler
-    $('.updateCheckbox').change(function() {
+    // Update checkbox handler with event delegation
+    $(document).on('change', '.updateCheckbox', function() {
         var taskId = $(this).data('id');
         var field = $(this).data('field');
         var value = $(this).is(':checked') ? 1 : 0;
         
-        console.log('Updating task:', taskId, 'field:', field, 'value:', value);
+        console.log('=== CHECKBOX CHANGE START ===');
+        console.log('Checkbox element:', this);
+        console.log('Task ID:', taskId, typeof taskId);
+        console.log('Field:', field, typeof field);
+        console.log('Value:', value, typeof value);
+        console.log('AJAX URL:', '<?= base_url("admin/tasks/update_field") ?>');
         
         $.ajax({
             url: '<?= base_url("admin/tasks/update_field") ?>',
@@ -708,18 +709,25 @@ $(document).ready(function() {
                 value: value
             },
             success: function(response) {
-                console.log('Update response:', response);
+                console.log('=== AJAX SUCCESS ===');
+                console.log('Raw response:', response);
+                console.log('Response type:', typeof response);
                 
                 // Try to parse response if it's a string
                 var parsedResponse = response;
                 if (typeof response === 'string') {
+                    console.log('Attempting to parse string response');
                     try {
                         parsedResponse = JSON.parse(response);
+                        console.log('Parsed response:', parsedResponse);
                     } catch (e) {
-                        console.error('Failed to parse response:', response);
+                        console.error('JSON parse failed:', e);
+                        console.error('Raw response that failed:', response);
                         alert('Σφάλμα: Μη έγκυρη απάντηση από τον server');
                         return;
                     }
+                } else {
+                    console.log('Response is already object:', parsedResponse);
                 }
                 
                 if (parsedResponse.status === 'success') {
@@ -748,7 +756,14 @@ $(document).ready(function() {
                 }
             }.bind(this),
             error: function(xhr, status, error) {
-                console.error('AJAX error:', xhr.responseText, status, error);
+                console.log('=== AJAX ERROR ===');
+                console.error('XHR status:', xhr.status);
+                console.error('XHR statusText:', xhr.statusText);
+                console.error('XHR responseText:', xhr.responseText);
+                console.error('Status:', status);
+                console.error('Error:', error);
+                console.error('Full XHR object:', xhr);
+                
                 alert('Σφάλμα κατά την ενημέρωση: ' + (xhr.responseText || error));
                 // Revert checkbox state
                 $(this).prop('checked', !$(this).prop('checked'));
@@ -786,43 +801,44 @@ $(document).ready(function() {
             }
         });
     });
-});
 
-// Export functions
-function exportTableToExcel(tableID, filename = '') {
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
-    // Specify file name
-    filename = filename ? filename + '.xls' : 'excel_data.xls';
-    
-    // Create download link element
-    downloadLink = document.createElement("a");
-    
-    document.body.appendChild(downloadLink);
-    
-    if(navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['\ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    } else {
-        // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    // Export functions (now inside DOMContentLoaded)
+    window.exportTableToExcel = function(tableID, filename = '') {
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
         
-        // Setting the file name
-        downloadLink.download = filename;
+        // Specify file name
+        filename = filename ? filename + '.xls' : 'excel_data.xls';
         
-        //triggering the function
-        downloadLink.click();
-    }
-}
+        // Create download link element
+        downloadLink = document.createElement("a");
+        
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob, filename);
+        } else {
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+            
+            // Setting the file name
+            downloadLink.download = filename;
+            
+            //triggering the function
+            downloadLink.click();
+        }
+    };
 
-function exportTableToPDF() {
-    window.print();
-}
+    window.exportTableToPDF = function() {
+        window.print();
+    };
+
+}); // End of DOMContentLoaded
 </script>
 
 <style>
@@ -844,44 +860,6 @@ function exportTableToPDF() {
     }
 }
 </style>
-        
-
-
-// Export functions
-function exportTableToExcel(tableID, filename = '') {
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
-    // Specify file name
-    filename = filename ? filename + '.xls' : 'excel_data.xls';
-    
-    // Create download link element
-    downloadLink = document.createElement("a");
-    
-    document.body.appendChild(downloadLink);
-    
-    if(navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['\ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    } else {
-        // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-        
-        // Setting the file name
-        downloadLink.download = filename;
-        
-        //triggering the function
-        downloadLink.click();
-    }
-}
-
-function exportTableToPDF() {
-    window.print();
-}
 </script>
 
 <style>
