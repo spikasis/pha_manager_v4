@@ -1,7 +1,7 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
-        Στοιχεία <?= isset($year_now) ? $year_now : date('Y') ?> - <?= isset($selling_point) ? $selling_point->city : 'Υποκατάστημα' ?>
+        Στοιχεία <?= isset($year_now) ? $year_now : date('Y') ?> - Θήβα
     </h1>
     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="window.print()">
         <i class="fas fa-download fa-sm text-white-50"></i> Εκτύπωση

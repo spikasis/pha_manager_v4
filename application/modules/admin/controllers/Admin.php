@@ -200,7 +200,13 @@ if (!$sp_id || !is_numeric($sp_id)) {
 
     // Τεχνικά / Εργαστήριο
     $data['services'] = $this->service->get_all('id, ha_service, day_in', 'status=2');
-    $data['moulds'] = $this->earlab->get_all('id, customer_id, date_order', 'date_delivery=0');
+    $data['moulds'] = $this->earlab->get_earlabs_by_selling_point($selling_point);
+    // Φιλτράρουμε μόνο τις ανοιχτές κατασκευές (χωρίς date_delivery)
+    if (isset($data['moulds']) && is_array($data['moulds'])) {
+        $data['moulds'] = array_filter($data['moulds'], function($mould) {
+            return empty($mould['date_delivery']) || $mould['date_delivery'] == '0000-00-00';
+        });
+    }
     $data['stock_bc'] = $this->stock->get_all('id, serial, ha_model, day_in, vendor, selling_point', 'ekapty_code=0 AND YEAR(day_in)>=2024 AND selling_point=' . $selling_point);
 
     // Ετήσιο χρέος ανά υποκατάστημα
