@@ -1,9 +1,15 @@
 <?php if (!defined('BASEPATH'))  exit('No direct script access allowed');
 
 class Admin_Controller extends MY_Controller {
+    // Admin-specific properties
     public $is_admin;
     public $logged_in_name;
     public $logged_id;
+    
+    // Libraries that will be loaded
+    public $ion_auth;
+    public $email;
+    public $bcrypt;
     
     function __construct() {
         parent::__construct();

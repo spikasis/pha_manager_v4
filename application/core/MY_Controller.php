@@ -2,6 +2,19 @@
 
 class MY_Controller extends CI_Controller {
 
+    // Core CodeIgniter properties (to avoid PHP 8.2+ deprecation warnings)
+    public $load;
+    public $config;
+    public $input;
+    public $db;
+    public $session;
+    public $uri;
+    public $output;
+    public $lang;
+    public $router;
+    public $security;
+    
+    // Custom properties  
     var $_container;
     var $_modules;
 

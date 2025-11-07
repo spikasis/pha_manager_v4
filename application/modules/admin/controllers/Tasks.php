@@ -2,6 +2,14 @@
 
 class Tasks extends Admin_Controller {
 
+    // Model properties to avoid PHP 8.2+ deprecation warnings
+    public $ion_auth_model;
+    public $task;
+    public $customer;
+    public $stock;
+    public $model;
+    public $manufacturer;
+
     function __construct() {
         parent::__construct();
 

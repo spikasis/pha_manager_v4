@@ -3,6 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Search extends Admin_Controller 
 {
+    // Model and library properties to avoid PHP 8.2+ deprecation warnings
+    public $customer;
+    public $stock;
+    public $form_validation;
+
     public function __construct()
     {
         parent::__construct();
