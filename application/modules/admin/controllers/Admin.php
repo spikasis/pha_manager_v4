@@ -125,15 +125,19 @@ if (!$sp_id || !is_numeric($sp_id)) {
             $this->load->view($this->_container, $data);
             break;
 
-        case 6:
-            $data = $this->data_stats($year, $year_now, 'selling_point');
+        case 6: // Service Group (Lab, Logistics, etc.) - συγκεντρωτικά δεδομένα με dashboard_sp
+            $data = $this->data_stats_consolidated($year, $year_now); // Νέα μέθοδος για συγκεντρωτικά
             $data['year'] = $year;
             $data['year_now'] = $year_now;
-            $data['statistics_levadia'] = $this->statistics_levadia($year, 1, $year_now);
-            $data['statistics_thiva'] = $this->statistics_levadia($year, 2, $year_now);
-            $data['last_pays'] = $this->off_limits();
-            $data['debt_count'] = $this->stock->getStocksWithRemainingBalance();
-            $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard";
+            
+            // Δημιουργούμε ένα virtual selling_point για το interface
+            $data['selling_point'] = (object) [
+                'id' => 'consolidated',
+                'city' => 'Όλα τα Υποκαταστήματα',
+                'name' => 'Συγκεντρωτικά Δεδομένα'
+            ];
+            
+            $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "dashboard_sp";
             $this->load->view($this->_container, $data);
             break;
     }
@@ -246,6 +250,98 @@ $data['selected_range'] = $range_input;
     
     return $data;
 }
+
+    /**
+     * Συγκεντρωτικά δεδομένα από όλα τα υποκαταστήματα για Service Group
+     */
+    public function data_stats_consolidated($year, $year_now)
+    {
+        $data = [];
+
+        // Γενικά στατιστικά ανά έτος (όλα τα υποκαταστήματα)
+        $statistics_general = [];
+        for ($y = $year; $y <= $year_now; $y++) {
+            $statistics_general[] = $this->year_stats_general($y);
+        }
+        $data['statistics_general'] = $statistics_general;
+
+        // Στοιχεία από όλα τα υποκαταστήματα
+        $data['sp'] = 'consolidated';
+
+        // Στατιστικά για το τρέχον έτος (όλα τα υποκαταστήματα)
+        $data['this_year'] = $this->this_year($year_now);
+
+        // Συγκεντρωτικά KPIs
+        $current_sales_result = $this->stock->get_all('id', 'YEAR(day_out)=' . $year_now . ' AND (status=4 OR status=3)');
+        $data['current_sales'] = is_array($current_sales_result) ? count($current_sales_result) : 0;
+        $data['stock_available'] = $this->stock_av();
+        
+        // Εκκρεμότητες από όλα τα υποκαταστήματα
+        $in_debt_result = $this->debt_view->get_all('id', 'balance<>0');
+        $data['in_debt_customers'] = is_array($in_debt_result) ? count($in_debt_result) : 0;
+        $data['on_hold'] = $this->stock->get_all('id', 'day_out=0'); // Χωρίς φίλτρο selling_point
+        $data['stock_ha'] = $this->stock->get_all('id, manufacturer', 'status=1');
+
+        // Εκκρεμότητες & υπόλοιπα από όλα τα υποκαταστήματα
+        $data['stock_debt'] = $this->debt_view->get_all('', 'balance<>0 AND day_out<>0');
+        $data['on_hold_debt'] = $this->debt_view->get_all('', 'balance<>0 AND day_out=0');
+        $data['on_hold_names'] = $this->customer->get_all('id, name, doctor, status, selling_point', 'pending=pending');
+
+        // Οικονομικά από όλα τα υποκαταστήματα
+        $data['pays'] = $this->pay->get_all('id, customer, date, pay');
+        $data['sum_debt'] = $this->debt_view->get_all('SUM(balance) AS data', 'YEAR(day_out)=' . $year_now);
+        $data['sum_debt_on_hold'] = $this->debt_view->get_all('SUM(balance) AS data', 'day_out=0');
+        $data['avg_price'] = $this->stock->get_all('ROUND(AVG(ha_price),0) AS data', 'YEAR(day_out)=' . $year_now . ' AND (status=4 OR status=3)');
+
+        // Παλιό χρέος από όλα τα υποκαταστήματα
+        $old_debt = $this->debt_view->get_all('SUM(balance) AS data', 'YEAR(day_out)<' . $year_now . ' AND YEAR(day_out)<>0');
+        $data['old_debt'] = $old_debt[0];
+
+        // ΕΟΠΥΥ από όλα τα υποκαταστήματα
+        $data['eopyy_sum'] = $this->stock->get_all('SUM(eopyy) AS data', 'day_out<>0');
+        $data['eopyy_pays'] = $this->eopyy_pay->get_all('SUM(price) AS data');
+        $data['eopyy_now'] = array_sum($data['eopyy_sum'][0]) - array_sum($data['eopyy_pays'][0]);
+
+        // Τεχνικά / Εργαστήριο από όλα τα υποκαταστήματα
+        $data['services'] = $this->service->get_all('id, ha_service, day_in', 'status=2');
+        
+        // Όλες οι ανοιχτές κατασκευές (χωρίς φίλτρο selling_point)
+        $all_moulds = $this->earlab->get_all('id, customer_id, date_order, date_delivery');
+        $data['moulds'] = array_filter($all_moulds, function($mould) {
+            return empty($mould['date_delivery']) || $mould['date_delivery'] == '0000-00-00';
+        });
+        
+        // Προσθήκη customer names για moulds
+        foreach ($data['moulds'] as &$mould) {
+            $customer = $this->customer->get($mould['customer_id']);
+            if ($customer) {
+                $mould['customer_name'] = $customer->name;
+                $mould['selling_point'] = $customer->selling_point;
+            }
+        }
+
+        // Όλα τα ακουστικά εκκρεμότητας από όλα τα υποκαταστήματα
+        $all_stocks = $this->stock->getStocksWithDetails(null); // null = όλα τα selling points
+        $data['stock_bc'] = array_filter($all_stocks, function($stock) {
+            return empty($stock['ekapty_code']) || $stock['ekapty_code'] == '0' || $stock['ekapty_code'] == 0;
+        });
+
+        // Εκκρεμείς εργασίες από όλα τα υποκαταστήματα
+        $data['tasks'] = $this->task->get_filtered_tasks(null); // null = όλα τα selling points
+
+        // Τρέχον έτος
+        $data['year_now'] = $year_now;
+        
+        // Task durations από όλα τα υποκαταστήματα
+        $durations = $this->task->get_average_task_durations(null, '3m');
+        $data['task_duration'] = [
+            'order_to_dayin' => round($durations['avg_order_diff']),
+            'tel_to_dayout'  => round($durations['avg_tel_diff']),
+        ];
+        $data['selected_range'] = 'quarter';
+        
+        return $data;
+    }
 
     
     public function statistics_levadia($year, $selling_point, $year_now)

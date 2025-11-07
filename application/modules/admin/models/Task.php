@@ -322,7 +322,7 @@ public function get_vendors_delivery_stats()
         return $query->result();
     }
     
-    public function get_average_task_durations($selling_point, $range = '3m')
+    public function get_average_task_durations($selling_point = null, $range = '3m')
 {
     // Μετατροπή της χρονικής περιόδου
     switch ($range) {
@@ -337,6 +337,15 @@ public function get_vendors_delivery_stats()
             $interval = '3 MONTH';
     }
 
+    // Δημιουργία του WHERE clause για selling_point
+    $selling_point_condition = '';
+    $params = [];
+    
+    if ($selling_point !== null) {
+        $selling_point_condition = 'c.selling_point = ? AND';
+        $params = [$selling_point, $selling_point];
+    }
+
     $sql = "
         SELECT 
             (
@@ -345,8 +354,8 @@ public function get_vendors_delivery_stats()
                 JOIN stocks s ON s.id = t.acoustic_id
                 JOIN customers c ON c.id = t.client
                 WHERE 
-                    c.selling_point = ?
-                    AND t.`order` IS NOT NULL
+                    $selling_point_condition
+                    t.`order` IS NOT NULL
                     AND s.day_in IS NOT NULL
                     AND s.day_in > t.`order`
                     AND t.`order` >= DATE_SUB(CURDATE(), INTERVAL $interval)
@@ -358,15 +367,15 @@ public function get_vendors_delivery_stats()
                 JOIN stocks s ON s.id = t.acoustic_id
                 JOIN customers c ON c.id = t.client
                 WHERE 
-                    c.selling_point = ?
-                    AND t.tel_rdv_timestamp IS NOT NULL
+                    $selling_point_condition
+                    t.tel_rdv_timestamp IS NOT NULL
                     AND s.day_out IS NOT NULL
                     AND s.day_out > t.tel_rdv_timestamp
                     AND t.tel_rdv_timestamp >= DATE_SUB(CURDATE(), INTERVAL $interval)
             ) AS avg_tel_diff
     ";
 
-    $query = $this->db->query($sql, array($selling_point, $selling_point));
+    $query = $this->db->query($sql, $params);
     return $query->row_array();
 }
 
