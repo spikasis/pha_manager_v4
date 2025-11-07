@@ -486,13 +486,26 @@
 <script>
 // Wait for DOM and jQuery to be ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if jQuery is loaded
-    if (typeof jQuery === 'undefined') {
-        console.error('jQuery is not loaded!');
-        return;
+    // Wait for jQuery to be available
+    function waitForjQuery() {
+        if (typeof jQuery === 'undefined') {
+            console.log('Waiting for jQuery...');
+            setTimeout(waitForjQuery, 50);
+            return;
+        }
+        
+        // Wait for DataTable plugin to be available
+        if (typeof jQuery.fn.DataTable === 'undefined') {
+            console.log('Waiting for DataTable...');
+            setTimeout(waitForjQuery, 50);
+            return;
+        }
+        
+        console.log('jQuery and DataTable loaded, initializing components...');
+        initializeComponents();
     }
     
-    console.log('jQuery loaded, initializing modals...');
+    function initializeComponents() {
     
     // Initialize modal events with event delegation
     $(document).on('click', '.viewCustomerBtn', function(e) {
@@ -838,6 +851,11 @@ document.addEventListener('DOMContentLoaded', function() {
         window.print();
     };
 
+    } // End of initializeComponents
+    
+    // Start waiting for jQuery
+    waitForjQuery();
+    
 }); // End of DOMContentLoaded
 </script>
 

@@ -296,6 +296,12 @@ public function filtered_tasks($selling_point = null) {
     $data['vendors_stats'] = $this->task->get_vendors_delivery_stats();
     //$data['average_times'] = $this->calculate_average_times();
     
+    // Add DataTable CSS and JS files
+    $data['page_scripts'] = [
+        'assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js',
+        'assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js'
+    ];
+    
     $data['title'] = 'Εργασίες μη Ολοκληρωμένες';
     $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "tasks_list"; // Φόρτωσε το tasks_list view
     $this->load->view($this->_container, $data);
