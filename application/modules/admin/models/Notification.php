@@ -1,11 +1,12 @@
-<?php
+<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
 
-class Notification extends CI_Model {
+class Notification extends MY_Model {
 
     public $table = 'notifications';
 
     public function __construct() {
-        parent::__construct();
+        // parent::__construct(); // CI_Model has no constructor in CI 3.1.14+
+        $this->load->database();
     }
 
     /**
