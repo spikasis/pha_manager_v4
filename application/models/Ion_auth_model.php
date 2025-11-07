@@ -28,6 +28,9 @@
 
 class Ion_auth_model extends CI_Model
 {
+	// Library property to avoid PHP 8.2+ deprecation warnings
+	public $bcrypt;
+	
 	/**
 	 * Holds an array of tables used
 	 *

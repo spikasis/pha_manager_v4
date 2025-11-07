@@ -5,6 +5,14 @@ if (!defined('BASEPATH'))
 
 class Auth extends MY_Controller {
 
+    // Library properties to avoid PHP 8.2+ deprecation warnings
+    public $email;
+    public $bcrypt;
+    public $ion_auth_model;
+    public $ion_auth;
+    public $form_validation;
+    public $session;
+
     function __construct() {
         parent::__construct();
         $this->load->database();
