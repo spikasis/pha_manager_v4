@@ -697,6 +697,8 @@ $(document).ready(function() {
         var field = $(this).data('field');
         var value = $(this).is(':checked') ? 1 : 0;
         
+        console.log('Updating task:', taskId, 'field:', field, 'value:', value);
+        
         $.ajax({
             url: '<?= base_url("admin/tasks/update_field") ?>',
             method: 'POST',
@@ -706,29 +708,51 @@ $(document).ready(function() {
                 value: value
             },
             success: function(response) {
-                // Update icon color based on new state
-                var icon = $('label[for="' + field + '_' + taskId + '"] i');
-                if (value == 1) {
-                    icon.removeClass('text-muted').addClass('text-success');
+                console.log('Update response:', response);
+                
+                // Try to parse response if it's a string
+                var parsedResponse = response;
+                if (typeof response === 'string') {
+                    try {
+                        parsedResponse = JSON.parse(response);
+                    } catch (e) {
+                        console.error('Failed to parse response:', response);
+                        alert('Σφάλμα: Μη έγκυρη απάντηση από τον server');
+                        return;
+                    }
+                }
+                
+                if (parsedResponse.status === 'success') {
+                    // Update icon color based on new state
+                    var icon = $('label[for="' + field + '_' + taskId + '"] i');
+                    if (value == 1) {
+                        icon.removeClass('text-muted').addClass('text-success');
+                    } else {
+                        icon.removeClass('text-success').addClass('text-muted');
+                    }
+                    
+                    // Notification sent - update notification counter if available
+                    if (typeof loadNotificationCount === 'function') {
+                        setTimeout(loadNotificationCount, 1000);
+                    }
+                    
+                    // Refresh the page to update progress
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
                 } else {
-                    icon.removeClass('text-success').addClass('text-muted');
+                    console.error('Server returned error:', parsedResponse.message);
+                    alert('Σφάλμα κατά την ενημέρωση: ' + (parsedResponse.message || 'Άγνωστο σφάλμα'));
+                    // Revert checkbox state
+                    $(this).prop('checked', !$(this).prop('checked'));
                 }
-                
-                // Notification sent - update notification counter if available
-                if (typeof loadNotificationCount === 'function') {
-                    setTimeout(loadNotificationCount, 1000);
-                }
-                
-                // Refresh the page to update progress
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            },
-            error: function() {
-                alert('Σφάλμα κατά την ενημέρωση');
+            }.bind(this),
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', xhr.responseText, status, error);
+                alert('Σφάλμα κατά την ενημέρωση: ' + (xhr.responseText || error));
                 // Revert checkbox state
-                this.checked = !this.checked;
-            }
+                $(this).prop('checked', !$(this).prop('checked'));
+            }.bind(this)
         });
     });
 

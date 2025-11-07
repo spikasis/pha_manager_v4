@@ -138,12 +138,23 @@ class Tasks extends Admin_Controller {
         $field = $this->input->post('field');
         $value = $this->input->post('value');
 
+        // Log the received parameters
+        log_message('debug', "Tasks::update_field called with taskId=$taskId, field=$field, value=$value");
+        
         if (!empty($taskId) && !empty($field)) {
+            // Check if user is logged in
+            if (!$this->ion_auth->logged_in()) {
+                log_message('error', 'User not logged in for update_field');
+                echo json_encode(['status' => 'error', 'message' => 'User not authenticated']);
+                exit();
+            }
+            
             // Get task details before update
             $task = $this->task->get($taskId);
             if (!$task) {
+                log_message('error', "Task not found: $taskId");
                 echo json_encode(['status' => 'error', 'message' => 'Task not found']);
-                return;
+                exit();
             }
 
             // Update the field in the database

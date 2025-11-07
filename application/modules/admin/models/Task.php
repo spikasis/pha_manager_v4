@@ -144,28 +144,56 @@ class Task extends MY_Model {
 
     // Update specific field of task in database
     public function update_field_in_db($taskId, $field, $value) {
-        $this->db->where('id', $taskId);
+        // Log the input parameters
+        log_message('debug', "Updating Task ID: $taskId, field: $field, value: $value");
         
-    // Αν το πεδίο είναι tel_rdv και το value είναι true (1), αποθηκεύουμε την τρέχουσα ημερομηνία
-    if ($field === 'tel_rdv' && $value == 1) {
-        $data = [
-            $field => $value,
-            'tel_rdv_timestamp' => date('Y-m-d H:i:s') // Αποθήκευση τρέχουσας ημερομηνίας
-        ];
-    } else {
-        $data = [$field => $value];
+        // Validate input parameters
+        if (empty($taskId) || empty($field)) {
+            log_message('error', "Invalid parameters: taskId=$taskId, field=$field");
+            return false;
+        }
+        
+        // Check if task exists
+        $this->db->where('id', $taskId);
+        $existing_task = $this->db->get('tasks');
+        if ($existing_task->num_rows() == 0) {
+            log_message('error', "Task ID: $taskId not found in database");
+            return false;
+        }
+        
+        // Prepare data for update
+        if ($field === 'tel_rdv' && $value == 1) {
+            $data = [
+                $field => $value,
+                'tel_rdv_timestamp' => date('Y-m-d H:i:s')
+            ];
+        } else {
+            $data = [$field => $value];
+        }
+        
+        log_message('debug', "Update data: " . json_encode($data));
+        
+        // Perform the update
+        $this->db->where('id', $taskId);
+        $result = $this->db->update('tasks', $data);
+        
+        // Log the result
+        if ($result) {
+            $affected_rows = $this->db->affected_rows();
+            log_message('debug', "Task ID: $taskId updated successfully. Affected rows: $affected_rows");
+            
+            // Double check the update by fetching the updated record
+            $this->db->where('id', $taskId);
+            $updated_task = $this->db->get('tasks')->row();
+            log_message('debug', "Updated task field value: " . $updated_task->$field);
+            
+            return true;
+        } else {
+            $db_error = $this->db->error();
+            log_message('error', "Failed to update Task ID: $taskId. Database error: " . json_encode($db_error));
+            return false;
+        }
     }
-
-    $result = $this->db->update('tasks', $data);
-
-    if ($result) {
-        log_message('debug', "Task ID: $taskId updated successfully with field: $field and value: $value");
-        return true;
-    } else {
-        log_message('error', "Failed to update Task ID: $taskId in the database");
-        return false;
-    }
-}
 
     // Insert task into the database
     public function insert($data) {
