@@ -37,31 +37,13 @@
     <ul class="navbar-nav ml-auto">
 
         <!-- Nav Item - Open Tasks -->
-        <?php 
-        $CI =& get_instance();
-        $user_id = $CI->ion_auth->get_user_id();
-        if ($user_id): 
-            $groups = $CI->ion_auth->get_users_groups($user_id)->result();
-            $group_id = !empty($groups) ? $groups[0]->id : null;
-            
-            // Καθορίζουμε το selling_point ανάλογα με το group
-            $task_sp_param = '';
-            if ($group_id == 4) { // Levadia
-                $task_sp_param = '/1';
-            } elseif ($group_id == 5) { // Thiva  
-                $task_sp_param = '/2';
-            } elseif ($group_id == 6) { // Service Group
-                $task_sp_param = ''; // Όλα τα υποκαταστήματα
-            }
-        ?>
         <li class="nav-item mx-1">
-            <a class="nav-link" href="<?= base_url('admin/tasks/filtered_tasks' . $task_sp_param) ?>" 
+            <a class="nav-link" href="<?= base_url('admin/tasks/filtered_tasks') ?>" 
                title="Ανοιχτές Εργασίες" data-toggle="tooltip" data-placement="bottom">
                 <i class="fas fa-tasks fa-fw text-primary"></i>
                 <span class="d-none d-md-inline ml-1 text-primary font-weight-bold">Εργασίες</span>
             </a>
         </li>
-        <?php endif; ?>
 
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
         <li class="nav-item dropdown no-arrow d-sm-none">
