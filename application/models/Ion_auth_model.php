@@ -326,10 +326,11 @@ class Ion_auth_model extends CI_Model
 			$params['salt_prefix'] = $this->config->item('salt_prefix', 'ion_auth');
 			$this->load->library('bcrypt',$params);
 			
-			// Ensure bcrypt is properly loaded
+			// Ensure bcrypt is properly loaded  
 			if (!isset($this->bcrypt) || $this->bcrypt === null) {
-				// Try alternative loading method
-				$this->load->library('Bcrypt',$params);
+				// Force reload with proper capitalization
+				require_once(APPPATH . 'libraries/Bcrypt.php');
+				$this->bcrypt = new Bcrypt($params);
 			}
 		}
 
@@ -410,20 +411,32 @@ class Ion_auth_model extends CI_Model
 		// bcrypt
 		if ($use_sha1_override === FALSE && $this->hash_method == 'bcrypt')
 		{
-			if (isset($this->bcrypt) && $this->bcrypt !== null && $this->bcrypt->verify($password,$hash_password_db->password))
+			// Try using bcrypt library first
+			if (isset($this->bcrypt) && $this->bcrypt !== null && method_exists($this->bcrypt, 'verify'))
 			{
-				return TRUE;
+				if ($this->bcrypt->verify($password, $hash_password_db->password))
+				{
+					return TRUE;
+				}
 			}
+			// Fallback to PHP's native password_verify if bcrypt library fails
+			else if (function_exists('password_verify'))
+			{
+				if (password_verify($password, $hash_password_db->password))
+				{
+					return TRUE;
+				}
+			}
+			// Final fallback: reload bcrypt library
 			else
 			{
-				// Fallback: reload bcrypt library if not available
-				if (!isset($this->bcrypt) || $this->bcrypt === null)
+				$params = array('rounds' => $this->default_rounds);
+				$params['salt_prefix'] = $this->config->item('salt_prefix', 'ion_auth');
+				$this->load->library('bcrypt', $params);
+				
+				if (isset($this->bcrypt) && $this->bcrypt !== null && method_exists($this->bcrypt, 'verify'))
 				{
-					$params = array('rounds' => $this->default_rounds);
-					$params['salt_prefix'] = $this->config->item('salt_prefix', 'ion_auth');
-					$this->load->library('bcrypt', $params);
-					
-					if (isset($this->bcrypt) && $this->bcrypt !== null && $this->bcrypt->verify($password,$hash_password_db->password))
+					if ($this->bcrypt->verify($password, $hash_password_db->password))
 					{
 						return TRUE;
 					}
