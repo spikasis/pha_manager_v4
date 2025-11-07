@@ -142,22 +142,14 @@
                                             <td>Ενέργειες</td>
                                         </tr>
                                 <?php foreach ($earlabs as $key => $list): ?>
-                                    <?php                                    
-                                    $this->load->model(array('admin/vendor'));
-                                    $this->load->model(array('admin/lab_type'));                                    
-                                    
-                                    $lab = $this->vendor->get($list['vendor_id']);
-                                    $type = $this->lab_type->get($list['type']);
-                                    
-                                    ?>
                                     
                                         <tr> 
-                                            <td><?php echo $type->type ?></td>
+                                            <td><?php echo $list['type_name'] ?></td>
                                             <td><?php echo $list['side'] ?></td>
                                             <td><?php echo $list['date_order'] ?></td>
                                             <td><?php echo $list['date_delivery'] ?></td>
                                             <td><?php echo $list['vent'] ?></td>                                            
-                                            <td><?php echo $lab->name ?></td>                                            
+                                            <td><?php echo $list['vendor_name'] ?></td>                                            
                                             <td>€ <?php echo $list['cost'] ?></td>                                            
                                             <td>  
                                                 <div class="dropdown">

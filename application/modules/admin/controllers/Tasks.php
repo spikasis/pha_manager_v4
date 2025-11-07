@@ -168,14 +168,34 @@ class Tasks extends Admin_Controller {
         }
     }
 
+    // Fetch customer details
+    public function get_customer($id) {
+        // Set JSON header
+        header('Content-Type: application/json');
+        
+        $customer = $this->customer->get($id);
+        if ($customer) {
+            echo json_encode($customer);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Ο πελάτης δεν βρέθηκε']);
+        }
+        exit(); // Prevent further output
+    }
+
     // Fetch acoustic details
     public function get_acoustic($id) {
+        // Set JSON header
+        header('Content-Type: application/json');
+        
         $acoustic = $this->stock->get_stock_by_id($id);
         if ($acoustic) {
             echo json_encode($acoustic);
         } else {
+            http_response_code(404);
             echo json_encode(['error' => 'Ακουστικό δεν βρέθηκε.']);
         }
+        exit(); // Prevent further output
     }
     
    // Display filtered tasks based on selling point

@@ -743,17 +743,19 @@ public function update_day_out()
     }
     
     public function get_acoustic($id) {
-        //$this->load->model('stock');  // Φόρτωση του μοντέλου stock
+        // Set JSON header
+        header('Content-Type: application/json');
+        
         $acoustic = $this->stock->get_stock_by_id($id);  // Ανάκτηση του ακουστικού από το μοντέλο
         
         if ($acoustic) {
             echo json_encode($acoustic);  // Επιστροφή δεδομένων σε μορφή JSON
-            } 
-            else 
-            {
-                echo json_encode(['error' => 'Ακουστικό δεν βρέθηκε.']);
-                }               
-            }
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Ακουστικό δεν βρέθηκε.']);
+        }
+        exit(); // Prevent further output
+    }
 
     // Μέθοδος για εμφάνιση των stocks με υπόλοιπο
     public function view_stock_on_debt_full($selling_point = null) {

@@ -2,6 +2,23 @@
 
 class Customers extends Admin_Controller {
 
+    // Model properties to avoid PHP 8.2+ deprecation warnings
+    public $ion_auth_model;
+    public $customer;
+    public $stock;
+    public $doctor;
+    public $selling_point;
+    public $customer_status;
+    public $insurance;
+    public $chart;
+    public $pay;
+    public $earlab;
+    public $model;
+    public $serie;
+    public $manufacturer;
+    public $ha_type;
+    public $vendor;
+    public $lab_type;
    
     function __construct() {
         parent::__construct();
@@ -19,6 +36,8 @@ class Customers extends Admin_Controller {
         $this->load->model(array('admin/serie'));
         $this->load->model(array('admin/manufacturer'));
         $this->load->model(array('admin/ha_type'));
+        $this->load->model(array('admin/vendor'));
+        $this->load->model(array('admin/lab_type'));
     }
 
     
@@ -129,7 +148,23 @@ class Customers extends Admin_Controller {
         //$data['pay'] = $pays;        
         $data['customer'] = $customer; 
         //$data['sum'] = 0;
-        $data['earlabs'] = $this->earlab->get_all('id, customer_id, vendor_id, date_order, date_delivery, side, cost, type', 'customer_id=' . $id);
+        // Get earlabs and preprocess the data
+        $earlabs = $this->earlab->get_all('id, customer_id, vendor_id, date_order, date_delivery, side, cost, type, vent', 'customer_id=' . $id);
+        
+        // Preprocess earlab data with vendor and lab type info
+        $processed_earlabs = [];
+        foreach ($earlabs as $earlab) {
+            $lab = $this->vendor->get($earlab['vendor_id']);
+            $type = $this->lab_type->get($earlab['type']);
+            
+            $earlab['vendor_name'] = $lab ? $lab->name : '-';
+            $earlab['type_name'] = $type ? $type->type : '-';
+            $earlab['vent'] = isset($earlab['vent']) ? $earlab['vent'] : '-';
+            
+            $processed_earlabs[] = $earlab;
+        }
+        
+        $data['earlabs'] = $processed_earlabs;
         
         //$title = 'Καρτέλα Πελάτη';
         //$html = $this->load->view('customers_view_old', $data, true);
@@ -276,17 +311,22 @@ class Customers extends Admin_Controller {
     
     
     public function get_customer($id) {
-    // Εύρεση του πελάτη από τη βάση δεδομένων
-    $customer = $this->customer->get($id);
-    
-    if ($customer) {
-        // Επιστροφή των δεδομένων του πελάτη σε μορφή JSON
-        echo json_encode($customer);
-    } else {
-        // Αν δεν βρεθεί πελάτης, επιστροφή σφάλματος
-        echo json_encode(['error' => 'Ο πελάτης δεν βρέθηκε']);
+        // Set JSON header
+        header('Content-Type: application/json');
+        
+        // Εύρεση του πελάτη από τη βάση δεδομένων
+        $customer = $this->customer->get($id);
+        
+        if ($customer) {
+            // Επιστροφή των δεδομένων του πελάτη σε μορφή JSON
+            echo json_encode($customer);
+        } else {
+            // Αν δεν βρεθεί πελάτης, επιστροφή σφάλματος
+            http_response_code(404);
+            echo json_encode(['error' => 'Ο πελάτης δεν βρέθηκε']);
+        }
+        exit(); // Prevent further output
     }
-}
 
 public function update_pending_status() {
     $customerId = $this->input->post('id');
