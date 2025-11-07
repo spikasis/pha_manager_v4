@@ -365,6 +365,124 @@
 </div>
 <!-- /.container-fluid -->
 
+<!-- Modal for viewing customer information -->
+<div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="customerModalLabel">
+                    <i class="fas fa-user"></i> Πληροφορίες Πελάτη
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold text-primary">Όνομα:</label>
+                            <p class="form-control-plaintext" id="customerName">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-primary">Τηλέφωνο Σταθερό:</label>
+                            <p class="form-control-plaintext" id="customerPhoneHome">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-primary">Τηλέφωνο Κινητό:</label>
+                            <p class="form-control-plaintext" id="customerPhoneMobile">-</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold text-primary">Διεύθυνση:</label>
+                            <p class="form-control-plaintext" id="customerAddress">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-primary">Πόλη:</label>
+                            <p class="form-control-plaintext" id="customerCity">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-primary">AMKA:</label>
+                            <p class="form-control-plaintext" id="customerAmka">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="viewCustomerBtn">
+                    <i class="fas fa-eye"></i> Προβολή Πελάτη
+                </button>
+                <button type="button" class="btn btn-primary" id="editCustomerBtn">
+                    <i class="fas fa-edit"></i> Επεξεργασία
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Κλείσιμο
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for viewing acoustic information -->
+<div class="modal fade" id="acousticModal" tabindex="-1" role="dialog" aria-labelledby="acousticModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="acousticModalLabel">
+                    <i class="fas fa-headphones"></i> Πληροφορίες Ακουστικού
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold text-info">Serial Number:</label>
+                            <p class="form-control-plaintext" id="acousticSerialNumber">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-info">Σειρά:</label>
+                            <p class="form-control-plaintext" id="acousticSeries">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-info">Μοντέλο:</label>
+                            <p class="form-control-plaintext" id="acousticModel">-</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="font-weight-bold text-info">Κατασκευαστής:</label>
+                            <p class="form-control-plaintext" id="acousticManufacturer">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-info">Barcode Εκτέλεσης:</label>
+                            <p class="form-control-plaintext" id="acousticEkaptyCode">-</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold text-info">Γιατρός:</label>
+                            <p class="form-control-plaintext" id="acousticDoctor">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-info" id="viewAcousticBtn">
+                    <i class="fas fa-eye"></i> Προβολή Ακουστικού
+                </button>
+                <button type="button" class="btn btn-info" id="editAcousticBtn">
+                    <i class="fas fa-edit"></i> Επεξεργασία
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Κλείσιμο
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 $(document).ready(function() {
     // Initialize DataTable
@@ -445,6 +563,170 @@ $(document).ready(function() {
             },
             error: function() {
                 alert('Σφάλμα κατά την ενημέρωση ημερομηνίας');
+            }
+        });
+    });
+
+    // View customer details modal
+    $('.viewCustomerBtn').on('click', function(e) {
+        e.preventDefault();
+        var clientId = $(this).data('id');
+        
+        // Show loading state
+        $('#customerModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
+        $('#customerModal').modal('show');
+
+        // AJAX to get customer data
+        $.ajax({
+            url: '<?= base_url("admin/customers/get_customer") ?>/' + clientId,
+            method: 'GET',
+            success: function(data) {
+                try {
+                    var customer = typeof data === 'string' ? JSON.parse(data) : data;
+                    
+                    // Restore modal content
+                    $('#customerModal .modal-body').html(`
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Όνομα:</label>
+                                    <p class="form-control-plaintext" id="customerName">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Τηλέφωνο Σταθερό:</label>
+                                    <p class="form-control-plaintext" id="customerPhoneHome">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Τηλέφωνο Κινητό:</label>
+                                    <p class="form-control-plaintext" id="customerPhoneMobile">-</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Διεύθυνση:</label>
+                                    <p class="form-control-plaintext" id="customerAddress">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Πόλη:</label>
+                                    <p class="form-control-plaintext" id="customerCity">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">AMKA:</label>
+                                    <p class="form-control-plaintext" id="customerAmka">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    
+                    // Populate data
+                    $('#customerName').text(customer.name || '-');
+                    $('#customerPhoneHome').text(customer.phone_home || '-');
+                    $('#customerPhoneMobile').text(customer.phone_mobile || '-');
+                    $('#customerAddress').text(customer.address || '-');
+                    $('#customerCity').text(customer.city || '-');
+                    $('#customerAmka').text(customer.amka || '-');
+                    
+                    // Set button actions
+                    $('#editCustomerBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/customers/edit/") ?>' + clientId;
+                    });
+                    $('#viewCustomerBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/customers/view/") ?>' + clientId;
+                    });
+                    
+                } catch (error) {
+                    console.error('Error parsing customer data:', error);
+                    $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Customer AJAX error:', error);
+                $('#customerModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του πελάτη.</div>');
+            }
+        });
+    });
+
+    // View acoustic details modal
+    $('.viewAcousticBtn').on('click', function(e) {
+        e.preventDefault();
+        var acousticId = $(this).data('id');
+        
+        // Check if acoustic ID exists
+        if (!acousticId || acousticId === '0' || acousticId === '') {
+            alert('Δεν υπάρχει ακουστικό για προβολή.');
+            return;
+        }
+        
+        // Show loading state
+        $('#acousticModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Φόρτωση δεδομένων...</p></div>');
+        $('#acousticModal').modal('show');
+
+        // AJAX to get acoustic data
+        $.ajax({
+            url: '<?= base_url("admin/stocks/get_acoustic") ?>/' + acousticId,
+            method: 'GET',
+            success: function(data) {
+                try {
+                    var acoustic = typeof data === 'string' ? JSON.parse(data) : data;
+                    
+                    // Restore modal content
+                    $('#acousticModal .modal-body').html(`
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Serial Number:</label>
+                                    <p class="form-control-plaintext" id="acousticSerialNumber">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Σειρά:</label>
+                                    <p class="form-control-plaintext" id="acousticSeries">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Μοντέλο:</label>
+                                    <p class="form-control-plaintext" id="acousticModel">-</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Κατασκευαστής:</label>
+                                    <p class="form-control-plaintext" id="acousticManufacturer">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Barcode Εκτέλεσης:</label>
+                                    <p class="form-control-plaintext" id="acousticEkaptyCode">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-info">Γιατρός:</label>
+                                    <p class="form-control-plaintext" id="acousticDoctor">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    
+                    // Populate data
+                    $('#acousticSerialNumber').text(acoustic.serial || '-');
+                    $('#acousticSeries').text(acoustic.series_name || '-');
+                    $('#acousticModel').text(acoustic.model_name || '-');
+                    $('#acousticManufacturer').text(acoustic.manufacturer_name || '-');
+                    $('#acousticEkaptyCode').text(acoustic.ekapty_code || '-');
+                    $('#acousticDoctor').text(acoustic.doctor_name || '-');
+                    
+                    // Set button actions
+                    $('#editAcousticBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/stocks/edit/") ?>' + acousticId;
+                    });
+                    $('#viewAcousticBtn').off('click').on('click', function() {
+                        window.location.href = '<?= base_url("admin/stocks/view/") ?>' + acousticId;
+                    });
+                    
+                } catch (error) {
+                    console.error('Error parsing acoustic data:', error);
+                    $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά την ανάλυση των δεδομένων.</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Acoustic AJAX error:', error);
+                $('#acousticModal .modal-body').html('<div class="alert alert-danger">Σφάλμα κατά τη φόρτωση των δεδομένων του ακουστικού.</div>');
             }
         });
     });
