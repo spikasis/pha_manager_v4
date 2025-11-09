@@ -554,6 +554,106 @@ private function get_post_data() {
     }
     
     /**
+     * Demo Type Management Page
+     */
+    public function manage_demo_types() {
+        $data['title'] = 'Διαχείριση Demo Types';
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "demo_type_management";
+        $this->load->view($this->_container, $data);
+    }
+    
+    /**
+     * Get demo statistics for management page
+     */
+    public function get_demo_stats() {
+        $this->db->select('
+            COUNT(*) as total,
+            SUM(CASE WHEN demo_type = "trial" THEN 1 ELSE 0 END) as trial,
+            SUM(CASE WHEN demo_type = "replacement" THEN 1 ELSE 0 END) as replacement,
+            SUM(CASE WHEN demo_type IS NULL THEN 1 ELSE 0 END) as null_type
+        ');
+        $this->db->where('status', 5);
+        $stats = $this->db->get('stocks')->row_array();
+        
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($stats));
+    }
+    
+    /**
+     * Get demo stocks data for management table
+     */
+    public function get_demo_management_data() {
+        $this->db->select('
+            s.id,
+            s.serial,
+            s.on_test,
+            s.demo_type,
+            s.customer_id,
+            mo.model as model_name,
+            ma.name as manufacturer_name,
+            c.name as customer_name
+        ');
+        $this->db->from('stocks s');
+        $this->db->join('customers c', 's.customer_id = c.id', 'left');
+        $this->db->join('models mo', 's.ha_model = mo.id', 'left');
+        $this->db->join('manufacturers ma', 'mo.manufacturer = ma.id', 'left');
+        $this->db->where('s.status', 5);
+        $this->db->order_by('s.serial', 'ASC');
+        
+        $data = $this->db->get()->result_array();
+        
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($data));
+    }
+    
+    /**
+     * Bulk set demo types based on conditions
+     */
+    public function bulk_set_demo_type() {
+        $type = $this->input->post('type');
+        $condition = $this->input->post('condition');
+        
+        if (!in_array($type, ['trial', 'replacement'])) {
+            $this->output->set_status_header(400);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Μη έγκυρος τύπος demo'
+            ]));
+            return;
+        }
+        
+        $this->db->where('status', 5);
+        
+        if ($condition === 'on_test_1') {
+            $this->db->where('on_test', 1);
+        } elseif ($condition === 'on_test_0') {
+            $this->db->group_start();
+            $this->db->where('on_test', 0);
+            $this->db->or_where('on_test IS NULL');
+            $this->db->group_end();
+        }
+        
+        $success = $this->db->update('stocks', ['demo_type' => $type]);
+        $affected = $this->db->affected_rows();
+        
+        if ($success) {
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode([
+                'status' => 'success',
+                'message' => "Ενημερώθηκαν επιτυχώς {$affected} εγγραφές ως {$type}"
+            ]));
+        } else {
+            $this->output->set_status_header(500);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Σφάλμα κατά την ενημέρωση'
+            ]));
+        }
+    }
+    
+    /**
      * Assign customer to demo hearing aid
      */
     public function assign_customer() {

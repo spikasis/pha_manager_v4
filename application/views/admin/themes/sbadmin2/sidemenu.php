@@ -72,6 +72,7 @@ $group_id = $group->id;
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_onstock') ?>">Διαθέσιμα</a>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_demo') ?>">Demo Γενικά</a>
                 <a class="collapse-item" href="#" onclick="selectBranchDemo()">Demo Υποκαταστήματος</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/manage_demo_types') ?>">Διαχείριση Demo Types</a>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_returns') ?>">Επιστροφές</a>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_stockblack') ?>">Μαύρη Λίστα</a>
                 <div class="collapse-divider"></div>
