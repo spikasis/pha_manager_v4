@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH'))  exit('No direct script access allowed');
 
-class Admin_Controller extends MX_Controller {
+class Admin_Controller extends MY_Controller {
     // Core CodeIgniter properties (to avoid PHP 8.2+ deprecation warnings)
     public $load;
     public $config;
