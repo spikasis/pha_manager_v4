@@ -348,18 +348,20 @@ class Chart extends MY_Model {
     }
 
     function clean_pie($series_data) {
-        $series_data = str_replace('{"name":"', utf8_encode("{name: '"), $series_data);
-        $series_data = str_replace('","data":"', utf8_encode("', data: "), $series_data);
-        $series_data = str_replace('"}', utf8_encode("}"), $series_data);
+        // PHP 8.2+ compatibility: utf8_encode() is deprecated
+        $series_data = str_replace('{"name":"', "{name: '", $series_data);
+        $series_data = str_replace('","data":"', "', data: ", $series_data);
+        $series_data = str_replace('"}', "}", $series_data);
         $series_data = str_replace('data', 'y', $series_data);
 
         return $series_data;
     }
     
     function clean_debt($series_data) {
-        $series_data = str_replace('"', utf8_encode("'"), $series_data);
-        //$series_data = str_replace('{', utf8_encode(""), $series_data);
-        //$series_data = str_replace('}', utf8_encode(""), $series_data);
+        // PHP 8.2+ compatibility: utf8_encode() is deprecated
+        $series_data = str_replace('"', "'", $series_data);
+        //$series_data = str_replace('{', "", $series_data);
+        //$series_data = str_replace('}', "", $series_data);
         $series_data = str_replace('"', '', $series_data);
 
         return $series_data;
