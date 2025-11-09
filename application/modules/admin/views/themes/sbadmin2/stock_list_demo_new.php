@@ -421,48 +421,114 @@
     </div>
 </div>
 
-<?php if (isset($custom_js)): ?>
 <script>
-    // Initialize DataTables for all tables with enhanced configuration
-    $(document).ready(function() {
-        // Enhanced DataTable configuration with proper pagination
-        const tableConfig = {
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/Greek.json"
-            },
-            "pageLength": 15,
-            "lengthMenu": [[10, 15, 25, 50, 100, -1], [10, 15, 25, 50, 100, "Όλα"]],
-            "order": [[0, "asc"]], // Sort by Serial column
-            "columnDefs": [
-                {
-                    "targets": [-1], // Last column (Actions)
-                    "orderable": false,
-                    "searchable": false
+// Wait for page to fully load
+$(document).ready(function() {
+    // Small delay to ensure all assets are loaded
+    setTimeout(function() {
+        initializeDemoTables();
+    }, 500);
+});
+
+function initializeDemoTables() {
+    // Debug logging
+    console.log('🚀 Starting DataTables initialization...');
+    
+    // Check if DataTables is loaded
+    if (typeof $.fn.DataTable === 'undefined') {
+        console.error('❌ DataTables library is not loaded!');
+        alert('DataTables library failed to load. Please refresh the page.');
+        return;
+    }
+    console.log('✅ DataTables library detected');
+    
+    // Greek language configuration
+    const greekLanguage = {
+        "sEmptyTable": "Δεν βρέθηκαν δεδομένα στον πίνακα",
+        "sInfo": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
+        "sInfoEmpty": "Εμφάνιση 0 έως 0 από 0 εγγραφές",
+        "sInfoFiltered": "(φιλτράρισμα από _MAX_ συνολικές εγγραφές)",
+        "sLengthMenu": "Εμφάνιση _MENU_ εγγραφών",
+        "sLoadingRecords": "Φόρτωση...",
+        "sProcessing": "Επεξεργασία...",
+        "sSearch": "Αναζήτηση:",
+        "sZeroRecords": "Δεν βρέθηκαν εγγραφές που να ταιριάζουν",
+        "oPaginate": {
+            "sFirst": "Πρώτη",
+            "sLast": "Τελευταία",
+            "sNext": "Επόμενη",
+            "sPrevious": "Προηγούμενη"
+        }
+    };
+    
+    // DataTable configuration
+    const tableConfig = {
+        "language": greekLanguage,
+        "pageLength": 10,
+        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Όλα"]],
+        "order": [[0, "asc"]],
+        "columnDefs": [{
+            "targets": -1,
+            "orderable": false,
+            "searchable": false
+        }],
+        "responsive": true,
+        "searching": true,
+        "paging": true,
+        "info": true,
+        "autoWidth": false,
+        "processing": false,
+        "serverSide": false
+    };
+    
+    // Initialize each table with error handling
+    const tableIds = [
+        'trialAvailableTable',
+        'trialInUseTable', 
+        'replacementAvailableTable',
+        'replacementInUseTable'
+    ];
+    
+    let initializedCount = 0;
+    
+    tableIds.forEach(function(tableId) {
+        const $table = $('#' + tableId);
+        
+        if ($table.length > 0) {
+            try {
+                console.log(`🔧 Initializing ${tableId}...`);
+                
+                // Destroy existing DataTable if exists
+                if ($.fn.DataTable.isDataTable('#' + tableId)) {
+                    $table.DataTable().destroy();
                 }
-            ],
-            "responsive": true,
-            "searching": true,
-            "paging": true,
-            "info": true,
-            "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                   '<"row"<"col-sm-12"tr>>' +
-                   '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            "drawCallback": function() {
-                // Re-initialize tooltips and dropdowns after table redraw
-                $('[data-toggle="tooltip"]').tooltip();
+                
+                // Initialize new DataTable
+                $table.DataTable(tableConfig);
+                initializedCount++;
+                console.log(`✅ ${tableId} initialized successfully`);
+                
+            } catch (error) {
+                console.error(`❌ Error initializing ${tableId}:`, error);
             }
-        };
-        
-        // Initialize all demo tables
-        $('#trialAvailableTable').DataTable(tableConfig);
-        $('#trialInUseTable').DataTable(tableConfig);
-        $('#replacementAvailableTable').DataTable(tableConfig);
-        $('#replacementInUseTable').DataTable(tableConfig);
-        
-        // Handle tab switching and table redraw for proper display
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
-            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-        });
+        } else {
+            console.warn(`⚠️ Table ${tableId} not found in DOM`);
+        }
+    });
+    
+    console.log(`🎉 DataTables initialization complete. ${initializedCount}/${tableIds.length} tables initialized.`);
+    
+    // Handle tab switching
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+        setTimeout(function() {
+            try {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+                console.log('📏 Table columns adjusted for tab switch');
+            } catch (error) {
+                console.error('Error adjusting columns:', error);
+            }
+        }, 100);
+    });
         
         // Customer assignment handlers
         $(document).on('click', '.assign-customer, .assign-replacement', function(e) {
@@ -587,6 +653,4 @@
             });
         });
 
-    });
-</script>
-<?php endif; ?>
+}</script>

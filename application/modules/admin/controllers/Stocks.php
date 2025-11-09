@@ -514,6 +514,22 @@ private function get_post_data() {
     }
     
     /**
+     * Debug version of get_demo for pagination testing
+     */
+    public function get_demo_debug() {
+        // Simple test data
+        $data['trial_available'] = array();
+        $data['customers'] = array();
+        $data['title'] = 'Demo Debug - Pagination Test';
+        
+        // Enable JavaScript
+        $data['custom_js'] = true;
+        
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list_demo_debug";
+        $this->load->view($this->_container, $data);
+    }
+    
+    /**
      * Legacy method - keep for backwards compatibility but redirect to new method
      */
     public function get_demo_legacy($status, $selling_point = null) {
