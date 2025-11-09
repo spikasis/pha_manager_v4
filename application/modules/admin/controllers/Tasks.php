@@ -37,8 +37,9 @@ class Tasks extends Admin_Controller {
 
     // Create new task
     public function create() {
-        // Check if customer_id is passed via URL parameter
+        // Check if customer_id and acoustic_id are passed via URL parameters
         $preset_customer_id = $this->input->get('customer_id');
+        $preset_acoustic_id = $this->input->get('acoustic_id');
         
         if ($this->input->post('client')) {
             // Collect form data
@@ -78,13 +79,20 @@ class Tasks extends Admin_Controller {
         $data['clients'] = $this->customer->get_all();
         $data['acoustics'] = $this->stock->get_all();
         
-        // Pass preset customer ID if available
+        // Pass preset customer ID and acoustic ID if available
         $data['preset_customer_id'] = $preset_customer_id;
+        $data['preset_acoustic_id'] = $preset_acoustic_id;
         
         // If customer_id is preset, get customer name for display
         if ($preset_customer_id) {
             $preset_customer = $this->customer->get($preset_customer_id);
             $data['preset_customer'] = $preset_customer;
+        }
+        
+        // If acoustic_id is preset, get acoustic details for display
+        if ($preset_acoustic_id) {
+            $preset_acoustic = $this->stock->get($preset_acoustic_id);
+            $data['preset_acoustic'] = $preset_acoustic;
         }
 
         // Load the create task view

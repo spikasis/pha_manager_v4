@@ -50,6 +50,9 @@
                     <a class="dropdown-item" href="<?= base_url('admin/tasks/create?customer_id=' . $customer->id) ?>">
                         <i class="fas fa-tasks fa-sm fa-fw mr-2 text-primary"></i> Δημιουργία Task
                     </a>
+                    <a class="dropdown-item" href="<?= base_url('admin/tasks?customer_filter=' . $customer->id) ?>">
+                        <i class="fas fa-list fa-sm fa-fw mr-2 text-info"></i> Προβολή Tasks
+                    </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?= base_url('admin/customers/edit/' . $customer->id) ?>">
                         <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i> Επεξεργασία
@@ -241,6 +244,10 @@
                                                     <i class="fas fa-cog"></i> Ενέργειες
                                                 </button>
                                                 <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="<?= base_url('admin/tasks/create?customer_id=' . $customer->id . '&acoustic_id=' . $stock['id']) ?>">
+                                                        <i class="fas fa-tasks text-primary"></i> Δημιουργία Task
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" href="<?= base_url('admin/stocks/edit/' . $stock['id']) ?>">
                                                         <i class="fas fa-edit"></i> Επεξεργασία
                                                     </a>
