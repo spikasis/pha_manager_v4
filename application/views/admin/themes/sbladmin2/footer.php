@@ -179,6 +179,34 @@
                 searchDropdown.show();
             }
         }
+        
+        // Demo management functions
+        function selectBranchDemo() {
+            <?php 
+            $CI =& get_instance();
+            $user_id = $CI->ion_auth->get_user_id();
+            $groups = $CI->ion_auth->get_users_groups($user_id)->result();
+            $user_selling_point = isset($groups[0]) ? $groups[0]->id : 1;
+            $is_admin = $CI->ion_auth->is_admin();
+            ?>
+            
+            // Αυτόματη ανάκτηση του selling_point του χρήστη
+            var user_selling_point = <?= $user_selling_point ?>;
+            
+            // Αν ο χρήστης είναι admin, δώσε επιλογές
+            <?php if ($is_admin): ?>
+            var selling_point = prompt('Εισάγετε ID υποκαταστήματος:\n1 = Κεντρικό (Αθήνα)\n2 = Λιβαδειά\n3 = Θήβα\n\nΕισάγετε αριθμό:');
+            
+            if (selling_point && selling_point >= 1 && selling_point <= 3) {
+                window.location.href = '<?= base_url("admin/stocks/get_demo/") ?>' + selling_point;
+            } else if (selling_point) {
+                alert('Μη έγκυρο υποκατάστημα. Παρακαλώ εισάγετε 1, 2 ή 3.');
+            }
+            <?php else: ?>
+            // Για υποκαταστήματα, χρησιμοποίησε το δικό τους selling_point
+            window.location.href = '<?= base_url("admin/stocks/get_demo/") ?>' + user_selling_point;
+            <?php endif; ?>
+        }
     </script>
 
 </body>

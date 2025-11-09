@@ -563,6 +563,44 @@
                 }
             });
         });
+        
+        // Initialize DataTables for all tables
+        $(document).ready(function() {
+            const dataTableConfig = {
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Greek.json"
+                },
+                "pageLength": 25,
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Όλα"]],
+                "order": [[0, "asc"]], // Sort by Serial column
+                "columnDefs": [
+                    {
+                        "targets": [-1], // Last column (Actions)
+                        "orderable": false,
+                        "searchable": false
+                    }
+                ],
+                "responsive": true,
+                "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                       '<"row"<"col-sm-12"tr>>' +
+                       '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                "drawCallback": function() {
+                    // Re-initialize tooltips and dropdowns after table redraw
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            };
+            
+            // Initialize all demo tables
+            $('#trialAvailableTable').DataTable(dataTableConfig);
+            $('#trialInUseTable').DataTable(dataTableConfig);
+            $('#replacementAvailableTable').DataTable(dataTableConfig);
+            $('#replacementInUseTable').DataTable(dataTableConfig);
+            
+            // Handle tab switching and table redraw
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            });
+        });
     });
 </script>
 <?php endif; ?>
