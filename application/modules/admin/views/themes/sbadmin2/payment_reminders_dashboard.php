@@ -144,7 +144,7 @@
                         <?php foreach ($overdue_30 as $debt): ?>
                         <tr class="<?= $debt['days_since_sold'] > 60 ? 'table-danger' : 'table-warning' ?>">
                             <td>
-                                <strong><?= htmlspecialchars($debt['customer_name']) ?></strong>
+                                <strong><?= htmlspecialchars($debt['customer_name'] ?? 'Άγνωστος') ?></strong>
                                 <br><small class="text-muted">ID: <?= $debt['customer_id'] ?></small>
                             </td>
                             <td>
@@ -163,13 +163,13 @@
                             <?php if ($user_group == 1): ?>
                             <td>
                                 <span class="badge badge-secondary">
-                                    <?= htmlspecialchars($debt['selling_point_name']) ?>
+                                    <?= htmlspecialchars($debt['selling_point_name'] ?? '-') ?>
                                 </span>
                             </td>
                             <?php endif; ?>
                             <td>
-                                <strong><?= htmlspecialchars($debt['serial']) ?></strong>
-                                <br><small class="text-muted"><?= htmlspecialchars($debt['model']) ?></small>
+                                <strong><?= htmlspecialchars($debt['serial'] ?? '-') ?></strong>
+                                <br><small class="text-muted"><?= htmlspecialchars($debt['model'] ?? '-') ?></small>
                             </td>
                             <td>
                                 <span class="badge badge-danger badge-lg">
@@ -199,7 +199,7 @@
                                     <button class="btn btn-outline-warning btn-sm send-reminder" 
                                             data-customer="<?= $debt['customer_id'] ?>" 
                                             data-stock="<?= $debt['stock_id'] ?>"
-                                            data-name="<?= htmlspecialchars($debt['customer_name']) ?>"
+                                            data-name="<?= htmlspecialchars($debt['customer_name'] ?? 'Άγνωστος') ?>"
                                             title="Αποστολή Υπενθύμισης">
                                         <i class="fas fa-bell"></i>
                                     </button>
@@ -235,7 +235,7 @@
                     <tbody>
                         <?php foreach ($selling_point_counts as $branch): ?>
                         <tr>
-                            <td><strong><?= htmlspecialchars($branch['selling_point_name']) ?></strong></td>
+                            <td><strong><?= htmlspecialchars($branch['selling_point_name'] ?? '-') ?></strong></td>
                             <td>
                                 <span class="badge badge-warning">
                                     <?= $branch['overdue_customers'] ?> πελάτες
