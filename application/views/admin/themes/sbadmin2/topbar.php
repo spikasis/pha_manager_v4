@@ -211,32 +211,31 @@
 <script>
 $(document).ready(function() {
     
-    // Load initial notification count
-    loadNotificationCount();
-    loadPaymentRemindersCount();
+    // TEMPORARILY DISABLE NOTIFICATIONS FOR DEBUGGING
+    console.log('Notifications temporarily disabled - fixing controllers first');
     
-    // Load notifications when dropdown is opened
+    // Set placeholder values instead of AJAX calls
+    $('#notifications-count').text('0').hide();
+    $('#payment-notifications-count').text('0').hide();
+    
+    // Show placeholder messages in dropdowns
+    $('#notifications-list').html('<div class="dropdown-item text-muted text-center">Ειδοποιήσεις προσωρινά απενεργοποιημένες</div>');
+    $('#payment-notifications-list').html('<div class="dropdown-item text-muted text-center">Υπενθυμίσεις πληρωμών προσωρινά απενεργοποιημένες</div>');
+    
+    // Disable periodic refresh for now
+    // setInterval(function() {
+    //     loadNotificationCount();
+    //     loadPaymentRemindersCount();
+    // }, 30000);
+    
+    // Keep the dropdown functionality but without AJAX
     $('#notificationsDropdown').on('click', function() {
-        loadNotifications();
+        console.log('Notifications dropdown clicked - system disabled');
     });
     
-    // Load payment reminders when dropdown is opened
     $('#paymentRemindersDropdown').on('click', function() {
-        loadPaymentReminders();
+        console.log('Payment reminders dropdown clicked - system disabled');
     });
-    
-    // Mark all as read
-    $('#mark-all-read').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        markAllAsRead();
-    });
-    
-    // Check for new notifications every 30 seconds
-    setInterval(function() {
-        loadNotificationCount();
-        loadPaymentRemindersCount();
-    }, 30000);
     
     function loadNotificationCount() {
         $.ajax({
