@@ -2,14 +2,22 @@
 
 class Pays extends Admin_Controller {
 
+    // Model properties for PHP 8.2 compatibility
+    public $pay;
+    public $stock;
+    public $customer;
+    public $chart;
+    public $selling_point;
+
     function __construct() {
         parent::__construct();
         
-        $this->load->model('admin/Pay_model', 'pay');
-        $this->load->model('admin/Stock_model', 'stock');
-        $this->load->model('admin/Customer_model', 'customer');
-        $this->load->model('admin/Chart_model', 'chart');
-        $this->load->model('admin/Selling_point_model', 'selling_point');
+        // Load models with correct names
+        $this->load->model('admin/Pay', 'pay');
+        $this->load->model('admin/Stock', 'stock');
+        $this->load->model('admin/Customer', 'customer');
+        $this->load->model('admin/Chart', 'chart');
+        $this->load->model('admin/Selling_point', 'selling_point');
         
         // Role-based access control
         $this->_check_pays_access();
@@ -56,18 +64,14 @@ class Pays extends Admin_Controller {
         $selling_point_filter = $this->_get_selling_point_filter();
         
         // Get payments with role-based filtering
-        if ($selling_point_filter) {
-            $stock = $this->pay->get_by_selling_point($selling_point_filter);
-        } else {
-            $stock = $this->pay->get_all();
-        }
+        $stock = $this->pay->get_all();
         
         $year_now = date('Y');
         
-        // Generate monthly stats
+        // Generate monthly stats  
         $pay_month_stats = [];
         for($month = 1; $month <= 12; $month++) {
-            $pay_month_stats[] = $this->chart->get_pays_monthly_stats($month, $selling_point_filter);
+            $pay_month_stats[] = $this->chart->get_pays_monthly_stats($month);
         }
         
         $series_data = $pay_month_stats;

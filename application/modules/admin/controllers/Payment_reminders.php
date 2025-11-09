@@ -6,6 +6,10 @@
 
 class Payment_reminders extends Admin_Controller {
 
+    // Model properties for PHP 8.2 compatibility
+    public $reminders;
+    public $selling_point;
+
     public function __construct() {
         parent::__construct();
         $this->load->model('Payment_reminders_model', 'reminders');
