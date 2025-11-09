@@ -88,6 +88,16 @@ class Payment_reminders extends Admin_Controller {
         $stock_id = $this->input->post('stock_id');
         $reminder_type = $this->input->post('reminder_type') ?: 'standard';
         
+        // Validate required fields
+        if (empty($customer_id) || !is_numeric($customer_id)) {
+            $this->session->set_flashdata('error', 'Μη έγκυρο ID πελάτη!');
+            redirect('admin/payment_reminders');
+            return;
+        }
+        
+        // Convert empty stock_id to null
+        $stock_id = !empty($stock_id) && is_numeric($stock_id) ? $stock_id : null;
+        
         // Here you would integrate with SMS/Email service
         // For now, just log the reminder
         $success = $this->reminders->mark_reminder_sent($customer_id, $stock_id, $reminder_type);

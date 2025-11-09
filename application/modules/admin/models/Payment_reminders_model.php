@@ -146,17 +146,22 @@ class Payment_reminders_model extends MY_Model {
     /**
      * Mark reminder as sent
      * @param int $customer_id
-     * @param int $stock_id
+     * @param int|null $stock_id
      * @param string $reminder_type
      * @return bool
      */
-    public function mark_reminder_sent($customer_id, $stock_id, $reminder_type = 'standard') {
+    public function mark_reminder_sent($customer_id, $stock_id = null, $reminder_type = 'standard') {
+        // Validate required fields
+        if (empty($customer_id) || !is_numeric($customer_id)) {
+            return false;
+        }
+        
         $data = [
-            'customer_id' => $customer_id,
-            'stock_id' => $stock_id,
+            'customer_id' => (int)$customer_id,
+            'stock_id' => $stock_id ? (int)$stock_id : null,
             'reminder_type' => $reminder_type,
             'sent_date' => date('Y-m-d H:i:s'),
-            'sent_by' => $this->session->userdata('user_id')
+            'sent_by' => $this->session->userdata('user_id') ?: 1 // fallback to admin user
         ];
         
         return $this->db->insert('payment_reminders_log', $data);
