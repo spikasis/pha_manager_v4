@@ -65,6 +65,42 @@
             </div>
         </li>
 
+        <!-- Nav Item - Payment Reminders -->
+        <?php
+        $user_id = $this->ion_auth->get_user_id();
+        $group = $this->ion_auth->get_users_groups($user_id)->row();
+        $group_id = $group ? $group->id : 1;
+        
+        // Only show payment reminders to Admin and Branch users (not Service)
+        if (in_array($group_id, [1, 2, 4, 5])): 
+        ?>
+        <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="paymentRemindersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-euro-sign fa-fw text-warning"></i>
+                <span class="badge badge-warning badge-counter" id="payment-reminder-counter" style="display: none;">0</span>
+            </a>
+            <!-- Dropdown - Payment Reminders -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="paymentRemindersDropdown" style="width: 420px;">
+                <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-exclamation-triangle text-warning"></i> Υπενθυμίσεις Πληρωμών</span>
+                    <a href="<?= base_url('admin/payment_reminders') ?>" class="btn btn-sm btn-outline-warning" style="font-size: 11px; padding: 2px 8px;">
+                        Προβολή Όλων
+                    </a>
+                </h6>
+                <div id="payment-reminders-container">
+                    <div class="dropdown-item text-center py-3">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div class="small text-gray-500 mt-2">Φόρτωση υπενθυμίσεων...</div>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-center small text-gray-500" href="<?= base_url('admin/payment_reminders') ?>">
+                    <i class="fas fa-bell fa-sm"></i> Διαχείριση Υπενθυμίσεων
+                </a>
+            </div>
+        </li>
+        <?php endif; ?>
+
         <!-- Nav Item - Task Notifications -->
         <li class="nav-item dropdown no-arrow mx-1">
             <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -177,10 +213,16 @@ $(document).ready(function() {
     
     // Load initial notification count
     loadNotificationCount();
+    loadPaymentRemindersCount();
     
     // Load notifications when dropdown is opened
     $('#notificationsDropdown').on('click', function() {
         loadNotifications();
+    });
+    
+    // Load payment reminders when dropdown is opened
+    $('#paymentRemindersDropdown').on('click', function() {
+        loadPaymentReminders();
     });
     
     // Mark all as read
@@ -191,7 +233,10 @@ $(document).ready(function() {
     });
     
     // Check for new notifications every 30 seconds
-    setInterval(loadNotificationCount, 30000);
+    setInterval(function() {
+        loadNotificationCount();
+        loadPaymentRemindersCount();
+    }, 30000);
     
     function loadNotificationCount() {
         $.ajax({
@@ -316,8 +361,107 @@ $(document).ready(function() {
         });
     }
     
-    // Make markAsRead available globally
+    function loadPaymentRemindersCount() {
+        $.ajax({
+            url: '<?= base_url("admin/payment_reminders/get_notifications_count") ?>',
+            method: 'GET',
+            success: function(response) {
+                if (response.total > 0) {
+                    $('#payment-reminder-counter').text(response.total > 99 ? '99+' : response.total).show();
+                    // Add pulse animation to euro icon
+                    $('.fa-euro-sign').addClass('fa-pulse');
+                } else {
+                    $('#payment-reminder-counter').hide();
+                    $('.fa-euro-sign').removeClass('fa-pulse');
+                }
+            },
+            error: function() {
+                console.log('Error loading payment reminders count');
+            }
+        });
+    }
+    
+    function loadPaymentReminders() {
+        $('#payment-reminders-container').html(`
+            <div class="dropdown-item text-center py-3">
+                <i class="fas fa-spinner fa-spin"></i>
+                <div class="small text-gray-500 mt-2">Φόρτωση υπενθυμίσεων...</div>
+            </div>
+        `);
+        
+        $.ajax({
+            url: '<?= base_url("admin/payment_reminders/get_overdue_json?limit=5") ?>',
+            method: 'GET',
+            success: function(response) {
+                var html = '';
+                
+                if (response.data && response.data.length > 0) {
+                    response.data.forEach(function(reminder) {
+                        var urgencyClass = reminder.days_overdue.includes('60') ? 'bg-danger' : 'bg-warning';
+                        var urgencyText = reminder.days_overdue.includes('60') ? 'text-white' : 'text-dark';
+                        
+                        html += `
+                            <a class="dropdown-item d-flex align-items-center payment-reminder-item" 
+                               href="<?= base_url('admin/customers/view/') ?>${reminder.customer_id}" 
+                               style="padding: 10px 15px;">
+                                <div class="mr-3">
+                                    <div class="icon-circle ${urgencyClass}">
+                                        <i class="fas fa-euro-sign ${urgencyText}"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-fill" style="min-width: 0;">
+                                    <div class="font-weight-bold text-truncate" title="${reminder.customer_name}">
+                                        ${reminder.customer_name}
+                                    </div>
+                                    <div class="small text-gray-500 text-truncate" title="${reminder.device}">
+                                        ${reminder.device}
+                                    </div>
+                                    <div class="small">
+                                        <span class="badge badge-danger">${reminder.debt_amount}</span>
+                                        <span class="badge ${urgencyClass} ${urgencyText}">${reminder.days_overdue}</span>
+                                    </div>
+                                </div>
+                                <div class="ml-2">
+                                    <button class="btn btn-sm btn-success quick-pay-btn" 
+                                            data-customer="${reminder.customer_id}"
+                                            title="Γρήγορη Πληρωμή"
+                                            onclick="event.preventDefault(); event.stopPropagation(); quickPayment('${reminder.customer_id}', '${reminder.customer_name}');">
+                                        <i class="fas fa-plus fa-xs"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        `;
+                    });
+                } else {
+                    html = `
+                        <div class="dropdown-item text-center py-4">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <div class="text-gray-500">Δεν υπάρχουν καθυστερημένες πληρωμές</div>
+                        </div>
+                    `;
+                }
+                
+                $('#payment-reminders-container').html(html);
+            },
+            error: function() {
+                $('#payment-reminders-container').html(`
+                    <div class="dropdown-item text-center py-3">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <div class="small text-gray-500 mt-2">Σφάλμα φόρτωσης υπενθυμίσεων</div>
+                    </div>
+                `);
+            }
+        });
+    }
+    
+    function quickPayment(customerId, customerName) {
+        // Redirect to payment form with preset customer
+        window.open('<?= base_url("admin/pays/create_specific/") ?>' + customerId, '_blank');
+    }
+    
+    // Make functions available globally
     window.markAsRead = markAsRead;
+    window.quickPayment = quickPayment;
 });
 </script>
 
@@ -326,10 +470,20 @@ $(document).ready(function() {
     animation: fa-shake 2s ease-in-out infinite;
 }
 
+.fa-pulse {
+    animation: fa-pulse 1.5s ease-in-out infinite;
+}
+
 @keyframes fa-shake {
     0%, 100% { transform: rotate(0deg); }
     25% { transform: rotate(5deg); }
     75% { transform: rotate(-5deg); }
+}
+
+@keyframes fa-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .notification-item:hover {

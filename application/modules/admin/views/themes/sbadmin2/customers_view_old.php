@@ -24,6 +24,12 @@
             <a href="<?= base_url('admin/tasks/create?customer_id=' . $customer->id) ?>" class="btn btn-primary shadow-sm mr-2">
                 <i class="fas fa-tasks fa-sm text-white-50"></i> New Task
             </a>
+            <a href="<?= base_url('admin/pays/create_specific/' . $customer->id) ?>" class="btn btn-info shadow-sm mr-2">
+                <i class="fas fa-money-bill-wave fa-sm text-white-50"></i> Νέα Πληρωμή
+            </a>
+            <a href="<?= base_url('admin/pays?customer_id=' . $customer->id) ?>" class="btn btn-outline-info shadow-sm mr-2">
+                <i class="fas fa-history fa-sm"></i> Ιστορικό Πληρωμών
+            </a>
             <button onclick="window.print()" class="btn btn-success shadow-sm mr-2">
                 <i class="fas fa-print fa-sm text-white-50"></i> Εκτύπωση
             </button>
@@ -52,6 +58,16 @@
                     </a>
                     <a class="dropdown-item" href="<?= base_url('admin/tasks?customer_filter=' . $customer->id) ?>">
                         <i class="fas fa-list fa-sm fa-fw mr-2 text-info"></i> Προβολή Tasks
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="<?= base_url('admin/pays/create_specific/' . $customer->id) ?>">
+                        <i class="fas fa-money-bill-wave fa-sm fa-fw mr-2 text-success"></i> Νέα Πληρωμή
+                    </a>
+                    <a class="dropdown-item" href="<?= base_url('admin/pays?customer_id=' . $customer->id) ?>">
+                        <i class="fas fa-history fa-sm fa-fw mr-2 text-warning"></i> Ιστορικό Πληρωμών
+                    </a>
+                    <a class="dropdown-item" href="<?= base_url('admin/pays/debt_list?customer_id=' . $customer->id) ?>">
+                        <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2 text-danger"></i> Χρέη Πελάτη
                     </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?= base_url('admin/customers/edit/' . $customer->id) ?>">

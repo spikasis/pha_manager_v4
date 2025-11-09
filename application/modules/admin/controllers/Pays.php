@@ -5,27 +5,69 @@ class Pays extends Admin_Controller {
     function __construct() {
         parent::__construct();
         
-        $this->load->model(array('admin/pay'));
-        $this->load->model(array('admin/stock'));
-        $this->load->model(array('admin/customer'));
-        $this->load->model(array('admin/manufacturer'));
-        $this->load->model(array('admin/vendor'));
-        $this->load->model(array('admin/stock_status'));
-        $this->load->model(array('admin/ch_customer'));
-        $this->load->model(array('admin/company'));        
-        $this->load->model(array('admin/chart')); 
-        $this->load->model(array('admin/company'));
-        $this->load->model(array('admin/selling_point'));
+        $this->load->model('admin/Pay_model', 'pay');
+        $this->load->model('admin/Stock_model', 'stock');
+        $this->load->model('admin/Customer_model', 'customer');
+        $this->load->model('admin/Chart_model', 'chart');
+        $this->load->model('admin/Selling_point_model', 'selling_point');
+        
+        // Role-based access control
+        $this->_check_pays_access();
+    }
+    
+    /**
+     * Check if user has access to payments
+     */
+    private function _check_pays_access() {
+        $user_id = $this->ion_auth->get_user_id();
+        $group = $this->ion_auth->get_users_groups($user_id)->row();
+        $group_id = $group ? $group->id : null;
+        
+        // Service group (6) has no access to payments
+        if ($group_id == 6) {
+            show_error('Δεν έχετε δικαίωμα πρόσβασης στη διαχείριση πληρωμών', 403, 'Μη Εξουσιοδοτημένη Πρόσβαση');
+        }
+    }
+    
+    /**
+     * Get user's allowed selling point filter
+     */
+    private function _get_selling_point_filter() {
+        $user_id = $this->ion_auth->get_user_id();
+        $group = $this->ion_auth->get_users_groups($user_id)->row();
+        $group_id = $group ? $group->id : 1;
+        
+        // Admin (1) sees all
+        if ($group_id == 1) {
+            return null;
+        }
+        
+        // Branch users (2, 4, 5) see only their branch
+        if (in_array($group_id, [2, 4, 5])) {
+            // TODO: Get user's selling point from user profile
+            // For now, return null (admin access) until selling point assignment is implemented
+            return null;
+        }
+        
+        return null;
     }
 
     public function index() {
-        $stock = $this->pay->get_all();
+        $selling_point_filter = $this->_get_selling_point_filter();
+        
+        // Get payments with role-based filtering
+        if ($selling_point_filter) {
+            $stock = $this->pay->get_by_selling_point($selling_point_filter);
+        } else {
+            $stock = $this->pay->get_all();
+        }
+        
         $year_now = date('Y');
         
-        for($month = 1; $month <= 12; $month++)
-        {
-            $pay_month_stats[] = $this->chart->get_pays_monthly_stats($month);
-            
+        // Generate monthly stats
+        $pay_month_stats = [];
+        for($month = 1; $month <= 12; $month++) {
+            $pay_month_stats[] = $this->chart->get_pays_monthly_stats($month, $selling_point_filter);
         }
         
         $series_data = $pay_month_stats;
@@ -36,7 +78,8 @@ class Pays extends Admin_Controller {
         
         $data['pays'] = $pay;
         $data['year_now'] = $year_now;
-        $data['pay'] = $stock;  
+        $data['pay'] = $stock;
+        $data['selling_point_filter'] = $selling_point_filter;
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "pay_list";
         $this->load->view($this->_container, $data);
     }

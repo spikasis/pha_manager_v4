@@ -121,10 +121,18 @@ $group_id = $group->id;
         </a>
         <div id="collapseFinancial" class="collapse <?= in_array($this->uri->segment(2), ['pays', 'eopyy_pays', 'financial']) ? 'show' : '' ?>" aria-labelledby="headingFinancial" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Διαχείριση:</h6>
-                <a class="collapse-item" href="<?= base_url('admin/pays') ?>">Πληρωμές</a>
-                <a class="collapse-item" href="<?= base_url('admin/eopyy_pays') ?>">ΕΟΠΥΥ</a>
-                <a class="collapse-item" href="<?= base_url('admin/financial/reports') ?>">Αναφορές</a>
+                <h6 class="collapse-header">Πληρωμές:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'pays' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/pays') ?>">Όλες οι Πληρωμές</a>
+                <a class="collapse-item" href="<?= base_url('admin/pays/create') ?>">Νέα Πληρωμή</a>
+                <a class="collapse-item" href="<?= base_url('admin/pays/debt_list') ?>">Χρέη Πελατών</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">ΕΟΠΥΥ:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/eopyy_pays') ?>">ΕΟΠΥΥ Πληρωμές</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Αναφορές:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/pays/monthly_report') ?>">Μηνιαίες Αναφορές</a>
+                <a class="collapse-item" href="<?= base_url('admin/pays/yearly_report') ?>">Ετήσιες Αναφορές</a>
+                <a class="collapse-item" href="<?= base_url('admin/financial/reports') ?>">Λοιπές Αναφορές</a>
             </div>
         </div>
     </li>
@@ -170,6 +178,22 @@ $group_id = $group->id;
                 <h6 class="collapse-header">Οικονομικά:</h6>
                 <a class="collapse-item" href="#" onclick="selectBranchDebt()">Χρέη Υποκαταστήματος</a>
                 <a class="collapse-item" href="#" onclick="selectBranchYearSales()">Πωλήσεις ανά Έτος</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Financial (Branch - Limited Access) -->
+    <li class="nav-item <?= in_array($this->uri->segment(2), ['pays', 'financial']) ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFinancialBranch" aria-expanded="true" aria-controls="collapseFinancialBranch">
+            <i class="fas fa-fw fa-money-bill-wave"></i>
+            <span>Πληρωμές</span>
+        </a>
+        <div id="collapseFinancialBranch" class="collapse <?= in_array($this->uri->segment(2), ['pays', 'financial']) ? 'show' : '' ?>" aria-labelledby="headingFinancialBranch" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Διαχείριση:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/pays') ?>">Πληρωμές Υποκαταστήματος</a>
+                <a class="collapse-item" href="<?= base_url('admin/pays/create') ?>">Νέα Πληρωμή</a>
+                <a class="collapse-item" href="<?= base_url('admin/pays/debt_list') ?>">Χρέη Πελατών</a>
             </div>
         </div>
     </li>
