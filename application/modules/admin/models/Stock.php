@@ -344,15 +344,18 @@ public function get_all_acoustics_with_details() {
      * @return array
      */
     public function get_demo_stocks($demo_type = null, $in_use = null, $selling_point = null) {
-        // Select required fields with additional demo info
-        $this->db->select('
+        // Check if demo_type column exists first
+        $columns = $this->db->list_fields('stocks');
+        $has_demo_type = in_array('demo_type', $columns);
+        
+        // Build select query based on available columns
+        $select_fields = '
             s.id,
             s.serial, 
             s.customer_id,
             s.day_out, 
             s.day_in,
             s.on_test,
-            s.demo_type,
             s.comments,
             s.ha_price,
             s.selling_point,
@@ -368,8 +371,17 @@ public function get_all_acoustics_with_details() {
                 WHEN s.day_out IS NOT NULL AND s.day_out != "0000-00-00" 
                 THEN DATEDIFF(CURDATE(), s.day_out) 
                 ELSE NULL 
-            END as days_out
-        ');
+            END as days_out';
+        
+        // Add demo_type only if column exists
+        if ($has_demo_type) {
+            $select_fields .= ', s.demo_type';
+        } else {
+            // Fallback: simulate demo_type based on on_test
+            $select_fields .= ', CASE WHEN s.on_test = 1 THEN "trial" ELSE "replacement" END as demo_type';
+        }
+        
+        $this->db->select($select_fields);
 
         // Join tables
         $this->db->from('stocks s');
@@ -381,11 +393,9 @@ public function get_all_acoustics_with_details() {
         // Always filter for demo status (assuming status=5 is demo)
         $this->db->where('s.status', 5);
         
-        // Filter by demo_type if specified (temporary fallback to on_test until migration runs)
+        // Filter by demo_type if specified
         if ($demo_type !== null) {
-            // Check if demo_type column exists, otherwise use on_test as fallback
-            $columns = $this->db->list_fields('stocks');
-            if (in_array('demo_type', $columns)) {
+            if ($has_demo_type) {
                 $this->db->where('s.demo_type', $demo_type);
             } else {
                 // Fallback logic: trial = on_test 1, replacement = on_test 0 or null
