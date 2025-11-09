@@ -37,12 +37,23 @@ $group_id = $group->id;
 
     <?php if ($group_id == 1): // Admin ?>
     
-    <!-- Nav Item - Customers -->
+    <!-- Nav Item - Customers (Admin - Full Access) -->
     <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">
-        <a class="nav-link" href="<?= base_url('admin/customers') ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomers" aria-expanded="true" aria-controls="collapseCustomers">
             <i class="fas fa-fw fa-users"></i>
             <span>Πελάτες</span>
         </a>
+        <div id="collapseCustomers" class="collapse <?= ($this->uri->segment(2) == 'customers') ? 'show' : '' ?>" aria-labelledby="headingCustomers" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Πελατολόγια:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'customers' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/customers') ?>">Πλήρες Πελατολόγιο</a>
+                <a class="collapse-item" href="<?= base_url('admin/customers/get_interested') ?>">Ενδιαφερόμενοι</a>
+                <a class="collapse-item" href="<?= base_url('admin/customers/get_onhold_full') ?>">Σε Εκκρεμότητα</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Ειδικές Αναφορές:</h6>
+                <a class="collapse-item" href="#" onclick="selectDoctorReport()">Περιστατικά Γιατρού</a>
+            </div>
+        </div>
     </li>
 
     <!-- Nav Item - Stock Management Collapse Menu -->
@@ -109,12 +120,23 @@ $group_id = $group->id;
 
     <?php elseif ($group_id == 2): // Υποκατάστημα ?>
     
-    <!-- Nav Item - Customers (Branch) -->
+    <!-- Nav Item - Customers (Branch - Limited Access) -->
     <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">
-        <a class="nav-link" href="<?= base_url('admin/customers') ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomersBranch" aria-expanded="true" aria-controls="collapseCustomersBranch">
             <i class="fas fa-fw fa-users"></i>
             <span>Πελάτες</span>
         </a>
+        <div id="collapseCustomersBranch" class="collapse <?= ($this->uri->segment(2) == 'customers') ? 'show' : '' ?>" aria-labelledby="headingCustomersBranch" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Πελατολόγια:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'customers' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/customers') ?>">Πλήρες Πελατολόγιο</a>
+                <a class="collapse-item" href="<?= base_url('admin/customers/get_interested') ?>">Ενδιαφερόμενοι</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Ανά Υποκατάστημα:</h6>
+                <a class="collapse-item" href="#" onclick="selectYearSelling('interested')">Ενδιαφερόμενοι ανά Έτος</a>
+                <a class="collapse-item" href="#" onclick="selectSelling('onhold')">Σε Εκκρεμότητα</a>
+            </div>
+        </div>
     </li>
 
     <!-- Nav Item - Sales (Branch) -->
@@ -125,7 +147,23 @@ $group_id = $group->id;
         </a>
     </li>
 
-    <?php elseif ($group_id == 3): // Εργαστήριο ?>
+    <?php elseif ($group_id == 6): // Service Group (Lab) ?>
+    
+    <!-- Nav Item - Customers (Lab - All Branches Access) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomersLab" aria-expanded="true" aria-controls="collapseCustomersLab">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Πελάτες</span>
+        </a>
+        <div id="collapseCustomersLab" class="collapse <?= ($this->uri->segment(2) == 'customers') ? 'show' : '' ?>" aria-labelledby="headingCustomersLab" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Πελατολόγια:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'customers' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/customers') ?>">Πλήρες Πελατολόγιο</a>
+                <a class="collapse-item" href="<?= base_url('admin/customers/get_interested') ?>">Ενδιαφερόμενοι</a>
+                <a class="collapse-item" href="<?= base_url('admin/customers/get_onhold_full') ?>">Σε Εκκρεμότητα</a>
+            </div>
+        </div>
+    </li>
     
     <!-- Nav Item - Repairs (Lab) -->
     <li class="nav-item <?= ($this->uri->segment(2) == 'services') ? 'active' : '' ?>">
@@ -140,6 +178,16 @@ $group_id = $group->id;
         <a class="nav-link" href="<?= base_url('admin/tasks') ?>">
             <i class="fas fa-fw fa-tasks"></i>
             <span>Εργασίες</span>
+        </a>
+    </li>
+
+    <?php elseif ($group_id == 3): // Other groups ?>
+    
+    <!-- Basic access for other groups -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/customers') ?>">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Πελάτες</span>
         </a>
     </li>
 

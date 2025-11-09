@@ -65,6 +65,39 @@
         </script>
     <?php endif; ?>
 
+    <!-- Customer Menu JavaScript Functions -->
+    <script>
+    function selectYearSelling(type) {
+        var year = prompt('Εισάγετε έτος (π.χ. 2025):');
+        var selling_point = prompt('Εισάγετε ID υποκαταστήματος:');
+        
+        if (year && selling_point) {
+            if (type === 'interested') {
+                window.location.href = '<?= base_url("admin/customers/get_interested_list/") ?>' + year + '/' + selling_point;
+            }
+        }
+    }
+    
+    function selectSelling(type) {
+        var selling_point = prompt('Εισάγετε ID υποκαταστήματος:');
+        
+        if (selling_point) {
+            if (type === 'onhold') {
+                window.location.href = '<?= base_url("admin/customers/get_onhold/") ?>' + selling_point;
+            }
+        }
+    }
+    
+    function selectDoctorReport() {
+        var doctor = prompt('Εισάγετε ID γιατρού:');
+        var year = prompt('Εισάγετε έτος (π.χ. 2025):');
+        
+        if (doctor && year) {
+            window.location.href = '<?= base_url("admin/customers/view_doctors_customers/") ?>' + doctor + '/' + year;
+        }
+    }
+    </script>
+
 </body>
 
 </html>
