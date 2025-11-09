@@ -9,6 +9,9 @@ class Payment_reminders extends Admin_Controller {
     // Model properties for PHP 8.2 compatibility
     public $reminders;
     public $selling_point;
+    
+    // Ion_auth properties inherited from Admin_Controller
+    // (no need to redeclare as they're already in parent class)
 
     public function __construct() {
         parent::__construct();

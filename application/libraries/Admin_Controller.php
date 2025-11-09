@@ -11,6 +11,9 @@ class Admin_Controller extends MY_Controller {
     public $email;
     public $bcrypt;
     
+    // Ion_auth model property for PHP 8.2 compatibility
+    public $ion_auth_model;
+    
     function __construct() {
         parent::__construct();
 

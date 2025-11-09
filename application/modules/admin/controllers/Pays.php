@@ -8,6 +8,9 @@ class Pays extends Admin_Controller {
     public $customer;
     public $chart;
     public $selling_point;
+    
+    // Ion_auth properties for PHP 8.2 compatibility
+    public $ion_auth_model;
 
     function __construct() {
         parent::__construct();
