@@ -489,6 +489,111 @@ public function update_day_out()
         
         
     }
+
+    // Temporary debugging method - remove after fixing
+    public function debug_eggyisi_doc($id) {
+        echo "<h1>Debug eggyisi_doc for ID: $id</h1>";
+        
+        try {
+            echo "<h2>1. Getting stock data...</h2>";
+            $stock = $this->stock->get($id);
+            if (!$stock) {
+                echo "❌ Stock not found with ID: $id<br>";
+                return;
+            }
+            echo "✅ Stock found: Serial=" . $stock->serial . ", Customer ID=" . $stock->customer_id . "<br>";
+            
+            echo "<h2>2. Getting customer data...</h2>";
+            $customers = $this->customer->get($stock->customer_id);
+            if (!$customers) {
+                echo "❌ Customer not found with ID: " . $stock->customer_id . "<br>";
+                return;
+            }
+            echo "✅ Customer found: " . $customers->name . "<br>";
+            
+            echo "<h2>3. Getting company data...</h2>";
+            $companies = $this->company->get(1);
+            echo "✅ Company loaded<br>";
+            
+            echo "<h2>4. Getting model data...</h2>";
+            if (empty($stock->ha_model)) {
+                echo "❌ Stock has no ha_model field or it's empty<br>";
+                return;
+            }
+            $ha_model = $this->model->get($stock->ha_model);
+            if (!$ha_model) {
+                echo "❌ Model not found with ID: " . $stock->ha_model . "<br>";
+                return;
+            }
+            echo "✅ Model found: " . $ha_model->model . "<br>";
+            
+            echo "<h2>5. Getting series data...</h2>";
+            if (empty($ha_model->series)) {
+                echo "❌ Model has no series field or it's empty<br>";
+                return;
+            }
+            $ha_series = $this->serie->get($ha_model->series);
+            if (!$ha_series) {
+                echo "❌ Series not found with ID: " . $ha_model->series . "<br>";
+                return;
+            }
+            echo "✅ Series found: " . $ha_series->series . "<br>";
+            
+            echo "<h2>6. Getting manufacturer data...</h2>";
+            if (empty($ha_series->brand)) {
+                echo "❌ Series has no brand field or it's empty<br>";
+                return;
+            }
+            $manufacturers = $this->manufacturer->get($ha_series->brand);
+            if (!$manufacturers) {
+                echo "❌ Manufacturer not found with ID: " . $ha_series->brand . "<br>";
+                return;
+            }
+            echo "✅ Manufacturer found: " . $manufacturers->name . "<br>";
+            
+            echo "<h2>7. Getting type data...</h2>";
+            if (empty($ha_model->ha_type)) {
+                echo "❌ Model has no ha_type field or it's empty<br>";
+                return;
+            }
+            $ha_type = $this->ha_type->get($ha_model->ha_type);
+            if (!$ha_type) {
+                echo "❌ Type not found with ID: " . $ha_model->ha_type . "<br>";
+                return;
+            }
+            echo "✅ Type found: " . $ha_type->type . "<br>";
+            
+            echo "<h2>8. Testing view loading...</h2>";
+            $data['company'] = $companies;
+            $data['stock'] = $stock;
+            $data['manufacturer'] = $manufacturers;
+            $data['customer'] = $customers;
+            $data['ha_model'] = $this->model->get($ha_model->id);
+            $data['ha_series'] = $ha_series;
+            $data['type'] = $ha_type;
+            
+            try {
+                $html = $this->load->view('eggyisi_doc_final', $data, true);
+                echo "✅ View loaded successfully. HTML length: " . strlen($html) . " characters<br>";
+            } catch (Exception $e) {
+                echo "❌ View loading failed: " . $e->getMessage() . "<br>";
+                return;
+            }
+            
+            echo "<h2>9. Testing Chart model...</h2>";
+            if (!isset($this->chart)) {
+                echo "❌ Chart model not loaded<br>";
+                return;
+            }
+            echo "✅ Chart model available<br>";
+            
+            echo "<h2>✅ All checks passed! The eggyisi_doc should work.</h2>";
+            
+        } catch (Exception $e) {
+            echo "❌ General error: " . $e->getMessage() . "<br>";
+            echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+        }
+    }
         
     public function epistrofi_doc($id) {
     

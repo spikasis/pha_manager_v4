@@ -1,8 +1,5 @@
 <div id="page-wrapper" align="justify" lang="el" style="width: 210mm; height: 297mm">
     <div class="row">
-        <?php 
-            $ha_type = $this->ha_type->get($stock->type);
-        ?>
         <div class="col-lg-8"><img src="<?= base_url() ?>images/pha_header.png" style="height: 80px" alt=""/></div><div class="col-lg-4"><?php //echo $company->company_name ?></div> 
     </div>
     <p><br></p>
