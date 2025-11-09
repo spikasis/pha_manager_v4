@@ -22,6 +22,7 @@ class Stocks extends Admin_Controller {
     public $serie;
     public $battery_type;
     public $earlab;
+    public $ion_auth_model;
 
     function __construct() {
         parent::__construct();
@@ -690,7 +691,7 @@ public function update_day_out()
         $this->load->view($this->_container, $data);
     }
     
-    public function view_barcodes_pending($sp = null, $year) {
+    public function view_barcodes_pending($year, $sp = null) {
         
         $stocks = $this->stock->getStocksWithDetails($sp, $year, null, null, null, null, false);
         //$stocks = $this->stock->get_all('*','ekapty_code<>0 AND ektelesi_eopyy=0 AND YEAR(day_in)>=' . $year . ' AND status=4 OR status=1');

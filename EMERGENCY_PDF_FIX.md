@@ -30,9 +30,12 @@ tar -czf vendor.tar.gz vendor/
 # Upload vendor.tar.gz στον server και extract στο root
 ```
 
-### ✅ Option 3: Disable mPDF 8.x (2 λεπτά)
+### ✅ Option 3: Emergency Automated Fix (1 λεπτό) - ΠΡΟΤΕΙΝΟΜΕΝΟ
 ```bash
-# Απλά διαγραφή του problematic vendor
+# Upload emergency_fix.php στο server root και εκτέλεση
+php emergency_fix.php
+
+# ΄Η απλά διαγραφή του problematic vendor
 rm -rf /var/www/vhosts/asal.gr/manager.pikasishearing.gr/vendor/
 
 # Η εφαρμογή θα χρησιμοποιήσει την παλιά mPDF 6.0

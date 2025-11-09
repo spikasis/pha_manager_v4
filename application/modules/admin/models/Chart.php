@@ -401,12 +401,26 @@ class Chart extends MY_Model {
     
     function print_doc($html, $title)
     {       
-        // Try to load Composer autoloader for mPDF 8.x with error handling
+        // Try to load Composer autoloader for mPDF 8.x with enhanced error handling
         $composerLoaded = false;
         if (file_exists(FCPATH . 'vendor/autoload.php')) {
             try {
-                require_once FCPATH . 'vendor/autoload.php';
-                $composerLoaded = true;
+                // Suppress all warnings and errors during autoloader include
+                $oldErrorReporting = error_reporting(0);
+                
+                ob_start(); // Capture any output
+                include_once FCPATH . 'vendor/autoload.php';
+                ob_end_clean(); // Discard captured output
+                
+                error_reporting($oldErrorReporting);
+                
+                // Test if mPDF class is actually available
+                if (class_exists('\\Mpdf\\Mpdf')) {
+                    $composerLoaded = true;
+                } else {
+                    $composerLoaded = false;
+                }
+                
             } catch (Exception $e) {
                 // Log error but continue with fallback
                 log_message('error', 'Composer autoloader failed: ' . $e->getMessage());
@@ -415,6 +429,15 @@ class Chart extends MY_Model {
                 // Handle PHP 7+ errors
                 log_message('error', 'Composer autoloader error: ' . $e->getMessage());
                 $composerLoaded = false;
+            } catch (Throwable $e) {
+                // Handle PHP 8+ throwables
+                log_message('error', 'Composer autoloader throwable: ' . $e->getMessage());
+                $composerLoaded = false;
+            } finally {
+                // Always restore error reporting
+                if (isset($oldErrorReporting)) {
+                    error_reporting($oldErrorReporting);
+                }
             }
         }
         
@@ -434,18 +457,32 @@ class Chart extends MY_Model {
             $legacy_mpdf_path = APPPATH . '/third_party/mpdf/mpdf.php';
             
             if (file_exists($legacy_mpdf_path)) {
-                include_once $legacy_mpdf_path;
-                
-                if (class_exists('mPDF')) {
-                    $mpdf = new mPDF('utf-8', 'A4', '', '', 10, 10, 10, 10, 6, 3);
-                } else {
-                    // Last resort: show error message
-                    show_error('PDF export is not available. Please contact administrator.');
+                try {
+                    // Suppress errors for PHP 8.2+ compatibility issues
+                    $oldErrorReporting = error_reporting(0);
+                    ob_start();
+                    
+                    include_once $legacy_mpdf_path;
+                    
+                    ob_end_clean();
+                    error_reporting($oldErrorReporting);
+                    
+                    if (class_exists('mPDF')) {
+                        $mpdf = new mPDF('utf-8', 'A4', '', '', 10, 10, 10, 10, 6, 3);
+                    } else {
+                        // Last resort: show error message
+                        show_error('PDF export is not available. mPDF class not found. Please contact administrator.');
+                        return;
+                    }
+                } catch (Throwable $e) {
+                    error_reporting($oldErrorReporting);
+                    log_message('error', 'Legacy mPDF failed (PHP compatibility issue): ' . $e->getMessage());
+                    show_error('PDF export is not available. Legacy mPDF is incompatible with current PHP version. Please upgrade to mPDF 8.x.');
                     return;
                 }
             } else {
                 // No PDF library available
-                show_error('PDF export is not available. Please contact administrator.');
+                show_error('PDF export is not available. No mPDF library found. Please contact administrator.');
                 return;
             }
         }
