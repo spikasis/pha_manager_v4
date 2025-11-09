@@ -401,7 +401,22 @@ class Chart extends MY_Model {
     
     function print_doc($html, $title)
     {       
-        $mpdf = new Mpdf();
+        // Check which mPDF version is available
+        if (class_exists('\\Mpdf\\Mpdf')) {
+            // mPDF 8.x (new version from vendor)
+            $mpdf = new \Mpdf\Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4',
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10
+            ]);
+        } else {
+            // mPDF 6.0 (old version from third_party)
+            include_once APPPATH . '/third_party/mpdf/mpdf.php';
+            $mpdf = new mPDF('utf-8', 'A4', '', '', 10, 10, 10, 10, 6, 3);
+        }
         
         $mpdf->SetProtection(array('print'));
         $mpdf->SetTitle($title);
