@@ -436,11 +436,11 @@ public function update_day_out()
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "eopyy_doc";
         
-        $html = $this->load->view($this->_container, $data); 
-        $pdfFilePath = '' . $stock->serial . '-' . $customers->name . '.pdf';
-    
-        $this->m_pdf->pdf->WriteHTML($html);
-        $this->m_pdf->pdf->Output($pdfFilePath, "D");
+        $html = $this->load->view($this->_container, $data, true);
+        $title = 'ΕΟΠΥΥ Έγγραφο - ' . $stock->serial . ' - ' . $customers->name;
+        
+        // Use Chart model print_doc method for mPDF compatibility
+        $this->chart->print_doc($html, $title);
     }
     
     public function eggyisi_doc($id) {
