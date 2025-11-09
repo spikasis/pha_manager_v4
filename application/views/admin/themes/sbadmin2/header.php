@@ -20,8 +20,7 @@
     <!-- DataTables CSS -->
     <link href="<?= base_url() ?>assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-    <!-- Chart.js -->
-    <script src="<?= base_url() ?>assets/sbadmin2/vendor/chart.js/Chart.min.js"></script>
+    <!-- Chart.js moved to footer for proper jQuery loading order -->
 
     <!-- Custom CSS for Greek Language Support -->
     <style>

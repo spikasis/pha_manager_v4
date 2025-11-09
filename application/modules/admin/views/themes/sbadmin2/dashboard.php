@@ -600,6 +600,13 @@
 <div id="vendor-stats"></div>
 </div><!-- /#page-wrapper -->
 <script>
+$(document).ready(function() {
+    // Check if Morris is loaded
+    if (typeof Morris === 'undefined') {
+        console.warn('Morris.js not loaded, skipping chart initialization');
+        return;
+    }
+
     //var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     new Morris.Bar({
@@ -632,5 +639,6 @@
         xkey: ['year'],
         ykeys: ['data'],
         labels: ['Μηνιαίες Πωλήσεις']
-    });     
+    });
+});
 </script>

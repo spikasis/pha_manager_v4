@@ -44,7 +44,12 @@
     </div>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="<?= base_url('assets/sbadmin2/vendor/jquery/jquery.min.js') ?>"></script>
+        <!-- Bootstrap core JavaScript-->
+    <script src="<?= base_url() ?>assets/sbadmin2/vendor/jquery/jquery.min.js"></script>
+    <script src="<?= base_url() ?>assets/sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="<?= base_url() ?>assets/sbadmin2/vendor/chart.js/Chart.min.js"></script>"></script>
     <script src="<?= base_url('assets/sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 
     <!-- Core plugin JavaScript-->
