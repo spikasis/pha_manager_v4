@@ -115,6 +115,104 @@ assets/sbadmin2/ (SB Admin 2 theme files)
 - **Caching**: Avoid unnecessary repeated database calls
 - **Sessions**: Proper session management with secure paths
 
+### 13. **DataTable Implementation Standard** ⚠️ MANDATORY PATTERN
+**For ALL list views that use DataTables, follow this exact pattern:**
+
+**Controller Setup:**
+```php
+// Helper method in controller (add once per controller)
+private function add_datatable_config(&$data) {
+    $data['page_scripts'] = [
+        'assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js',
+        'assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js'
+    ];
+    
+    // Standard DataTable JavaScript configuration
+    $data['custom_js'] = "
+    $(document).ready(function() {
+        console.log('Initializing DataTable...');
+        
+        if ($('#dataTable').length === 0) {
+            console.error('Table #dataTable not found!');
+            return;
+        }
+        
+        if (typeof $.fn.DataTable === 'undefined') {
+            console.error('DataTables library not loaded');
+            return;
+        }
+        
+        try {
+            var table = $('#dataTable').DataTable({
+                'responsive': true,
+                'pageLength': 10,
+                'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Όλα']],
+                'searching': true,
+                'ordering': true,
+                'paging': true,
+                'info': true,
+                'autoWidth': false,
+                'language': {
+                    'search': 'Αναζήτηση:',
+                    'lengthMenu': 'Εμφάνιση _MENU_ εγγραφών ανά σελίδα',
+                    'info': 'Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές',
+                    'infoEmpty': 'Εμφάνιση 0 έως 0 από 0 εγγραφές',
+                    'infoFiltered': '(φιλτράρισμα από _MAX_ συνολικές εγγραφές)',
+                    'paginate': {
+                        'first': 'Πρώτη',
+                        'last': 'Τελευταία', 
+                        'next': 'Επόμενη',
+                        'previous': 'Προηγούμενη'
+                    },
+                    'emptyTable': 'Δεν υπάρχουν δεδομένα στον πίνακα',
+                    'zeroRecords': 'Δεν βρέθηκαν αποτελέσματα',
+                    'loadingRecords': 'Φόρτωση...',
+                    'processing': 'Επεξεργασία...'
+                },
+                'columnDefs': [
+                    { 'orderable': false, 'targets': [-1] }, // Last column (actions)
+                    { 'searchable': false, 'targets': [-1] }  // Last column (actions)
+                ],
+                'order': [[ 0, 'asc' ]]
+            });
+            
+            console.log('DataTable initialized successfully');
+            
+        } catch (error) {
+            console.error('Error initializing DataTable:', error);
+        }
+    });";
+}
+
+// In each list method
+public function method_name() {
+    // CRITICAL: Include ALL required fields for the view
+    $data_array = $this->model->get_all('id, field1, field2, field3, etc.');
+    
+    $data['items'] = $data_array;
+    $data['title'] = 'Page Title';
+    $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "view_name";
+    
+    // Add DataTable configuration
+    $this->add_datatable_config($data);
+    
+    $this->load->view($this->_container, $data);
+}
+```
+
+**View Requirements:**
+- Table MUST have `id="dataTable"` (or update JavaScript accordingly)
+- Include ALL columns that JavaScript expects in columnDefs
+- Use proper Bootstrap 4 table classes
+- Never include DataTable JavaScript in view file (use custom_js instead)
+
+**Common Issues to Avoid:**
+- ❌ Missing fields in database query (causes empty columns)
+- ❌ JavaScript in view instead of custom_js (loading order issues)
+- ❌ Wrong table ID in JavaScript vs HTML
+- ❌ Missing error handling in JavaScript
+- ❌ Incorrect column count in columnDefs
+
 ---
 
 ## �️ DATABASE FIELD REFERENCE GUIDE

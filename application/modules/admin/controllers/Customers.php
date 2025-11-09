@@ -252,6 +252,10 @@ class Customers extends Admin_Controller {
         //$this->chart->print_doc($html, $title);
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_view_old";
+        
+        // Add DataTable configuration for the view page
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
     }
     
