@@ -598,8 +598,8 @@ public function update_day_out()
                     return;
                 }
                 
-                log_message('info', 'Calling print_doc for eggyisi_doc ID: ' . $id);
-                $this->chart->print_doc($html, $title);
+                log_message('info', 'Calling TCPDF print_doc_tcpdf for eggyisi_doc ID: ' . $id);
+                $this->chart->print_doc_tcpdf($html, $title);
                 
             } catch (Exception $e) {
                 log_message('error', 'PDF generation failed for eggyisi_doc: ' . $e->getMessage());

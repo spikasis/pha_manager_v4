@@ -518,5 +518,84 @@ class Chart extends MY_Model {
         }
     }
 
+    /**
+     * TCPDF implementation for PHP 8.2+ compatibility
+     * Alternative to mPDF for warranty documents
+     */
+    function print_doc_tcpdf($html, $title)
+    {
+        try {
+            // Check if TCPDF is available
+            if (!class_exists('TCPDF')) {
+                // Try to load Composer autoloader
+                if (file_exists(FCPATH . 'vendor/autoload.php')) {
+                    require_once FCPATH . 'vendor/autoload.php';
+                } else {
+                    show_error('TCPDF library not found. Please install via Composer: composer require tecnickcom/tcpdf');
+                    return;
+                }
+            }
+            
+            if (!class_exists('TCPDF')) {
+                show_error('TCPDF class not available after loading autoloader.');
+                return;
+            }
+            
+            log_message('info', 'TCPDF initialization started for: ' . $title);
+            
+            // Create new PDF document
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+            
+            // Set document information
+            $pdf->SetCreator('PHA Manager V4 - TCPDF');
+            $pdf->SetAuthor('Pikasis Hearing Aids');
+            $pdf->SetTitle($title);
+            $pdf->SetSubject('Warranty Document');
+            
+            // Set default header and footer
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+            
+            // Set margins
+            $pdf->SetMargins(15, 20, 15);
+            $pdf->SetAutoPageBreak(TRUE, 20);
+            
+            // Add a page
+            $pdf->AddPage();
+            
+            // Set font for Greek text support
+            $pdf->SetFont('freeserif', '', 12);
+            
+            log_message('info', 'TCPDF configured, writing HTML content');
+            
+            // Write HTML content to PDF
+            $pdf->writeHTML($html, true, false, true, false, '');
+            
+            log_message('info', 'TCPDF content written, outputting PDF');
+            
+            // Output PDF to browser
+            $filename = sanitize_filename($title) . '.pdf';
+            $pdf->Output($filename, 'I'); // 'I' = display in browser, 'D' = force download
+            
+            log_message('info', 'TCPDF output completed successfully');
+            
+        } catch (Exception $e) {
+            log_message('error', 'TCPDF generation error: ' . $e->getMessage());
+            show_error('PDF generation failed: ' . $e->getMessage());
+        } catch (Error $e) {
+            log_message('error', 'TCPDF PHP error: ' . $e->getMessage());
+            show_error('PDF generation failed due to PHP error. Please contact administrator.');
+        }
+    }
+
 //end_of Model
+}
+
+/**
+ * Helper function to sanitize filename for PDF output
+ */
+function sanitize_filename($filename) {
+    // Remove special characters and replace spaces with underscores
+    $clean = preg_replace('/[^A-Za-z0-9\-_]/', '_', $filename);
+    return substr($clean, 0, 50); // Limit length
 }
