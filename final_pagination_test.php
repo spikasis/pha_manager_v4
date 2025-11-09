@@ -5,9 +5,9 @@
     <title>Final Pagination Test - Exact Demo Structure</title>
     
     <!-- Exact same CSS as real system -->
-    <link href="assets/sbladmin2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="assets/sbladmin2/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="assets/sbladmin2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="assets/sbadmin2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="assets/sbadmin2/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     
     <style>
         body { padding: 20px; background: #f8f9fc; }
@@ -149,10 +149,10 @@
 </div>
 
 <!-- EXACT SAME JAVASCRIPT INCLUDES AS REAL SYSTEM -->
-<script src="assets/sbladmin2/vendor/jquery/jquery.min.js"></script>
-<script src="assets/sbladmin2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/sbladmin2/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="assets/sbladmin2/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="assets/sbadmin2/vendor/jquery/jquery.min.js"></script>
+<script src="assets/sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- EXACT SAME JAVASCRIPT LOGIC AS REAL DEMO VIEW -->
 <script>

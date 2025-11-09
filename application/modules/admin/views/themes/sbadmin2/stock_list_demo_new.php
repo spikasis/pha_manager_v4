@@ -422,129 +422,32 @@
 </div>
 
 <script>
+// SIMPLIFIED VERSION - DIRECT INITIALIZATION
 $(document).ready(function() {
-    // Wait a bit more to ensure everything is loaded
+    console.log('🚀 Demo DataTables - Starting initialization...');
+    
+    // Wait for page to be fully ready
     setTimeout(function() {
-        initializeDemoTables();
-    }, 1000);
-});
-
-function initializeDemoTables() {
-    console.log('=== DEMO TABLES INITIALIZATION DEBUG ===');
-    
-    // Check jQuery
-    if (typeof $ === 'undefined') {
-        console.error('❌ jQuery is not loaded!');
-        return;
-    }
-    console.log('✅ jQuery version:', $.fn.jquery);
-    
-    // Check DataTables
-    if (typeof $.fn.DataTable === 'undefined') {
-        console.error('❌ DataTables library is not loaded!');
-        return;
-    }
-    console.log('✅ DataTables is available');
-    
-    // Debug: Check if tables exist in DOM
-    const tableSelectors = [
-        '#trialAvailableTable',
-        '#trialInUseTable', 
-        '#replacementAvailableTable',
-        '#replacementInUseTable'
-    ];
-    
-    console.log('🔍 Checking table existence:');
-    tableSelectors.forEach(selector => {
-        const exists = $(selector).length > 0;
-        const rows = exists ? $(selector + ' tbody tr').length : 0;
-        console.log(`  ${selector}: ${exists ? '✅ EXISTS' : '❌ MISSING'} (${rows} rows)`);
-    });
-    
-    // DataTable configuration - simplified for debugging
-    const config = {
-        "paging": true,
-        "pageLength": 10,
-        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Όλα"]],
-        "searching": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-        "language": {
-            "emptyTable": "Δεν βρέθηκαν δεδομένα",
-            "info": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
-            "infoEmpty": "Εμφάνιση 0 έως 0 από 0 εγγραφές",
-            "infoFiltered": "(φιλτράρισμα από _MAX_ συνολικές εγγραφές)",
-            "lengthMenu": "Εμφάνιση _MENU_ εγγραφών",
-            "loadingRecords": "Φόρτωση...",
-            "processing": "Επεξεργασία...",
-            "search": "Αναζήτηση:",
-            "zeroRecords": "Δεν βρέθηκαν εγγραφές",
-            "paginate": {
-                "first": "Πρώτη",
-                "last": "Τελευταία",
-                "next": "Επόμενη",
-                "previous": "Προηγούμενη"
-            }
+        
+        // Basic checks
+        if (typeof $ === 'undefined') {
+            alert('jQuery not loaded!');
+            return;
         }
-    };
-    
-    // Initialize visible tables first (those in active tabs)
-    console.log('🚀 Starting table initialization...');
-    
-    // Step 1: Initialize active (visible) tables
-    initializeVisibleTables();
-    
-    // Step 2: Initialize hidden tables when their tabs are shown
-    setupTabHandlers();
-}
-
-function initializeVisibleTables() {
-    // Find currently active tabs
-    const activeTrialTab = $('#trialTabs .nav-link.active').attr('data-target');
-    const activeReplacementTab = $('#replacementTabs .nav-link.active').attr('data-target');
-    
-    console.log('🎯 Active tabs:', activeTrialTab, activeReplacementTab);
-    
-    // Initialize tables in active tabs
-    if (activeTrialTab === '#trial-available') {
-        initializeTable('trialAvailableTable');
-    } else if (activeTrialTab === '#trial-inuse') {
-        initializeTable('trialInUseTable');
-    }
-    
-    if (activeReplacementTab === '#replacement-available') {
-        initializeTable('replacementAvailableTable');
-    } else if (activeReplacementTab === '#replacement-inuse') {
-        initializeTable('replacementInUseTable');
-    }
-}
-
-function initializeTable(tableId) {
-    const $table = $('#' + tableId);
-    
-    if ($table.length === 0) {
-        console.warn(`⚠️ Table ${tableId} not found`);
-        return false;
-    }
-    
-    try {
-        // Destroy existing instance if it exists
-        if ($.fn.DataTable.isDataTable('#' + tableId)) {
-            console.log(`🔄 Destroying existing ${tableId} instance`);
-            $table.DataTable().destroy();
+        if (typeof $.fn.DataTable === 'undefined') {
+            alert('DataTables not loaded!');
+            return;
         }
         
-        console.log(`🔧 Initializing ${tableId}...`);
+        console.log('✅ Libraries loaded - jQuery:', $.fn.jquery);
         
-        const config = {
+        // Simple configuration
+        const simpleConfig = {
             "paging": true,
             "pageLength": 10,
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Όλα"]],
             "searching": true,
             "info": true,
-            "autoWidth": false,
-            "responsive": false, // Disable responsive for now
             "language": {
                 "emptyTable": "Δεν βρέθηκαν δεδομένα",
                 "info": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
@@ -554,58 +457,48 @@ function initializeTable(tableId) {
                     "next": "Επόμενη",
                     "previous": "Προηγούμενη"
                 }
-            },
-            "columnDefs": [{
-                "targets": -1,
-                "orderable": false
-            }]
+            }
         };
         
-        const dataTable = $table.DataTable(config);
-        console.log(`✅ ${tableId} initialized with ${dataTable.rows().count()} rows`);
-        return true;
+        // Try to initialize all visible tables
+        const tables = ['trialAvailableTable', 'trialInUseTable', 'replacementAvailableTable', 'replacementInUseTable'];
         
-    } catch (error) {
-        console.error(`❌ Failed to initialize ${tableId}:`, error);
-        return false;
-    }
-}
-
-function setupTabHandlers() {
-    // Handle tab switching for trial tabs
-    $('#trialTabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-        const target = $(e.target).attr('data-target');
-        console.log(`🔄 Trial tab switched to: ${target}`);
-        
-        setTimeout(function() {
-            if (target === '#trial-available') {
-                initializeTable('trialAvailableTable');
-            } else if (target === '#trial-inuse') {
-                initializeTable('trialInUseTable');
+        tables.forEach(function(tableId) {
+            const $table = $('#' + tableId);
+            if ($table.length > 0 && $table.is(':visible')) {
+                try {
+                    console.log('� Initializing:', tableId);
+                    $table.DataTable(simpleConfig);
+                    console.log('✅ Success:', tableId);
+                } catch (error) {
+                    console.error('❌ Error with', tableId, ':', error);
+                }
             }
-            
-            // Adjust visible tables
-            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-        }, 100);
-    });
-    
-    // Handle tab switching for replacement tabs
-    $('#replacementTabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-        const target = $(e.target).attr('data-target');
-        console.log(`🔄 Replacement tab switched to: ${target}`);
+        });
         
-        setTimeout(function() {
-            if (target === '#replacement-available') {
-                initializeTable('replacementAvailableTable');
-            } else if (target === '#replacement-inuse') {
-                initializeTable('replacementInUseTable');
-            }
-            
-            // Adjust visible tables
-            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-        }, 100);
-    });
-}
+        // Handle tab switches
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            const target = $(e.target).attr('data-target');
+            setTimeout(function() {
+                // Find table in the newly shown tab
+                const $visibleTable = $(target).find('table');
+                if ($visibleTable.length > 0) {
+                    const tableId = $visibleTable.attr('id');
+                    if (!$.fn.DataTable.isDataTable('#' + tableId)) {
+                        try {
+                            console.log('� Tab switch - Initializing:', tableId);
+                            $visibleTable.DataTable(simpleConfig);
+                            console.log('✅ Tab switch - Success:', tableId);
+                        } catch (error) {
+                            console.error('❌ Tab switch - Error:', error);
+                        }
+                    }
+                }
+            }, 200);
+        });
+        
+    }, 1500); // Longer delay to ensure everything is ready
+});
         
         // Customer assignment handlers
         $(document).on('click', '.assign-customer, .assign-replacement', function(e) {
