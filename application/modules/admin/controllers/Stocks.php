@@ -598,8 +598,18 @@ public function update_day_out()
                     return;
                 }
                 
-                log_message('info', 'Calling TCPDF print_doc_tcpdf for eggyisi_doc ID: ' . $id);
-                $this->chart->print_doc_tcpdf($html, $title);
+                log_message('info', 'Calling enhanced print_doc for eggyisi_doc ID: ' . $id);
+                
+                // Try TCPDF first, fallback to enhanced mPDF if TCPDF dependencies missing
+                try {
+                    $this->chart->print_doc_tcpdf($html, $title);
+                } catch (Exception $e) {
+                    log_message('error', 'TCPDF failed, using enhanced mPDF fallback: ' . $e->getMessage());
+                    $this->chart->print_doc_enhanced($html, $title);
+                } catch (Error $e) {
+                    log_message('error', 'TCPDF error, using enhanced mPDF fallback: ' . $e->getMessage());
+                    $this->chart->print_doc_enhanced($html, $title);
+                }
                 
             } catch (Exception $e) {
                 log_message('error', 'PDF generation failed for eggyisi_doc: ' . $e->getMessage());

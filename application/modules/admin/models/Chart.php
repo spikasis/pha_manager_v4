@@ -519,25 +519,95 @@ class Chart extends MY_Model {
     }
 
     /**
+     * Enhanced mPDF implementation with PHP 8.2+ compatibility fixes
+     * Fallback method when TCPDF is not available
+     */
+    function print_doc_enhanced($html, $title)
+    {
+        // Use our existing print_doc with enhanced error suppression
+        try {
+            // Suppress errors to handle PHP 8.2+ compatibility issues
+            $oldErrorReporting = error_reporting(E_ERROR | E_PARSE); // Only show critical errors
+            
+            ob_start(); // Capture any warning output
+            
+            $this->print_doc($html, $title);
+            
+            ob_end_clean(); // Discard captured warnings
+            error_reporting($oldErrorReporting);
+            
+        } catch (Exception $e) {
+            error_reporting($oldErrorReporting);
+            ob_end_clean();
+            log_message('error', 'Enhanced mPDF fallback failed: ' . $e->getMessage());
+            show_error('PDF generation is currently unavailable. Please contact administrator. Error: mPDF/TCPDF not properly configured.');
+        } catch (Error $e) {
+            error_reporting($oldErrorReporting);
+            ob_end_clean();
+            log_message('error', 'Enhanced mPDF fallback PHP error: ' . $e->getMessage());
+            show_error('PDF generation failed due to server configuration. Please contact administrator.');
+        } catch (Throwable $e) {
+            error_reporting($oldErrorReporting);
+            ob_end_clean();
+            log_message('error', 'Enhanced mPDF fallback throwable: ' . $e->getMessage());
+            show_error('PDF generation failed. Please contact administrator.');
+        }
+    }
+
+    /**
      * TCPDF implementation for PHP 8.2+ compatibility
-     * Alternative to mPDF for warranty documents
+     * Alternative to mPDF for warranty documents with robust error handling
      */
     function print_doc_tcpdf($html, $title)
     {
         try {
-            // Check if TCPDF is available
-            if (!class_exists('TCPDF')) {
-                // Try to load Composer autoloader
+            // Enhanced TCPDF loading with dependency checking
+            $tcpdf_loaded = false;
+            
+            // First, check if TCPDF is already loaded
+            if (class_exists('TCPDF')) {
+                $tcpdf_loaded = true;
+            } else {
+                // Try to load Composer autoloader with enhanced error handling
                 if (file_exists(FCPATH . 'vendor/autoload.php')) {
-                    require_once FCPATH . 'vendor/autoload.php';
-                } else {
-                    show_error('TCPDF library not found. Please install via Composer: composer require tecnickcom/tcpdf');
-                    return;
+                    try {
+                        // Suppress all warnings during Composer loading
+                        $oldErrorReporting = error_reporting(0);
+                        ob_start(); // Capture output to prevent dependency warnings
+                        
+                        // Include Composer autoloader
+                        require_once FCPATH . 'vendor/autoload.php';
+                        
+                        ob_end_clean(); // Discard any warning output
+                        error_reporting($oldErrorReporting);
+                        
+                        // Check if TCPDF loaded successfully
+                        if (class_exists('TCPDF')) {
+                            $tcpdf_loaded = true;
+                        } else {
+                            log_message('error', 'TCPDF class not available after Composer autoload');
+                        }
+                        
+                    } catch (Exception $e) {
+                        error_reporting($oldErrorReporting);
+                        ob_end_clean(); // Clean buffer in case of exception
+                        log_message('error', 'Composer autoloader exception: ' . $e->getMessage());
+                    } catch (Error $e) {
+                        error_reporting($oldErrorReporting);
+                        ob_end_clean(); // Clean buffer in case of error
+                        log_message('error', 'Composer autoloader error: ' . $e->getMessage());
+                    } catch (Throwable $e) {
+                        error_reporting($oldErrorReporting);
+                        ob_end_clean(); // Clean buffer in case of throwable
+                        log_message('error', 'Composer autoloader throwable: ' . $e->getMessage());
+                    }
                 }
             }
             
-            if (!class_exists('TCPDF')) {
-                show_error('TCPDF class not available after loading autoloader.');
+            // If TCPDF not available, fallback to mPDF with enhanced compatibility
+            if (!$tcpdf_loaded) {
+                log_message('info', 'TCPDF not available, falling back to enhanced mPDF for: ' . $title);
+                $this->print_doc_enhanced($html, $title);
                 return;
             }
             
