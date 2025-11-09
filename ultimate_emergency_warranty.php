@@ -190,37 +190,40 @@ try {
 }
 
 /**
- * Generate warranty HTML content for PDF
+ * Generate warranty HTML content for PDF - Compact Single Page Version
  */
 function generateWarrantyHTML($data) {
     return '
     <style>
         body { 
             font-family: "freeserif", serif; 
-            font-size: 12pt; 
-            line-height: 1.5; 
+            font-size: 10pt; 
+            line-height: 1.3; 
             color: #333;
+            margin: 0;
+            padding: 0;
         }
         .header { 
             text-align: center; 
-            margin-bottom: 30px; 
-            padding-bottom: 20px;
-            border-bottom: 3px solid #2c3e50;
+            margin-bottom: 15px; 
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2c3e50;
         }
         .company { 
             text-align: center; 
-            margin-bottom: 25px; 
+            margin-bottom: 15px; 
             color: #555; 
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin: 20px 0; 
+            margin: 10px 0; 
         }
         td { 
-            padding: 12px; 
+            padding: 6px 8px; 
             border: 1px solid #333; 
             vertical-align: top;
+            font-size: 9pt;
         }
         .label { 
             background-color: #f8f9fa; 
@@ -228,126 +231,144 @@ function generateWarrantyHTML($data) {
             width: 35%; 
         }
         .terms { 
-            margin: 25px 0; 
+            margin: 15px 0; 
             text-align: justify; 
-            line-height: 1.6; 
+            line-height: 1.4; 
+            font-size: 9pt;
         }
         .signature { 
             text-align: right; 
-            margin-top: 40px; 
+            margin-top: 20px; 
         }
         .footer { 
             text-align: center; 
-            margin-top: 30px; 
-            padding: 15px; 
-            border: 2px solid #2c3e50; 
+            margin-top: 15px; 
+            padding: 8px; 
+            border: 1px solid #2c3e50; 
             background-color: #f8f9fa;
-            border-radius: 5px;
+            font-size: 9pt;
         }
         .warranty-period {
             background-color: #e8f4fd;
-            border-left: 4px solid #2196f3;
-            padding: 15px;
-            margin: 20px 0;
+            border-left: 3px solid #2196f3;
+            padding: 8px;
+            margin: 10px 0;
+            font-size: 10pt;
+        }
+        .two-column {
+            display: table;
+            width: 100%;
+        }
+        .col-left, .col-right {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding: 0 5px;
         }
     </style>
     
     <div class="header">
-        <h1 style="color: #2c3e50; font-size: 22pt; margin-bottom: 10px;">ΕΓΓΥΗΣΗ ΑΚΟΥΣΤΙΚΟΥ ΒΑΡΗΚΟΙΑΣ</h1>
-        <h2 style="color: #666; font-size: 14pt; margin: 0;">ΠΙΣΤΟΠΟΙΗΤΙΚΟ ΕΓΓΥΗΣΗΣ</h2>
+        <h1 style="color: #2c3e50; font-size: 16pt; margin: 5px 0;">ΕΓΓΥΗΣΗ ΑΚΟΥΣΤΙΚΟΥ ΒΑΡΗΚΟΙΑΣ</h1>
+        <p style="color: #666; font-size: 11pt; margin: 0;">ΠΙΣΤΟΠΟΙΗΤΙΚΟ ΕΓΓΥΗΣΗΣ - Πικάσης Ακοοπροθετικά, Λιβαδειά</p>
     </div>
     
-    <div class="company">
-        <p style="font-size: 16pt; margin: 8px 0; color: #2c3e50;"><strong>Πικάσης Ακοοπροθετικά</strong></p>
-        <p style="margin: 5px 0;">Λιβαδειά • Τηλέφωνο: 22610-XXXXX</p>
+    <div class="two-column">
+        <div class="col-left">
+            <table>
+                <tr>
+                    <td class="label">ΠΕΛΑΤΗΣ:</td>
+                    <td><strong>' . htmlspecialchars($data['customer_name'] ?? 'N/A') . '</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">ΑΜΚΑ:</td>
+                    <td>' . htmlspecialchars($data['customer_amka'] ?? 'N/A') . '</td>
+                </tr>
+                <tr>
+                    <td class="label">ΠΑΡΑΔΟΣΗ:</td>
+                    <td><strong>' . htmlspecialchars($data['day_out'] ?? 'N/A') . '</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">ΛΗΞΗ ΕΓΓΥΗΣΗΣ:</td>
+                    <td><strong style="color: #d9534f;">' . htmlspecialchars($data['guarantee_end'] ?? 'N/A') . '</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">SERIAL:</td>
+                    <td><strong style="color: #0275d8; font-size: 11pt;">' . htmlspecialchars($data['serial'] ?? 'N/A') . '</strong></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-right">
+            <table>
+                <tr>
+                    <td class="label">ΚΑΤΑΣΚΕΥΑΣΤΗΣ:</td>
+                    <td><strong>' . htmlspecialchars($data['manufacturer_name'] ?? 'N/A') . '</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">ΣΕΙΡΑ:</td>
+                    <td>' . htmlspecialchars($data['series_name'] ?? 'N/A') . '</td>
+                </tr>
+                <tr>
+                    <td class="label">ΜΟΝΤΕΛΟ:</td>
+                    <td>' . htmlspecialchars($data['model_name'] ?? 'N/A') . '</td>
+                </tr>
+                <tr>
+                    <td class="label">ΤΥΠΟΣ:</td>
+                    <td>' . htmlspecialchars($data['ha_type_name'] ?? 'N/A') . '</td>
+                </tr>
+                <tr>
+                    <td class="label">ΕΟΠΥΥ:</td>
+                    <td>' . htmlspecialchars($data['ekapty_code'] ?? '-') . '</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    
-    <table>
-        <tr>
-            <td class="label">ΟΝΟΜΑΤΕΠΩΝΥΜΟ ΠΕΛΑΤΗ:</td>
-            <td><strong>' . htmlspecialchars($data['customer_name'] ?? 'N/A') . '</strong></td>
-        </tr>
-        <tr>
-            <td class="label">ΑΡΙΘΜΟΣ ΜΗΤΡΩΟΥ (ΑΜΚΑ):</td>
-            <td>' . htmlspecialchars($data['customer_amka'] ?? 'N/A') . '</td>
-        </tr>
-        <tr>
-            <td class="label">ΗΜΕΡΟΜΗΝΙΑ ΠΑΡΑΔΟΣΗΣ:</td>
-            <td><strong>' . htmlspecialchars($data['day_out'] ?? 'N/A') . '</strong></td>
-        </tr>
-        <tr>
-            <td class="label">ΛΗΞΗ ΕΓΓΥΗΣΗΣ:</td>
-            <td><strong style="color: #d9534f;">' . htmlspecialchars($data['guarantee_end'] ?? 'N/A') . '</strong></td>
-        </tr>
-        <tr>
-            <td class="label">ΚΑΤΑΣΚΕΥΑΣΤΙΚΟΣ ΟΙΚΟΣ:</td>
-            <td><strong>' . htmlspecialchars($data['manufacturer_name'] ?? 'N/A') . '</strong></td>
-        </tr>
-        <tr>
-            <td class="label">ΣΕΙΡΑ ΠΡΟΙΟΝΤΟΣ:</td>
-            <td>' . htmlspecialchars($data['series_name'] ?? 'N/A') . '</td>
-        </tr>
-        <tr>
-            <td class="label">ΜΟΝΤΕΛΟ:</td>
-            <td>' . htmlspecialchars($data['model_name'] ?? 'N/A') . '</td>
-        </tr>
-        <tr>
-            <td class="label">ΤΥΠΟΣ ΑΚΟΥΣΤΙΚΟΥ:</td>
-            <td>' . htmlspecialchars($data['ha_type_name'] ?? 'N/A') . '</td>
-        </tr>
-        <tr>
-            <td class="label">ΣΕΙΡΙΑΚΟΣ ΑΡΙΘΜΟΣ:</td>
-            <td><strong style="color: #0275d8; font-size: 14pt;">' . htmlspecialchars($data['serial'] ?? 'N/A') . '</strong></td>
-        </tr>
-        <tr>
-            <td class="label">BARCODE ΕΟΠΥΥ:</td>
-            <td>' . htmlspecialchars($data['ekapty_code'] ?? 'Δεν εφαρμόζεται') . '</td>
-        </tr>
-        <tr>
-            <td class="label">ΑΡΙΘΜΟΣ ΕΚΤΕΛΕΣΗΣ ΕΟΠΥΥ:</td>
-            <td>' . htmlspecialchars($data['ektelesi_eopyy'] ?? 'Δεν εφαρμόζεται') . '</td>
-        </tr>
-    </table>
     
     <div class="warranty-period">
-        <h3 style="color: #1976d2; margin: 0 0 10px 0;">🛡️ ΠΕΡΙΟΔΟΣ ΕΓΓΥΗΣΗΣ</h3>
-        <p style="margin: 5px 0; font-size: 14pt;"><strong>Το ακουστικό βαρηκοΐας καλύπτεται από εγγύηση καλής λειτουργίας για διάστημα δύο (2) πλήρων ετών από την ημερομηνία παράδοσης.</strong></p>
+        <h4 style="color: #1976d2; margin: 0 0 5px 0; font-size: 11pt;">🛡️ ΕΓΓΥΗΣΗ ΔΥΟ (2) ΕΤΩΝ</h4>
+        <p style="margin: 0; font-size: 10pt;"><strong>Εγγύηση καλής λειτουργίας για 2 πλήρη έτη από την παράδοση.</strong></p>
     </div>
     
     <div class="terms">
-        <h3 style="color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 8px; margin-bottom: 20px;">ΟΡΟΙ ΚΑΙ ΠΡΟΫΠΟΘΕΣΕΙΣ ΕΓΓΥΗΣΗΣ</h3>
+        <h4 style="color: #2c3e50; border-bottom: 1px solid #2c3e50; padding-bottom: 3px; margin: 10px 0 8px 0; font-size: 11pt;">ΟΡΟΙ ΕΓΓΥΗΣΗΣ</h4>
         
-        <p><strong>Η εγγύηση καλύπτει:</strong></p>
-        <ul style="margin: 15px 0; padding-left: 25px; line-height: 1.8;">
-            <li>Κατασκευαστικά ελαττώματα και ανωμαλίες</li>
-            <li>Δυσλειτουργίες των ηλεκτρονικών μερών</li>
-            <li>Προβλήματα ποιότητας ήχου λόγω κατασκευής</li>
-            <li>Δωρεάν επισκευή ή αντικατάσταση κατά την κρίση του κατασκευαστή</li>
-        </ul>
+        <div class="two-column">
+            <div class="col-left">
+                <p><strong>Καλύπτει:</strong></p>
+                <ul style="margin: 5px 0; padding-left: 15px; font-size: 8pt;">
+                    <li>Κατασκευαστικά ελαττώματα</li>
+                    <li>Δυσλειτουργίες ηλεκτρονικών</li>
+                    <li>Προβλήματα ποιότητας ήχου</li>
+                    <li>Δωρεάν επισκευή/αντικατάσταση</li>
+                </ul>
+            </div>
+            <div class="col-right">
+                <p><strong>ΔΕΝ καλύπτει:</strong></p>
+                <ul style="margin: 5px 0; padding-left: 15px; font-size: 8pt;">
+                    <li>Λάθος χρήση/συντήρηση</li>
+                    <li>Μη εξουσιοδοτημένες επισκευές</li>
+                    <li>Φυσική φθορά</li>
+                    <li>Υγρασία, κρούσεις, πτώσεις</li>
+                </ul>
+            </div>
+        </div>
         
-        <p><strong>Η εγγύηση ΔΕΝ καλύπτει:</strong></p>
-        <ul style="margin: 15px 0; padding-left: 25px; line-height: 1.8;">
-            <li>Βλάβες από λανθασμένη χρήση ή μη τήρηση οδηγιών χρήσης</li>
-            <li>Φθορές από υγρασία, κρούσεις, πτώσεις ή εξωτερικές επιδράσεις</li>
-            <li>Επισκευές από μη εξουσιοδοτημένα τεχνικά κέντρα</li>
-            <li>Φυσική φθορά από την κανονική χρήση (π.χ. φθορά μπαταρίας)</li>
-            <li>Βλάβες από τροποποιήσεις ή επεμβάσεις τρίτων</li>
-        </ul>
-        
-        <p style="margin-top: 20px;"><strong>Για την ενεργοποίηση της εγγύησης:</strong> Απαιτείται η επίδειξη αυτού του πιστοποιητικού εγγύησης μαζί με το ακουστικό. Η εταιρεία μας διαθέτει πλήρως εξουσιοδοτημένο τμήμα τεχνικής υποστήριξης και service.</p>
+        <p style="margin: 8px 0 0 0; font-size: 8pt;"><strong>Ενεργοποίηση:</strong> Επίδειξη πιστοποιητικού + ακουστικό. Εξουσιοδοτημένο service διαθέσιμο.</p>
     </div>
     
-    <div class="footer">
-        <p style="font-size: 13pt;"><strong>Κωδικός Επιχείρησης Μητρώου ΕΚΑΠΤΥ: ' . htmlspecialchars($data['company_ekapty'] ?? '301068') . '</strong></p>
-        <p style="margin-top: 8px; color: #666;">Πιστοποιημένο Κέντρο Ακοοπροθετικής</p>
-    </div>
-    
-    <div class="signature">
-        <p style="margin-bottom: 30px;">Λιβαδειά, ' . date('d/m/Y') . '</p>
-        <div>
-            <p style="margin: 10px 0; font-size: 15pt;"><strong>Σπυρίδων Κ. Πικάσης</strong></p>
-            <p style="margin: 8px 0;">Μηχανικός Βιοϊατρικής Τεχνολογίας</p>
-            <p style="margin: 8px 0;">Ειδικός Ακοοπροθετιστής</p>
+    <div class="two-column" style="margin-top: 15px;">
+        <div class="col-left">
+            <div class="footer">
+                <p style="font-size: 8pt; margin: 2px 0;"><strong>ΕΚΑΠΤΥ: ' . htmlspecialchars($data['company_ekapty'] ?? '301068') . '</strong></p>
+                <p style="font-size: 8pt; margin: 2px 0;">Πιστοποιημένο Κέντρο Ακοοπροθετικής</p>
+            </div>
+        </div>
+        <div class="col-right">
+            <div class="signature">
+                <p style="margin: 0; font-size: 8pt;">Λιβαδειά, ' . date('d/m/Y') . '</p>
+                <p style="margin: 5px 0 2px 0; font-size: 10pt;"><strong>Σπυρίδων Κ. Πικάσης</strong></p>
+                <p style="margin: 0; font-size: 8pt;">Μηχανικός Βιοϊατρικής Τεχνολογίας</p>
+                <p style="margin: 0; font-size: 8pt;">Ειδικός Ακοοπροθετιστής</p>
+            </div>
         </div>
     </div>';
 }
@@ -366,46 +387,44 @@ function generatePrintableWarranty($data) {
     <style>
         @media screen {
             body { 
-                max-width: 850px; 
-                margin: 20px auto; 
-                padding: 30px; 
+                max-width: 750px; 
+                margin: 10px auto; 
+                padding: 15px; 
                 border: 2px solid #2c3e50; 
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 background: #fff;
+                font-size: 12px;
             }
             .no-print { display: block; }
         }
         @media print {
-            body { margin: 0; padding: 15px; }
+            body { margin: 0; padding: 10px; font-size: 10px; }
             .no-print { display: none; }
         }
         .alert { 
             background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            padding: 20px; 
-            margin-bottom: 25px; 
+            padding: 10px; 
+            margin-bottom: 15px; 
             border: 1px solid #2196f3; 
-            border-radius: 8px;
-            border-left: 5px solid #1976d2;
+            border-radius: 5px;
+            border-left: 3px solid #1976d2;
         }
     </style>
 </head>
 <body>
     <div class="no-print alert">
-        <h3 style="color: #1976d2; margin: 0 0 15px 0;">📄 Εγγύηση Ακουστικού Βαρηκοΐας</h3>
-        <p style="margin: 8px 0;"><strong>Πελάτης:</strong> ' . htmlspecialchars($data['customer_name']) . '</p>
-        <p style="margin: 8px 0;"><strong>Σειριακός Αριθμός:</strong> ' . htmlspecialchars($data['serial']) . '</p>
-        <p style="margin: 8px 0;"><strong>Εκτύπωση:</strong> Χρησιμοποιήστε Ctrl+P ή το μενού εκτύπωσης του περιηγητή</p>
-        <p style="margin: 8px 0; color: #1976d2;"><strong>Νομική Ισχύς:</strong> Αυτό το έγγραφο έχει πλήρη νομική ισχύ ως εγγύηση προιόντος</p>
+        <h4 style="color: #1976d2; margin: 0 0 8px 0;">📄 Εγγύηση Ακουστικού - ' . htmlspecialchars($data['customer_name']) . ' (Serial: ' . htmlspecialchars($data['serial']) . ')</h4>
+        <p style="margin: 3px 0; font-size: 11px;"><strong>Εκτύπωση:</strong> Ctrl+P • <strong>Νομική Ισχύς:</strong> Επίσημη εγγύηση ακουστικού βαρηκοΐας</p>
     </div>
     
     ' . $warranty_content . '
     
-    <div class="no-print" style="text-align: center; margin-top: 35px; padding: 25px; background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); border: 1px solid #4caf50; border-radius: 8px;">
-        <button onclick="window.print()" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; padding: 15px 30px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-            🖨️ Εκτύπωση Εγγύησης
+    <div class="no-print" style="text-align: center; margin-top: 20px; padding: 12px; background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); border: 1px solid #4caf50; border-radius: 5px;">
+        <button onclick="window.print()" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+            🖨️ Εκτύπωση
         </button>
-        <br><br>
-        <small style="color: #2e7d32;">Η εκτυπωμένη έκδοση αυτής της σελίδας αποτελεί επίσημη εγγύηση ακουστικού βαρηκοΐας</small>
+        <br>
+        <small style="color: #2e7d32; font-size: 10px; margin-top: 5px; display: block;">Επίσημη εγγύηση ακουστικού βαρηκοΐας</small>
     </div>
 </body>
 </html>';
