@@ -1,11 +1,16 @@
 <?php
 /**
- * EMERGENCY HOTFIX - Upload this file as eggyisi_doc_hotfix.php
- * Then change the URL call to use this instead
+ * 🚨 IMMEDIATE HOTFIX for Corrupted Composer/TCPDF Installation
+ * Upload this file as eggyisi_doc_hotfix.php
+ * 
+ * Server Issue: TCPDF config directory missing/corrupted, Composer broken
+ * Solution: Direct redirect to standalone emergency generator
+ * 
+ * Error was: "Could not scan for classes inside tcpdf/config which does not appear to be a file nor a folder"
  */
 
-// Emergency hotfix for eggyisi_doc crashes
-// Call this via: /admin/stocks/eggyisi_doc_hotfix/2443
+// Emergency hotfix for Composer/TCPDF corruption
+// Call this via: /eggyisi_doc_hotfix.php?id=STOCK_ID
 
 if (!defined('BASEPATH')) {
     // Quick CI integration
