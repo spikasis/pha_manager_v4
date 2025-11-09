@@ -250,6 +250,7 @@ class Stocks extends Admin_Controller {
         'on_test' => null,
         'ha_model' => null,
         'ektelesi_eopyy' => null,
+        'demo_type' => null,
     ];
 
     if ($this->input->post('serial')) {
@@ -275,6 +276,7 @@ class Stocks extends Admin_Controller {
         $data['on_test'] = $this->input->post('on_test');
         $data['ha_model'] = $this->input->post('ha_model');
         $data['ektelesi_eopyy'] = $this->input->post('ektelesi_eopyy');
+        $data['demo_type'] = $this->input->post('demo_type');
 
         $this->stock->insert($data);
         redirect('/admin/stocks', 'refresh');
@@ -426,7 +428,7 @@ private function get_post_data() {
         'type', 'manufacturer', 'model', 'vendor', 'status',
         'comments', 'customer_id', 'doctor_id', 'ha_price', 
         'ha_id', 'ekapty_code', 'eopyy', 'selling_point', 
-        'on_test', 'ha_model', 'ektelesi_eopyy'
+        'on_test', 'ha_model', 'ektelesi_eopyy', 'demo_type'
     ];
 
     $data = [];

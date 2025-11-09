@@ -136,6 +136,34 @@
                                     </select>                                    
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Demo Type Field (shown only when status is Demo) -->
+                        <div class="row" id="demo-type-row" style="display: <?= ($stock->status == 5) ? 'block' : 'none' ?>;">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-microscope text-muted mr-1"></i>Τύπος Demo
+                                        <small class="text-muted ml-2">(Εμφανίζεται μόνο για Demo κατάσταση)</small>
+                                    </label>
+                                    <select class="form-control" id="demo_type" name="demo_type">
+                                        <option value="">-- Επιλέξτε τύπο Demo --</option>
+                                        <option value="trial" <?= (isset($stock->demo_type) && $stock->demo_type == 'trial') ? 'selected' : '' ?>>
+                                            🧪 Trial (Προς Δοκιμή)
+                                        </option>
+                                        <option value="replacement" <?= (isset($stock->demo_type) && $stock->demo_type == 'replacement') ? 'selected' : '' ?>>
+                                            🔄 Replacement (Προς Αντικατάσταση)
+                                        </option>
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        <strong>Trial:</strong> Ακουστικά που δίνονται σε πελάτες για δοκιμή<br>
+                                        <strong>Replacement:</strong> Παλιότερα μοντέλα για προσωρινή αντικατάσταση
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label"><i class="fas fa-truck text-muted mr-1"></i>Προμηθευτής</label>
@@ -326,6 +354,25 @@ $(document).ready(function() {
     $('input, select, textarea').on('input change', function() {
         $(this).removeClass('is-invalid');
     });
+
+    // Show/hide demo type field based on status selection
+    $('#status').change(function() {
+        var selectedStatus = $(this).val();
+        var selectedText = $(this).find('option:selected').text();
+        
+        // Show demo type field if status is Demo (assuming status 5 is Demo or check by text)
+        if (selectedStatus == '5' || selectedText.toLowerCase().includes('demo')) {
+            $('#demo-type-row').slideDown(300);
+            $('#demo_type').attr('required', true);
+        } else {
+            $('#demo-type-row').slideUp(300);
+            $('#demo_type').attr('required', false);
+            $('#demo_type').val(''); // Clear selection
+        }
+    });
+
+    // Trigger status change on page load in case of pre-selected value
+    $('#status').trigger('change');
 
     // Show confirmation for successful save
     <?php if(isset($success) && $success): ?>
