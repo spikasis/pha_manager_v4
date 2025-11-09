@@ -15,7 +15,7 @@ class Payment_reminders extends Admin_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('admin/Payment_reminders_model', 'reminders');
+        $this->load->model('Payment_reminders_model', 'reminders');
         $this->load->model('admin/Selling_point', 'selling_point');
         $this->load->helper(['url', 'form']);
     }
