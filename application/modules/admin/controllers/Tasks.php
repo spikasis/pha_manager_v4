@@ -37,6 +37,9 @@ class Tasks extends Admin_Controller {
 
     // Create new task
     public function create() {
+        // Check if customer_id is passed via URL parameter
+        $preset_customer_id = $this->input->get('customer_id');
+        
         if ($this->input->post('client')) {
             // Collect form data
             $data = [
@@ -74,6 +77,15 @@ class Tasks extends Admin_Controller {
         // Fetch clients for form dropdown
         $data['clients'] = $this->customer->get_all();
         $data['acoustics'] = $this->stock->get_all();
+        
+        // Pass preset customer ID if available
+        $data['preset_customer_id'] = $preset_customer_id;
+        
+        // If customer_id is preset, get customer name for display
+        if ($preset_customer_id) {
+            $preset_customer = $this->customer->get($preset_customer_id);
+            $data['preset_customer'] = $preset_customer;
+        }
 
         // Load the create task view
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "tasks_create";

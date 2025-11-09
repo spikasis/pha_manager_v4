@@ -21,6 +21,9 @@
             <i class="fas fa-user-circle text-primary"></i> Καρτέλα Πελάτη: <?= $customer->name ?>
         </h1>
         <div>
+            <a href="<?= base_url('admin/tasks/create?customer_id=' . $customer->id) ?>" class="btn btn-primary shadow-sm mr-2">
+                <i class="fas fa-tasks fa-sm text-white-50"></i> New Task
+            </a>
             <button onclick="window.print()" class="btn btn-success shadow-sm mr-2">
                 <i class="fas fa-print fa-sm text-white-50"></i> Εκτύπωση
             </button>
@@ -44,6 +47,10 @@
                     <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow">
+                    <a class="dropdown-item" href="<?= base_url('admin/tasks/create?customer_id=' . $customer->id) ?>">
+                        <i class="fas fa-tasks fa-sm fa-fw mr-2 text-primary"></i> Δημιουργία Task
+                    </a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?= base_url('admin/customers/edit/' . $customer->id) ?>">
                         <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i> Επεξεργασία
                     </a>
