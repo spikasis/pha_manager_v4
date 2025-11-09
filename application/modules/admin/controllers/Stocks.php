@@ -1435,6 +1435,25 @@ public function get_payments($stock_id) {
         // Redirect to existing method
         redirect("admin/stocks/get_service/{$selling_point}");
     }
+    
+    /**
+     * Demo Types Management - Available for admin and service groups
+     */
+    public function manage_demo_types() {
+        // Get user's group for permissions check
+        $user_id = $this->ion_auth->get_user_id();
+        $user_groups = $this->ion_auth->get_users_groups($user_id);
+        $user_group = $user_groups->row();
+        
+        // Allow admin (group 1) and service (group 6) access to demo management
+        if (!in_array($user_group->id, [1, 6])) {
+            show_error('Δεν έχετε δικαίωμα πρόσβασης στη διαχείριση Demo Types.', 403);
+            return;
+        }
+        
+        // Redirect to the main demo page with management capabilities
+        redirect('admin/stocks/get_demo');
+    }
 
 
 }
