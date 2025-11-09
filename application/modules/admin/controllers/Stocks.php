@@ -1451,6 +1451,90 @@ public function get_payments($stock_id) {
         // Redirect to existing method
         redirect("admin/stocks/get_service/{$selling_point}");
     }
+    
+    /**
+     * Branch debts method - automatically uses user's selling point
+     * Shows debts only for the user's branch
+     * Logic: ha_price - eopyy - SUM(pays) = remaining balance > 0
+     */
+    public function get_branch_debt() {
+        // Get user's selling point based on group
+        $user_id = $this->ion_auth->get_user_id();
+        $user_group = $this->ion_auth->get_users_groups($user_id)->row();
+        
+        // Map group ID to selling_point ID
+        $selling_point_map = [
+            2 => 2, // member -> Λιβαδειά (selling_point_id = 2)
+            4 => 2, // Levadia -> Λιβαδειά (selling_point_id = 2)  
+            5 => 4  // Thiva -> Θήβα (selling_point_id = 4)
+        ];
+        
+        $selling_point = isset($selling_point_map[$user_group->id]) ? $selling_point_map[$user_group->id] : 2;
+        
+        // Get selling point name for title
+        $selling_point_name = $this->selling_point->get($selling_point);
+        
+        // Use the debt_view which calculates: ha_price - eopyy - sum_pays = balance
+        // We want only records with balance > 0 for this specific selling_point
+        $condition = 'balance > 0 AND selling_point = ' . $this->db->escape($selling_point);
+        $data['stock'] = $this->debt_view->get_all('', $condition);
+
+        // Set appropriate title with branch name
+        $data['title'] = 'Χρέη Υποκαταστήματος - ' . ($selling_point_name ? $selling_point_name->city : 'Άγνωστο Υποκατάστημα');
+        
+        // Add DataTable initialization script
+        $data = $this->prepare_stock_list_data($data);
+        
+        // Use the standard stock_list view
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
+        
+        // Load the view
+        $this->load->view($this->_container, $data);
+    }
+    
+    /**
+     * Branch sales by year - automatically uses user's selling point
+     * Shows sales for a specific year filtered by user's branch
+     */
+    public function get_branch_sales_year($year = null) {
+        // Validate year parameter
+        if (!$year || !is_numeric($year) || $year < 2020 || $year > 2030) {
+            show_error('Μη έγκυρο έτος. Παρακαλώ δώστε έτος μεταξύ 2020-2030.');
+            return;
+        }
+        
+        // Get user's selling point based on group
+        $user_id = $this->ion_auth->get_user_id();
+        $user_group = $this->ion_auth->get_users_groups($user_id)->row();
+        
+        // Map group ID to selling_point ID
+        $selling_point_map = [
+            2 => 2, // member -> Λιβαδειά (selling_point_id = 2)
+            4 => 2, // Levadia -> Λιβαδειά (selling_point_id = 2)  
+            5 => 4  // Thiva -> Θήβα (selling_point_id = 4)
+        ];
+        
+        $selling_point = isset($selling_point_map[$user_group->id]) ? $selling_point_map[$user_group->id] : 2;
+        
+        // Get selling point name for title
+        $selling_point_name = $this->selling_point->get($selling_point);
+        
+        // Use existing method to get stocks with details for the year and selling point
+        $stock = $this->stock->getStocksWithDetails($selling_point, $year);
+        
+        // Set appropriate title
+        $data['title'] = 'Πωλήσεις Έτους ' . $year . ' - ' . ($selling_point_name ? $selling_point_name->city : 'Άγνωστο Υποκατάστημα');
+        $data['stock'] = $stock;
+        
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
+        
+        // Use the standard stock_list view
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
+        
+        // Load the view
+        $this->load->view($this->_container, $data);
+    }
 
 
 }

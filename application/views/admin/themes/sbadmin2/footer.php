@@ -132,6 +132,60 @@
         window.location.href = '<?= base_url("admin/stocks/get_demo/") ?>' + user_selling_point;
         <?php endif; ?>
     }
+    
+    function selectBranchDebt() {
+        <?php 
+        $CI =& get_instance();
+        $user_id = $CI->ion_auth->get_user_id();
+        $group = $CI->ion_auth->get_users_groups($user_id)->row();
+        ?>
+        
+        // Αν ο χρήστης είναι admin (group_id = 1), δώσε επιλογές για όλα τα υποκαταστήματα
+        <?php if ($group->id == 1): ?>
+        var choice = prompt('Επιλέξτε:\n0 = Όλα τα χρέη (γενικά)\n1 = Κεντρικό (Αθήνα)\n2 = Λιβαδειά\n4 = Θήβα\n\nΕισάγετε αριθμό:');
+        
+        if (choice === '0') {
+            // Γενικά χρέη - όλα τα υποκαταστήματα
+            window.location.href = '<?= base_url("admin/stocks/on_debt") ?>';
+        } else if (choice && (choice == '1' || choice == '2' || choice == '4')) {
+            // Συγκεκριμένο υποκατάστημα
+            window.location.href = '<?= base_url("admin/stocks/on_debt/") ?>' + choice;
+        } else if (choice) {
+            alert('Μη έγκυρη επιλογή. Παρακαλώ εισάγετε 0, 1, 2 ή 4.');
+        }
+        <?php else: ?>
+        // Για υποκαταστήματα, εμφάνισε μόνο τα δικά τους χρέη
+        window.location.href = '<?= base_url("admin/stocks/get_branch_debt") ?>';
+        <?php endif; ?>
+    }
+    
+    function selectBranchYearSales() {
+        <?php 
+        $CI =& get_instance();
+        $user_id = $CI->ion_auth->get_user_id();
+        $group = $CI->ion_auth->get_users_groups($user_id)->row();
+        ?>
+        
+        var year = prompt('Εισάγετε έτος (π.χ. 2025):');
+        
+        if (year && year >= 2020 && year <= 2030) {
+            // Αν ο χρήστης είναι admin, δώσε επιλογές υποκαταστήματος
+            <?php if ($group->id == 1): ?>
+            var selling_point = prompt('Επιλέξτε υποκατάστημα:\n2 = Λιβαδειά\n4 = Θήβα\n\nΕισάγετε αριθμό:');
+            
+            if (selling_point && (selling_point == '2' || selling_point == '4')) {
+                window.location.href = '<?= base_url("admin/stocks/get_sold_thisYear_sp/") ?>' + year + '/' + selling_point;
+            } else if (selling_point) {
+                alert('Μη έγκυρο υποκατάστημα. Παρακαλώ εισάγετε 2 ή 4.');
+            }
+            <?php else: ?>
+            // Για υποκαταστήματα, χρησιμοποίησε αυτόματα το δικό τους selling_point
+            window.location.href = '<?= base_url("admin/stocks/get_branch_sales_year/") ?>' + year;
+            <?php endif; ?>
+        } else if (year) {
+            alert('Μη έγκυρο έτος. Παρακαλώ εισάγετε έτος μεταξύ 2020-2030.');
+        }
+    }
     </script>
 
 </body>
