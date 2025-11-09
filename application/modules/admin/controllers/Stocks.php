@@ -600,15 +600,38 @@ public function update_day_out()
                 
                 log_message('info', 'Calling enhanced print_doc for eggyisi_doc ID: ' . $id);
                 
-                // Try TCPDF first, fallback to enhanced mPDF if TCPDF dependencies missing
+                // Try TCPDF first, fallback to enhanced mPDF, final fallback to emergency generator
+                $pdf_generated = false;
+                
+                // Attempt 1: TCPDF
                 try {
                     $this->chart->print_doc_tcpdf($html, $title);
+                    $pdf_generated = true;
                 } catch (Exception $e) {
-                    log_message('error', 'TCPDF failed, using enhanced mPDF fallback: ' . $e->getMessage());
-                    $this->chart->print_doc_enhanced($html, $title);
+                    log_message('error', 'TCPDF failed (Composer dependency issue): ' . $e->getMessage());
                 } catch (Error $e) {
-                    log_message('error', 'TCPDF error, using enhanced mPDF fallback: ' . $e->getMessage());
-                    $this->chart->print_doc_enhanced($html, $title);
+                    log_message('error', 'TCPDF error (Composer dependency issue): ' . $e->getMessage());
+                }
+                
+                // Attempt 2: Enhanced mPDF (if TCPDF failed)
+                if (!$pdf_generated) {
+                    try {
+                        $this->chart->print_doc_enhanced($html, $title);
+                        $pdf_generated = true;
+                    } catch (Exception $e) {
+                        log_message('error', 'Enhanced mPDF also failed (setasign/fpdi missing): ' . $e->getMessage());
+                    } catch (Error $e) {
+                        log_message('error', 'Enhanced mPDF error (setasign/fpdi missing): ' . $e->getMessage());
+                    }
+                }
+                
+                // Attempt 3: Emergency redirect (if both failed)
+                if (!$pdf_generated) {
+                    log_message('error', 'Both TCPDF and mPDF failed due to Composer dependency issues, redirecting to ultimate emergency generator for ID: ' . $id);
+                    
+                    // Redirect to ultimate emergency generator (handles all edge cases)
+                    $emergency_url = base_url() . 'ultimate_emergency_warranty.php?id=' . $id;
+                    redirect($emergency_url);
                 }
                 
             } catch (Exception $e) {

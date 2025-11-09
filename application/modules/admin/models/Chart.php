@@ -539,18 +539,58 @@ class Chart extends MY_Model {
         } catch (Exception $e) {
             error_reporting($oldErrorReporting);
             ob_end_clean();
-            log_message('error', 'Enhanced mPDF fallback failed: ' . $e->getMessage());
-            show_error('PDF generation is currently unavailable. Please contact administrator. Error: mPDF/TCPDF not properly configured.');
+            log_message('error', 'Enhanced mPDF fallback failed (likely Composer dependency issue): ' . $e->getMessage());
+            
+            // If mPDF also fails, provide emergency redirect
+            $this->emergency_pdf_redirect($title);
+            
         } catch (Error $e) {
             error_reporting($oldErrorReporting);
             ob_end_clean();
-            log_message('error', 'Enhanced mPDF fallback PHP error: ' . $e->getMessage());
-            show_error('PDF generation failed due to server configuration. Please contact administrator.');
+            log_message('error', 'Enhanced mPDF fallback PHP error (likely setasign/fpdi missing): ' . $e->getMessage());
+            
+            // If mPDF also fails, provide emergency redirect
+            $this->emergency_pdf_redirect($title);
+            
         } catch (Throwable $e) {
             error_reporting($oldErrorReporting);
             ob_end_clean();
-            log_message('error', 'Enhanced mPDF fallback throwable: ' . $e->getMessage());
-            show_error('PDF generation failed. Please contact administrator.');
+            log_message('error', 'Enhanced mPDF fallback throwable (Composer dependencies broken): ' . $e->getMessage());
+            
+            // If mPDF also fails, provide emergency redirect
+            $this->emergency_pdf_redirect($title);
+        }
+    }
+    
+    /**
+     * Emergency PDF redirect when both TCPDF and mPDF fail
+     * Redirects to standalone emergency generator
+     */
+    function emergency_pdf_redirect($title)
+    {
+        // Extract stock ID from current URL or session
+        $stock_id = 0;
+        
+        // Try to get stock ID from current URL path
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        if (preg_match('/\/eggyisi_doc\/(\d+)/', $uri, $matches)) {
+            $stock_id = intval($matches[1]);
+        }
+        
+        if ($stock_id > 0) {
+            log_message('info', 'Redirecting to emergency PDF generator for stock ID: ' . $stock_id);
+            
+            // Redirect to ultimate emergency generator
+            $emergency_url = base_url('ultimate_emergency_warranty.php?id=' . $stock_id);
+            redirect($emergency_url);
+        } else {
+            // If we can't determine stock ID, show error with manual link
+            $error_msg = 'PDF generation is currently unavailable due to server configuration issues. ';
+            $error_msg .= '<br><br><strong>Alternative:</strong> ';
+            $error_msg .= '<a href="' . base_url('emergency_tcpdf_warranty.php?id=STOCK_ID') . '" target="_blank">';
+            $error_msg .= 'Use Emergency PDF Generator</a> (replace STOCK_ID with the actual stock number)';
+            
+            show_error($error_msg);
         }
     }
 
