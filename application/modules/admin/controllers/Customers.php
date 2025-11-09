@@ -40,19 +40,25 @@ class Customers extends Admin_Controller {
         $this->load->model(array('admin/lab_type'));
     }
 
-    
-    public function index() {
-        $customers = $this->customer->get_all();
-
-        // Add DataTable CSS and JS files
+    // Helper method to add DataTable configuration for list views
+    private function add_datatable_config(&$data) {
         $data['page_scripts'] = [
             'assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js',
             'assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js'
         ];
+    }
+
+    
+    public function index() {
+        $customers = $this->customer->get_all();
 
         $data['title'] = 'Πελατολόγιο Πλήρες' ;
         $data['customers'] = $customers;
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_list";
+        
+        // Add DataTable configuration
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
     }
 
@@ -231,15 +237,13 @@ class Customers extends Admin_Controller {
     public function get_interested() {
         $customers = $this->customer->get_all('id, name, address, city, phone_home, first_visit','status <> 1');
 
-        // Add DataTable CSS and JS files
-        $data['page_scripts'] = [
-            'assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js',
-            'assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js'
-        ];
-
         $data['customers'] = $customers;
         $data['title'] = 'Πελατολόγιο Ενδιαφερομένων' ;
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_list";
+        
+        // Add DataTable configuration
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
     }
     public function get_interested_sp($selling_point = NULL) {
@@ -273,15 +277,13 @@ class Customers extends Admin_Controller {
     public function get_onhold_full() {
         $customers = $this->customer->get_all('id, name, address, city, phone_home, phone_mobile, first_visit','pending=pending');
 
-        // Add DataTable CSS and JS files
-        $data['page_scripts'] = [
-            'assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js',
-            'assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js'
-        ];
-
         $data['customers'] = $customers;
         $data['title'] = 'Σε Εκκρεμότητα' ;
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_list";
+        
+        // Add DataTable configuration
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
     } 
     public function get_all_pays() {
@@ -290,6 +292,10 @@ class Customers extends Admin_Controller {
         $data['customers'] = $pays;
         $data['title'] = 'Πληρωμές' ;
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_list";
+        
+        // Add DataTable configuration
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
         
     }
@@ -310,6 +316,10 @@ class Customers extends Admin_Controller {
         $data['title'] = 'Πελάτες Έτους ' . $year . ' στη ' . $selling_point_name->city;
         $data['customers'] = $customers;
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_list";
+        
+        // Add DataTable configuration
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
     } 
     
@@ -324,6 +334,10 @@ class Customers extends Admin_Controller {
         $data['doctors'] = $doctor;
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "customers_list";
+        
+        // Add DataTable configuration
+        $this->add_datatable_config($data);
+        
         $this->load->view($this->_container, $data);
     }    
     
