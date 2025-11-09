@@ -12,12 +12,11 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.4",
-        "mpdf/mpdf": "^8.2",
-        "fzaninotto/faker": "^1.9"
+        "php": ">=8.0",
+        "mpdf/mpdf": "^8.2"
     },
     "require-dev": {
-        "mikey179/vfsstream": "^1.6"
+        "fakerphp/faker": "^1.20"
     },
     "autoload": {
         "psr-4": {
