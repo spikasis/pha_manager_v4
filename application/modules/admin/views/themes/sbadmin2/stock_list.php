@@ -171,6 +171,7 @@
 <!-- End Page Content -->
 
 <script>
+$(document).ready(function() {
     // Extract data from PHP and format for Morris.js
     <?php if (isset($chart_data) && !empty($chart_data)): ?>
     var chartData = <?php echo json_encode($chart_data); ?>;
@@ -178,15 +179,20 @@
     // Render Morris.js bar chart when the modal opens
     $('#chartModal').on('shown.bs.modal', function () {
         // Initialize Morris.js bar chart in the modal
-        new Morris.Bar({
-            element: 'modal-bar-chart',
-            data: chartData,
-            xkey: 'model_name',
-            ykeys: ['model_count'],
-            labels: ['Model Count'],
-            hideHover: 'auto',
-            resize: true
-        });
+        if (typeof Morris !== 'undefined') {
+            new Morris.Bar({
+                element: 'modal-bar-chart',
+                data: chartData,
+                xkey: 'model_name',
+                ykeys: ['model_count'],
+                labels: ['Model Count'],
+                hideHover: 'auto',
+                resize: true
+            });
+        } else {
+            console.log('Morris.js is not loaded');
+            $('#modal-bar-chart').html('<div class="text-center text-muted p-4"><i class="fas fa-exclamation-triangle fa-3x mb-2"></i><br>Σφάλμα φόρτωσης γραφήματος</div>');
+        }
     });
     <?php else: ?>
     // No chart data available
@@ -200,6 +206,7 @@
         // Clear the chart container
         $('#modal-bar-chart').empty();
     });
+});
 </script>
 
 <?php if (isset($custom_js)): ?>
