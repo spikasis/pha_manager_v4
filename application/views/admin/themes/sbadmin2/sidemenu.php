@@ -118,7 +118,7 @@ $group_id = $group->id;
         </div>
     </li>
 
-    <?php elseif ($group_id == 2): // Υποκατάστημα ?>
+    <?php elseif (in_array($group_id, [2, 4, 5])): // Υποκαταστήματα: member, Levadia, Thiva ?>
     
     <!-- Nav Item - Customers (Branch - Limited Access) -->
     <li class="nav-item <?= ($this->uri->segment(2) == 'customers') ? 'active' : '' ?>">

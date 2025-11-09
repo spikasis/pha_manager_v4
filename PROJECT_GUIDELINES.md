@@ -29,10 +29,11 @@
 
 ### 4. **User Groups & Permissions** ⚠️ MANDATORY CONSULTATION
 ```
-Group 1: Super Admin (all access)
-Group 2: Admin (branch management)  
-Group 3: User (basic operations)
-Group 6: Service Group (consolidated data across all selling points)
+Group 1: Admin (administrator - full access)
+Group 2: Member (public - basic access)
+Group 4: Levadia (Λιβαδιά - branch limited access)  
+Group 5: Thiva (Θήβα - branch limited access)
+Group 6: Service (Lab - consolidated data across all selling points)
 ```
 
 **CRITICAL RULE:** Every new method/view list MUST:
@@ -162,12 +163,12 @@ grep "field_name" database_schema/*.sql
 <?php if ($this->ion_auth->logged_in()): ?>
 
 // Admin only  
-<?php if ($this->ion_auth->is_admin()): ?>
+<?php if ($this->ion_auth->in_group(1)): ?>
 
-// Specific groups
-<?php if ($this->ion_auth->in_group([1, 2])): ?>
+// Branch access (Levadia, Thiva, Member)
+<?php if (in_array($group_id, [2, 4, 5])): ?>
 
-// Service group access
+// Service group access (Lab)
 <?php if ($this->ion_auth->in_group(6)): ?>
 ```
 
