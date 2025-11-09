@@ -469,6 +469,10 @@ private function get_post_data() {
         $stock = $this->stock->getStocksWithDetails($selling_point, $year);
         $data['title'] = 'Πωλήσεις Έτους';
         $data['stock'] = $stock;
+        
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
@@ -579,6 +583,10 @@ public function update_day_out()
 
         $data['title'] = 'Διαθέσιμα serial';
         $data['stock'] = $stock;
+        
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
@@ -587,15 +595,11 @@ public function update_day_out()
         //$stock = $this->stock->get_all('id, serial, customer_id, day_in, day_out, guarantee_end, type, manufacturer, model, ha_model, status, selling_point', 'status=2');
         $stock = $this->stock->getStocksWithDetails(null, null, '2');
         
-        // Add chart data for consistency
-        $chart_data = $this->stock->fetchChartData(2024, 2);
-        $data['chart_data'] = $chart_data;
-
         $data['title'] = 'Διαθέσιμα Black Only';
         $data['stock'] = $stock;
         
-        // Add DataTable initialization script
-        $data['custom_js'] = $this->get_datatables_js();
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
@@ -902,6 +906,10 @@ public function update_day_out()
     $data['stock'] = $this->debt_view->get_all('', $condition);
 
     $data['title'] = 'Μή Εξωφλημένα Ακουστικά';
+    
+    // Use helper function to add common requirements
+    $data = $this->prepare_stock_list_data($data);
+    
     $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
     
     // Φόρτωση του view
@@ -914,6 +922,9 @@ public function update_day_out()
         $data['stock'] = $this->debt_view->get_all('id, serial, customer_id, day_in, day_out, status, selling_point', 'balance<>0 AND YEAR(day_out)<' . $year_now);
         
         $data['title'] = 'Μή Εξωφλημένα Ακουστικά';
+        
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
@@ -954,6 +965,9 @@ public function update_day_out()
     // Αποθήκευση δεδομένων για προβολή
     $data['stock'] = $stocks;
     
+    // Use helper function to add common requirements
+    $data = $this->prepare_stock_list_data($data);
+    
     // Φόρτωση της σελίδας
     $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
     $this->load->view($this->_container, $data);
@@ -981,6 +995,9 @@ public function update_day_out()
         $data['stock'] = $stocks;
         //$data['doctors'] = $doctor;
         
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
@@ -993,6 +1010,9 @@ public function update_day_out()
         $data['title'] = 'Κατάσταση Ελεύθερων Barcodes ' . date("Y");
         $data['stock'] = $stocks;        
         
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
@@ -1004,6 +1024,9 @@ public function update_day_out()
         
         $data['title'] = 'Κατάσταση Ελεύθερων Barcodes ' . date("Y");
         $data['stock'] = $stocks;        
+        
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);

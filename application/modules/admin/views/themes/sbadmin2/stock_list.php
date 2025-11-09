@@ -203,6 +203,12 @@
     });
 </script>
 
+<?php if (isset($custom_js)): ?>
+<script>
+    <?php echo $custom_js; ?>
+</script>
+<?php endif; ?>
+
 
 
 
