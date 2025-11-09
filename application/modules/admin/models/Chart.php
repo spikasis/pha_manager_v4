@@ -401,13 +401,25 @@ class Chart extends MY_Model {
     
     function print_doc($html, $title)
     {       
-        // Load Composer autoloader for mPDF 8.x
+        // Try to load Composer autoloader for mPDF 8.x with error handling
+        $composerLoaded = false;
         if (file_exists(FCPATH . 'vendor/autoload.php')) {
-            require_once FCPATH . 'vendor/autoload.php';
+            try {
+                require_once FCPATH . 'vendor/autoload.php';
+                $composerLoaded = true;
+            } catch (Exception $e) {
+                // Log error but continue with fallback
+                log_message('error', 'Composer autoloader failed: ' . $e->getMessage());
+                $composerLoaded = false;
+            } catch (Error $e) {
+                // Handle PHP 7+ errors
+                log_message('error', 'Composer autoloader error: ' . $e->getMessage());
+                $composerLoaded = false;
+            }
         }
         
         // Check which mPDF version is available
-        if (class_exists('\\Mpdf\\Mpdf')) {
+        if ($composerLoaded && class_exists('\\Mpdf\\Mpdf')) {
             // mPDF 8.x (new version from vendor)
             $mpdf = new \Mpdf\Mpdf([
                 'mode' => 'utf-8',
@@ -419,22 +431,52 @@ class Chart extends MY_Model {
             ]);
         } else {
             // mPDF 6.0 (old version from third_party)
-            include_once APPPATH . '/third_party/mpdf/mpdf.php';
-            $mpdf = new mPDF('utf-8', 'A4', '', '', 10, 10, 10, 10, 6, 3);
+            $legacy_mpdf_path = APPPATH . '/third_party/mpdf/mpdf.php';
+            
+            if (file_exists($legacy_mpdf_path)) {
+                include_once $legacy_mpdf_path;
+                
+                if (class_exists('mPDF')) {
+                    $mpdf = new mPDF('utf-8', 'A4', '', '', 10, 10, 10, 10, 6, 3);
+                } else {
+                    // Last resort: show error message
+                    show_error('PDF export is not available. Please contact administrator.');
+                    return;
+                }
+            } else {
+                // No PDF library available
+                show_error('PDF export is not available. Please contact administrator.');
+                return;
+            }
         }
         
-        $mpdf->SetProtection(array('print'));
-        $mpdf->SetTitle($title);
-        $mpdf->SetAuthor("Pikasis Hearing Aids.");
-        $mpdf->SetWatermarkText("Pikasis Hearing");
-        $mpdf->showWatermarkText = true;
-        $mpdf->watermark_font = 'DejaVuSansCondensed';
-        $mpdf->watermarkTextAlpha = 0.1;
-        $mpdf->SetDisplayMode('fullpage');
+        // Verify $mpdf object was created successfully
+        if (!isset($mpdf) || !is_object($mpdf)) {
+            show_error('PDF generation failed. Please contact administrator.');
+            return;
+        }
         
-        $mpdf->WriteHTML($html, 2);
-        
-        $mpdf->Output();
+        try {
+            $mpdf->SetProtection(array('print'));
+            $mpdf->SetTitle($title);
+            $mpdf->SetAuthor("Pikasis Hearing Aids.");
+            $mpdf->SetWatermarkText("Pikasis Hearing");
+            $mpdf->showWatermarkText = true;
+            $mpdf->watermark_font = 'DejaVuSansCondensed';
+            $mpdf->watermarkTextAlpha = 0.1;
+            $mpdf->SetDisplayMode('fullpage');
+            
+            $mpdf->WriteHTML($html, 2);
+            
+            $mpdf->Output();
+            
+        } catch (Exception $e) {
+            log_message('error', 'PDF generation error: ' . $e->getMessage());
+            show_error('PDF generation failed: ' . $e->getMessage());
+        } catch (Error $e) {
+            log_message('error', 'PDF generation PHP error: ' . $e->getMessage());
+            show_error('PDF generation failed. Please contact administrator.');
+        }
     }
 
 //end_of Model

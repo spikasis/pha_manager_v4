@@ -47,5 +47,77 @@ max_execution_time = 300
 ✅ PHP 8.x compatibility
 ✅ Καλύτερο error handling
 
+## 🔧 Server Deployment (Production)
+
+### Μεθοδος 1: Composer στον server (Προτεινόμενη)
+```bash
+# SSH στον production server
+cd /var/www/vhosts/asal.gr/manager.pikasishearing.gr/
+
+# Εγκατάσταση
+composer install --no-dev --optimize-autoloader
+
+# Αν δεν υπάρχει composer.json, copy από development
+```
+
+### Μέθοδος 2: Upload vendor folder
+```bash
+# Στο development
+zip -r vendor.zip vendor/
+
+# Upload στον server και extract
+unzip vendor.zip
+```
+
+### Μέθοδος 3: Git deployment
+```bash
+# Στο development
+git add composer.json composer.lock vendor/
+git commit -m "Add mPDF 8.x"
+git push
+
+# Στον server
+git pull origin main
+```
+
+## 🚨 Server Troubleshooting
+
+### Αν παίρνεις σφάλματα στον server:
+
+**1. Upload `server_pdf_check.php` στη root και visit στο browser:**
+```
+https://manager.pikasishearing.gr/server_pdf_check.php
+```
+
+**2. Common errors και λύσεις:**
+
+```bash
+# Error: "require(...): Failed to open stream"
+rm -rf vendor/
+composer install --no-dev
+
+# Error: "Class not found"  
+composer dump-autoload -o
+
+# Error: "Permission denied"
+chown -R www-data:www-data vendor/
+chmod -R 755 vendor/
+```
+
+**3. Safe fallback:**
+Η εφαρμογή τώρα έχει triple fallback:
+1. mPDF 8.x (αν υπάρχει vendor/)
+2. mPDF 6.0 (αν υπάρχει third_party/mpdf/)
+3. Error message (αν τίποτα δεν δουλεύει)
+
 ### Rollback αν χρειαστεί:
 Αν κάτι πάει στραβά, απλά διαγράφεις τον φάκελο `vendor/` και χρησιμοποιείς την παλιά έκδοση από `application/third_party/mpdf/`.
+
+## 📋 Server Deployment Checklist
+
+- [ ] Upload composer.json και composer.lock
+- [ ] Run `composer install --no-dev` ή upload vendor/
+- [ ] Test με server_pdf_check.php
+- [ ] Test εγγύηση PDF από εφαρμογή
+- [ ] Verify permissions (www-data:www-data)
+- [ ] Check error logs αν υπάρχουν θέματα
