@@ -84,7 +84,7 @@ class Stocks extends Admin_Controller {
         
         // Add DataTable initialization script if not already present
         if (!isset($data['custom_js'])) {
-            $data['custom_js'] = $this->get_datatables_js();
+            $data['custom_js'] = $this->get_datatables_js() . $this->get_morris_js($data['chart_data']);
         }
         
         return $data;
@@ -129,15 +129,28 @@ class Stocks extends Admin_Controller {
             console.log('Initializing Stocks DataTable...');
             
             // Check if table exists
-            if ($('#stocksTable').length === 0) {
+            var table_element = $('#stocksTable');
+            if (table_element.length === 0) {
                 console.error('Table #stocksTable not found!');
                 return;
             }
+            
+            // Check table structure
+            var headers = table_element.find('thead th').length;
+            var first_row_cells = table_element.find('tbody tr:first td').length;
+            console.log('Table headers count:', headers);
+            console.log('First row cells count:', first_row_cells);
             
             // Check if DataTables is loaded
             if (typeof $.fn.DataTable === 'undefined') {
                 console.error('DataTables library not loaded');
                 return;
+            }
+            
+            // Check if table is already initialized
+            if ($.fn.DataTable.isDataTable('#stocksTable')) {
+                console.log('Table already initialized, destroying first...');
+                table_element.DataTable().destroy();
             }
             
             try {
@@ -168,20 +181,8 @@ class Stocks extends Admin_Controller {
                         'processing': 'Επεξεργασία...'
                     },
                     'columnDefs': [
-                        { 'orderable': false, 'targets': [11] }, // Disable sorting for actions column
-                        { 'searchable': false, 'targets': [11] }, // Disable search for actions column
-                        { 'width': '8%', 'targets': [0] },       // Doctor No
-                        { 'width': '10%', 'targets': [1] },      // Serial No
-                        { 'width': '12%', 'targets': [2] },      // Customer
-                        { 'width': '8%', 'targets': [3] },       // Day In
-                        { 'width': '8%', 'targets': [4] },       // Day Out
-                        { 'width': '15%', 'targets': [5] },      // Model
-                        { 'width': '6%', 'targets': [6] },       // Battery
-                        { 'width': '8%', 'targets': [7] },       // Status
-                        { 'width': '8%', 'targets': [8] },       // Selling Point
-                        { 'width': '8%', 'targets': [9] },       // Barcode
-                        { 'width': '8%', 'targets': [10] },      // Execution
-                        { 'width': '11%', 'targets': [11] }      // Actions column
+                        { 'orderable': false, 'targets': [-1] }, // Disable sorting for last column (actions)
+                        { 'searchable': false, 'targets': [-1] } // Disable search for last column (actions)
                     ],
                     'order': [[ 0, 'desc' ]], // Default sort by doctor_id descending (newest first)
                     'dom': '<\"row\"<\"col-sm-12 col-md-6\"l><\"col-sm-12 col-md-6\"f>>' +
@@ -194,6 +195,62 @@ class Stocks extends Admin_Controller {
             } catch (error) {
                 console.error('Error initializing DataTable:', error);
             }
+        });
+        ";
+    }
+    
+    /**
+     * Helper function to get Morris.js chart initialization JavaScript
+     */
+    private function get_morris_js($chart_data) {
+        $chart_json = json_encode($chart_data);
+        return "
+        
+        // Morris.js Chart Initialization
+        $(document).ready(function() {
+            console.log('Setting up Morris.js chart handlers...');
+            
+            " . (!empty($chart_data) ? "
+            var chartData = {$chart_json};
+            
+            // Render Morris.js bar chart when the modal opens
+            $('#chartModal').on('shown.bs.modal', function () {
+                console.log('Chart modal opened, initializing Morris chart...');
+                
+                // Check if Morris is loaded
+                if (typeof Morris !== 'undefined') {
+                    try {
+                        new Morris.Bar({
+                            element: 'modal-bar-chart',
+                            data: chartData,
+                            xkey: 'model_name',
+                            ykeys: ['model_count'],
+                            labels: ['Model Count'],
+                            hideHover: 'auto',
+                            resize: true
+                        });
+                        console.log('Morris chart initialized successfully');
+                    } catch (error) {
+                        console.error('Error initializing Morris chart:', error);
+                        $('#modal-bar-chart').html('<div class=\"text-center text-muted p-4\"><i class=\"fas fa-exclamation-triangle fa-3x mb-2\"></i><br>Σφάλμα φόρτωσης γραφήματος</div>');
+                    }
+                } else {
+                    console.log('Morris.js is not loaded');
+                    $('#modal-bar-chart').html('<div class=\"text-center text-muted p-4\"><i class=\"fas fa-exclamation-triangle fa-3x mb-2\"></i><br>Σφάλμα φόρτωσης γραφήματος</div>');
+                }
+            });
+            " : "
+            // No chart data available
+            $('#chartModal').on('shown.bs.modal', function () {
+                $('#modal-bar-chart').html('<div class=\"text-center text-muted p-4\"><i class=\"fas fa-chart-bar fa-3x mb-2\"></i><br>Δεν υπάρχουν δεδομένα γραφήματος</div>');
+            });
+            ") . "
+            
+            // Clear the chart when the modal is closed to avoid re-rendering issues
+            $('#chartModal').on('hidden.bs.modal', function () {
+                // Clear the chart container
+                $('#modal-bar-chart').empty();
+            });
         });
         ";
     }

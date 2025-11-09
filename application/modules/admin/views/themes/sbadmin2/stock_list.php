@@ -1,5 +1,5 @@
-<!-- Morris.js CSS -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<!-- Morris.js CSS (Local) -->
+<link rel="stylesheet" href="<?= base_url('assets/admin/css/morris.css') ?>">
 <!-- Note: Morris.js scripts will be loaded after jQuery in the footer -->
 
 <!-- Begin Page Content -->
@@ -175,50 +175,7 @@
 </div>
 <!-- End Page Content -->
 
-<script>
-$(document).ready(function() {
-    // Extract data from PHP and format for Morris.js
-    <?php if (isset($chart_data) && !empty($chart_data)): ?>
-    var chartData = <?php echo json_encode($chart_data); ?>;
-    
-    // Render Morris.js bar chart when the modal opens
-    $('#chartModal').on('shown.bs.modal', function () {
-        // Initialize Morris.js bar chart in the modal
-        if (typeof Morris !== 'undefined') {
-            new Morris.Bar({
-                element: 'modal-bar-chart',
-                data: chartData,
-                xkey: 'model_name',
-                ykeys: ['model_count'],
-                labels: ['Model Count'],
-                hideHover: 'auto',
-                resize: true
-            });
-        } else {
-            console.log('Morris.js is not loaded');
-            $('#modal-bar-chart').html('<div class="text-center text-muted p-4"><i class="fas fa-exclamation-triangle fa-3x mb-2"></i><br>Σφάλμα φόρτωσης γραφήματος</div>');
-        }
-    });
-    <?php else: ?>
-    // No chart data available
-    $('#chartModal').on('shown.bs.modal', function () {
-        $('#modal-bar-chart').html('<div class="text-center text-muted p-4"><i class="fas fa-chart-bar fa-3x mb-2"></i><br>Δεν υπάρχουν δεδομένα γραφήματος</div>');
-    });
-    <?php endif; ?>
-
-    // Clear the chart when the modal is closed to avoid re-rendering issues
-    $('#chartModal').on('hidden.bs.modal', function () {
-        // Clear the chart container
-        $('#modal-bar-chart').empty();
-    });
-});
-</script>
-
-<?php if (isset($custom_js)): ?>
-<script>
-    <?php echo $custom_js; ?>
-</script>
-<?php endif; ?>
+<!-- Morris.js initialization will be handled in footer via custom_js -->
 
 
 
