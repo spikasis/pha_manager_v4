@@ -4,11 +4,15 @@
  * Handles overdue payment calculations and reminders
  */
 
-class Payment_reminders_model extends CI_Model {
+class Payment_reminders_model extends MY_Model {
+
+    protected $table_name = 'payment_reminders_log';
+    protected $primary_key = 'id';
 
     public function __construct() {
-        parent::__construct();
+        // Following MY_Model pattern - don't call parent::__construct()
         $this->load->database();
+        $this->load->helper('inflector');
     }
 
     /**
