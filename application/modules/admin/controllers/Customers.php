@@ -260,35 +260,10 @@ class Customers extends Admin_Controller {
     }
     
     public function export_customer($stock_id) {
-        // Φόρτωμα των στοιχείων του ακουστικού και του πελάτη
-        $stock_details = $this->stock->get($stock_id);
-        
-        if (!$stock_details) {
-            show_404(); // Αν δεν βρεθεί το στοιχείο
-        }
-        
-       // Συλλογή πρόσθετων δεδομένων
-    $customer = $this->customer->get($stock_details->customer_id);
-    $stock_model = $this->model->get($stock_details->ha_model);
-    $series_model = $this->serie->get($stock_model->series);
-    $manufacturer = $this->manufacturer->get($series_model->brand);
-    $ha_type = $this->ha_type->get($stock_model->ha_type);
-
-    // Δημιουργία πίνακα δεδομένων για το PDF
-    $data['stock'] = $stock_details;
-    $data['customer'] = $customer;
-    $data['stock_model'] = $stock_model;
-    $data['series'] = $series_model;
-    $data['type'] = $ha_type;
-    $data['manufacturer'] = $manufacturer;
-    $data['doctor'] = $this->doctor->get($stock_details->doctor_id);
-    $data['selling_points'] = $this->selling_point->get($stock_details->selling_point);
-
-    // Τίτλος για το PDF
-    $title = 'Καρτέλα Πελάτη';
-
-    $html = $this->load->view('customer_card', $data, true);
-    $this->chart->print_doc($html, $title);
+        // Redirect to the new compact customer card generator
+        $base_url = base_url();
+        $redirect_url = $base_url . 'customer_card_compact.php?id=' . intval($stock_id);
+        redirect($redirect_url);
     }
 
     public function delete($id) {
