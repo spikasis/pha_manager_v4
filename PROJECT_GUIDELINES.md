@@ -144,13 +144,44 @@ grep "field_name" database_schema/*.sql
 
 ---
 
-## �📋 QUICK REFERENCE CHECKLIST ⚠️ MANDATORY
+## 🔐 SIDEMENU PERMISSION PATTERNS
+
+**When adding new menu items, ask client:**
+
+> "Για το νέο [feature name], ποιος θέλεις να έχει πρόσβαση;"
+> 
+> **Επιλογές:**
+> - **Όλοι οι χρήστες** (groups 1,2,3,6)
+> - **Μόνο Διαχειριστές** (groups 1,2) 
+> - **Υποκαταστήματα στα δικά τους** (με selling_point filter)
+> - **Μόνο Service Group** (group 6) - για συγκεντρωτικά δεδομένα
+
+**Code Templates:**
+```php
+// All users
+<?php if ($this->ion_auth->logged_in()): ?>
+
+// Admin only  
+<?php if ($this->ion_auth->is_admin()): ?>
+
+// Specific groups
+<?php if ($this->ion_auth->in_group([1, 2])): ?>
+
+// Service group access
+<?php if ($this->ion_auth->in_group(6)): ?>
+```
+
+---
+
+##  QUICK REFERENCE CHECKLIST ⚠️ MANDATORY
 
 Before making ANY changes, verify:
 - [ ] **Checked database_schema/ folder for correct table/field names**
 - [ ] **Using existing controller methods WITHOUT modification**
 - [ ] **NO database changes planned or executed**
 - [ ] **NO localhost testing - server-only deployment**
+- [ ] **Asked client about user group permissions for new features**
+- [ ] **Added sidemenu link with proper Ion_auth permission checks**
 - [ ] Using SB Admin 2 theme assets
 - [ ] Including selling_point filters where needed  
 - [ ] PHP 8.2+ property declarations added
