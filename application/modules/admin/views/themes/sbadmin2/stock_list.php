@@ -48,17 +48,18 @@
                         <?php if (count($stock)): ?>
                             <?php foreach ($stock as $key => $list): ?>
                                 <tr>
-                                    <td><?= $list['doctor_id'] ?></td>
-                                    <td><?= $list['serial'] ?></td>
-                                    <td><?= $list['customer_name'] ?></td>
-                                    <td><?= $list['day_in'] ?></td>
-                                    <td><?= $list['day_out'] ?></td>                                            
-                                    <td><?= $list['manufacturer_name'] ?> - <?= $list['series_name'] ?> <?= $list['model_name'] ?> - <?= $list['ha_type'] ?></td>                                            
-                                    <td><?= $list['battery_type'] ?></td>
+                                    <td><?= isset($list['doctor_id']) ? $list['doctor_id'] : '-' ?></td>
+                                    <td><?= isset($list['serial']) ? $list['serial'] : '-' ?></td>
+                                    <td><?= isset($list['customer_name']) ? $list['customer_name'] : '-' ?></td>
+                                    <td><?= isset($list['day_in']) ? $list['day_in'] : '-' ?></td>
+                                    <td><?= isset($list['day_out']) ? $list['day_out'] : '-' ?></td>                                            
+                                    <td><?= (isset($list['manufacturer_name']) ? $list['manufacturer_name'] : '') ?> - <?= (isset($list['series_name']) ? $list['series_name'] : '') ?> <?= (isset($list['model_name']) ? $list['model_name'] : '') ?> - <?= (isset($list['ha_type']) ? $list['ha_type'] : '') ?></td>                                            
+                                    <td><?= isset($list['battery_type']) ? $list['battery_type'] : '-' ?></td>
                                     <td>
                                         <?php
                                         // Helper function για badges
-                                        $status = strtolower(trim($list['stock_status']));
+                                        $status_text = isset($list['stock_status']) ? $list['stock_status'] : 'Άγνωστη';
+                                        $status = strtolower(trim($status_text));
                                         $badge_class = 'light';
                                         switch ($status) {
                                             case 'διαθέσιμο':
@@ -90,13 +91,14 @@
                                         }
                                         ?>
                                         <span class="badge badge-<?= $badge_class ?>">
-                                            <?= $list['stock_status'] ?>
+                                            <?= $status_text ?>
                                         </span>
                                     </td>
-                                    <td><?= $list['selling_point_city'] ?></td>
-                                    <td><?= $list['ekapty_code'] ?></td>
-                                    <td><?= $list['ektelesi_eopyy'] ?></td>                                            
+                                    <td><?= isset($list['selling_point_city']) ? $list['selling_point_city'] : '-' ?></td>
+                                    <td><?= isset($list['ekapty_code']) ? $list['ekapty_code'] : '-' ?></td>
+                                    <td><?= isset($list['ektelesi_eopyy']) ? $list['ektelesi_eopyy'] : '-' ?></td>                                            
                                     <td class="text-center">
+                                        <?php if (isset($list['id'])): ?>
                                         <div class="btn-group" role="group">
                                             <a href="<?= base_url('admin/stocks/view/'.$list['id']) ?>" 
                                                class="btn btn-sm btn-info" title="Προβολή">
@@ -126,6 +128,9 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

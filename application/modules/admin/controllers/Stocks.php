@@ -1150,16 +1150,55 @@ public function update_day_out()
     
     public function on_debt($selling_point = null)
 {
-    // Δημιουργία αρχικής συνθήκης για το balance
+    // Build condition for debt_view query
     $condition = 'balance > 0';
-    
-    // Προσθήκη συνθήκης για selling_point εάν υπάρχει τιμή
     if ($selling_point !== null) {
         $condition .= ' AND selling_point = ' . $this->db->escape($selling_point);
     }
     
-    // Εκτέλεση του ερωτήματος με την συνθήκη
-    $data['stock'] = $this->debt_view->get_all('', $condition);
+    // First, get the IDs of stocks with debts from debt_view
+    $debt_records = $this->debt_view->get_all('id', $condition);
+    
+    if (!empty($debt_records)) {
+        // Extract the IDs 
+        $stock_ids = array_column($debt_records, 'id');
+        
+        // Get full stock details for these IDs
+        $this->db->select("
+            s.id, 
+            s.doctor_id, 
+            s.serial, 
+            s.day_in,
+            s.day_out,
+            s.ekapty_code,
+            s.ektelesi_eopyy,
+            c.name AS customer_name,
+            v.name AS vendor_name,
+            m.name AS manufacturer_name,
+            mo.model AS model_name,
+            se.series AS series_name,
+            ht.type AS ha_type,
+            bt.type AS battery_type,
+            sp.city AS selling_point_city,
+            ss.status AS stock_status
+        ");
+        $this->db->from('stocks s');
+        $this->db->join('customers c', 's.customer_id = c.id', 'left');
+        $this->db->join('vendors v', 's.vendor = v.id', 'left');
+        $this->db->join('models mo', 's.ha_model = mo.id', 'left');
+        $this->db->join('series se', 'mo.series = se.id', 'left');
+        $this->db->join('manufacturers m', 'se.brand = m.id', 'left');
+        $this->db->join('ha_types ht', 'mo.ha_type = ht.id', 'left');
+        $this->db->join('battery_types bt', 'mo.battery = bt.id', 'left');
+        $this->db->join('selling_points sp', 's.selling_point = sp.id', 'left');
+        $this->db->join('stock_statuses ss', 's.status = ss.id', 'left');
+        $this->db->where_in('s.id', $stock_ids);
+        
+        $query = $this->db->get();
+        $data['stock'] = $query->result_array();
+    } else {
+        $data['stock'] = array();
+    }
 
     $data['title'] = 'Μή Εξωφλημένα Ακουστικά';
     
@@ -1474,10 +1513,50 @@ public function get_payments($stock_id) {
         // Get selling point name for title
         $selling_point_name = $this->selling_point->get($selling_point);
         
-        // Use the debt_view which calculates: ha_price - eopyy - sum_pays = balance
-        // We want only records with balance > 0 for this specific selling_point
+        // First, get the IDs of stocks with debts from debt_view
         $condition = 'balance > 0 AND selling_point = ' . $this->db->escape($selling_point);
-        $data['stock'] = $this->debt_view->get_all('', $condition);
+        $debt_records = $this->debt_view->get_all('id', $condition);
+        
+        if (!empty($debt_records)) {
+            // Extract the IDs 
+            $stock_ids = array_column($debt_records, 'id');
+            
+            // Get full stock details for these IDs
+            $this->db->select("
+                s.id, 
+                s.doctor_id, 
+                s.serial, 
+                s.day_in,
+                s.day_out,
+                s.ekapty_code,
+                s.ektelesi_eopyy,
+                c.name AS customer_name,
+                v.name AS vendor_name,
+                m.name AS manufacturer_name,
+                mo.model AS model_name,
+                se.series AS series_name,
+                ht.type AS ha_type,
+                bt.type AS battery_type,
+                sp.city AS selling_point_city,
+                ss.status AS stock_status
+            ");
+            $this->db->from('stocks s');
+            $this->db->join('customers c', 's.customer_id = c.id', 'left');
+            $this->db->join('vendors v', 's.vendor = v.id', 'left');
+            $this->db->join('models mo', 's.ha_model = mo.id', 'left');
+            $this->db->join('series se', 'mo.series = se.id', 'left');
+            $this->db->join('manufacturers m', 'se.brand = m.id', 'left');
+            $this->db->join('ha_types ht', 'mo.ha_type = ht.id', 'left');
+            $this->db->join('battery_types bt', 'mo.battery = bt.id', 'left');
+            $this->db->join('selling_points sp', 's.selling_point = sp.id', 'left');
+            $this->db->join('stock_statuses ss', 's.status = ss.id', 'left');
+            $this->db->where_in('s.id', $stock_ids);
+            
+            $query = $this->db->get();
+            $data['stock'] = $query->result_array();
+        } else {
+            $data['stock'] = array();
+        }
 
         // Set appropriate title with branch name
         $data['title'] = 'Χρέη Υποκαταστήματος - ' . ($selling_point_name ? $selling_point_name->city : 'Άγνωστο Υποκατάστημα');
