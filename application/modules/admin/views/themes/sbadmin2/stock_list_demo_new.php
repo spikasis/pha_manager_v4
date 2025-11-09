@@ -423,16 +423,34 @@
 
 <?php if (isset($custom_js)): ?>
 <script>
-    // Initialize DataTables for all tables
+    // Initialize DataTables for all tables with enhanced configuration
     $(document).ready(function() {
-        // DataTable configuration
+        // Enhanced DataTable configuration with proper pagination
         const tableConfig = {
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/Greek.json"
             },
-            "pageLength": 10,
+            "pageLength": 15,
+            "lengthMenu": [[10, 15, 25, 50, 100, -1], [10, 15, 25, 50, 100, "Όλα"]],
+            "order": [[0, "asc"]], // Sort by Serial column
+            "columnDefs": [
+                {
+                    "targets": [-1], // Last column (Actions)
+                    "orderable": false,
+                    "searchable": false
+                }
+            ],
             "responsive": true,
-            "order": [[0, "asc"]]
+            "searching": true,
+            "paging": true,
+            "info": true,
+            "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                   '<"row"<"col-sm-12"tr>>' +
+                   '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            "drawCallback": function() {
+                // Re-initialize tooltips and dropdowns after table redraw
+                $('[data-toggle="tooltip"]').tooltip();
+            }
         };
         
         // Initialize all demo tables
@@ -440,6 +458,11 @@
         $('#trialInUseTable').DataTable(tableConfig);
         $('#replacementAvailableTable').DataTable(tableConfig);
         $('#replacementInUseTable').DataTable(tableConfig);
+        
+        // Handle tab switching and table redraw for proper display
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
         
         // Customer assignment handlers
         $(document).on('click', '.assign-customer, .assign-replacement', function(e) {
@@ -563,44 +586,7 @@
                 }
             });
         });
-        
-        // Initialize DataTables for all tables
-        $(document).ready(function() {
-            const dataTableConfig = {
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Greek.json"
-                },
-                "pageLength": 25,
-                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Όλα"]],
-                "order": [[0, "asc"]], // Sort by Serial column
-                "columnDefs": [
-                    {
-                        "targets": [-1], // Last column (Actions)
-                        "orderable": false,
-                        "searchable": false
-                    }
-                ],
-                "responsive": true,
-                "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                       '<"row"<"col-sm-12"tr>>' +
-                       '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-                "drawCallback": function() {
-                    // Re-initialize tooltips and dropdowns after table redraw
-                    $('[data-toggle="tooltip"]').tooltip();
-                }
-            };
-            
-            // Initialize all demo tables
-            $('#trialAvailableTable').DataTable(dataTableConfig);
-            $('#trialInUseTable').DataTable(dataTableConfig);
-            $('#replacementAvailableTable').DataTable(dataTableConfig);
-            $('#replacementInUseTable').DataTable(dataTableConfig);
-            
-            // Handle tab switching and table redraw
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
-                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-            });
-        });
+
     });
 </script>
 <?php endif; ?>

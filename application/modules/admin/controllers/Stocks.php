@@ -506,8 +506,8 @@ private function get_post_data() {
 
         $data['title'] = 'Διαχείριση Demo Ακουστικών';
         
-        // Use helper function to add common requirements
-        $data = $this->prepare_stock_list_data($data);
+        // Enable JavaScript for DataTables and modals
+        $data['custom_js'] = true;
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list_demo_new";
         $this->load->view($this->_container, $data);
