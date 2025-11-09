@@ -28,7 +28,7 @@ class Payment_reminders_model extends MY_Model {
             c.phone_home,
             c.phone_mobile,
             c.selling_point,
-            sp.name as selling_point_name,
+            sp.city as selling_point_name,
             s.id as stock_id,
             s.serial,
             s.model,
@@ -68,7 +68,7 @@ class Payment_reminders_model extends MY_Model {
     public function get_reminder_counts_by_selling_point() {
         $this->db->select('
             c.selling_point,
-            sp.name as selling_point_name,
+            sp.city as selling_point_name,
             COUNT(DISTINCT c.id) as overdue_customers,
             SUM(s.ha_price - s.eopyy - COALESCE(p.pay_total, 0)) as total_debt
         ');
@@ -112,7 +112,7 @@ class Payment_reminders_model extends MY_Model {
             c.id as customer_id,
             c.name as customer_name,
             c.selling_point,
-            sp.name as selling_point_name,
+            sp.city as selling_point_name,
             s.id as stock_id,
             s.serial,
             s.model,
