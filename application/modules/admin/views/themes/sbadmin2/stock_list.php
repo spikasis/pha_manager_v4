@@ -173,6 +173,7 @@
 
 <script>
     // Extract data from PHP and format for Morris.js
+    <?php if (isset($chart_data) && !empty($chart_data)): ?>
     var chartData = <?php echo json_encode($chart_data); ?>;
     
     // Render Morris.js bar chart when the modal opens
@@ -188,6 +189,12 @@
             resize: true
         });
     });
+    <?php else: ?>
+    // No chart data available
+    $('#chartModal').on('shown.bs.modal', function () {
+        $('#modal-bar-chart').html('<div class="text-center text-muted p-4"><i class="fas fa-chart-bar fa-3x mb-2"></i><br>Δεν υπάρχουν δεδομένα γραφήματος</div>');
+    });
+    <?php endif; ?>
 
     // Clear the chart when the modal is closed to avoid re-rendering issues
     $('#chartModal').on('hidden.bs.modal', function () {

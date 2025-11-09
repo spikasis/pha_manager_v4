@@ -67,81 +67,27 @@ class Stocks extends Admin_Controller {
         $data['stock'] = $stock;
         
         // Add DataTable initialization script
-        $data['custom_js'] = "
-        $(document).ready(function() {
-            console.log('Initializing Stocks DataTable...');
-            
-            // Check if table exists
-            if ($('#stocksTable').length === 0) {
-                console.error('Table #stocksTable not found!');
-                return;
-            }
-            
-            // Check if DataTables is loaded
-            if (typeof $.fn.DataTable === 'undefined') {
-                console.error('DataTables library not loaded');
-                return;
-            }
-            
-            try {
-                var table = $('#stocksTable').DataTable({
-                    'responsive': true,
-                    'pageLength': 10,
-                    'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Όλα']],
-                    'searching': true,
-                    'ordering': true,
-                    'paging': true,
-                    'info': true,
-                    'autoWidth': false,
-                    'language': {
-                        'search': 'Αναζήτηση:',
-                        'lengthMenu': 'Εμφάνιση _MENU_ εγγραφών ανά σελίδα',
-                        'info': 'Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές',
-                        'infoEmpty': 'Εμφάνιση 0 έως 0 από 0 εγγραφές',
-                        'infoFiltered': '(φιλτράρισμα από _MAX_ συνολικές εγγραφές)',
-                        'paginate': {
-                            'first': 'Πρώτη',
-                            'last': 'Τελευταία', 
-                            'next': 'Επόμενη',
-                            'previous': 'Προηγούμενη'
-                        },
-                        'emptyTable': 'Δεν υπάρχουν δεδομένα στον πίνακα',
-                        'zeroRecords': 'Δεν βρέθηκαν αποτελέσματα',
-                        'loadingRecords': 'Φόρτωση...',
-                        'processing': 'Επεξεργασία...'
-                    },
-                    'columnDefs': [
-                        { 'orderable': false, 'targets': [11] }, // Disable sorting for actions column
-                        { 'searchable': false, 'targets': [11] }, // Disable search for actions column
-                        { 'width': '8%', 'targets': [0] },       // Doctor No
-                        { 'width': '10%', 'targets': [1] },      // Serial No
-                        { 'width': '12%', 'targets': [2] },      // Customer
-                        { 'width': '8%', 'targets': [3] },       // Day In
-                        { 'width': '8%', 'targets': [4] },       // Day Out
-                        { 'width': '15%', 'targets': [5] },      // Model
-                        { 'width': '6%', 'targets': [6] },       // Battery
-                        { 'width': '8%', 'targets': [7] },       // Status
-                        { 'width': '8%', 'targets': [8] },       // Selling Point
-                        { 'width': '8%', 'targets': [9] },       // Barcode
-                        { 'width': '8%', 'targets': [10] },      // Execution
-                        { 'width': '11%', 'targets': [11] }      // Actions column
-                    ],
-                    'order': [[ 0, 'desc' ]], // Default sort by doctor_id descending (newest first)
-                    'dom': '<\"row\"<\"col-sm-12 col-md-6\"l><\"col-sm-12 col-md-6\"f>>' +
-                           '<\"row\"<\"col-sm-12\"tr>>' +
-                           '<\"row\"<\"col-sm-12 col-md-5\"i><\"col-sm-12 col-md-7\"p>>'
-                });
-                
-                console.log('DataTable initialized successfully');
-                
-            } catch (error) {
-                console.error('Error initializing DataTable:', error);
-            }
-        });
-        ";
+        $data['custom_js'] = $this->get_datatables_js();
         
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
+    }
+
+    /**
+     * Helper function to add common stock_list view requirements
+     */
+    private function prepare_stock_list_data($data) {
+        // Add chart data if not already present
+        if (!isset($data['chart_data'])) {
+            $data['chart_data'] = $this->stock->fetchChartData(date('Y'), 2);
+        }
+        
+        // Add DataTable initialization script if not already present
+        if (!isset($data['custom_js'])) {
+            $data['custom_js'] = $this->get_datatables_js();
+        }
+        
+        return $data;
     }
 
     /**
@@ -174,29 +120,11 @@ class Stocks extends Admin_Controller {
         }
     }
 
-    public function list_sp($selling_point = null) {
-        // Check if $selling_point is provided
-        
-        if ($selling_point !== null) {
-        // Call getStocksWithDetails() with the provided selling point
-            $stock = $this->stock->getStocksWithDetails($selling_point);
-            } else {
-                // Call getStocksWithDetails() without filtering by selling point
-        
-                $stock = $this->stock->getStocksWithDetails();
-                }
-        
-        $data['title'] = 'Αποθήκη Ακουστικών';
-        
-        $year = date('Y');  
-        
-        $chart_data = $this->stock->fetchChartData($year, $selling_point);
-        $data['chart_data'] = $chart_data;
-
-        $data['stock'] = $stock;
-        
-        // Add the same DataTable initialization script as index()
-        $data['custom_js'] = "
+    /**
+     * Helper function to get DataTables initialization JavaScript
+     */
+    private function get_datatables_js() {
+        return "
         $(document).ready(function() {
             console.log('Initializing Stocks DataTable...');
             
@@ -268,6 +196,31 @@ class Stocks extends Admin_Controller {
             }
         });
         ";
+    }
+
+    public function list_sp($selling_point = null) {
+        // Check if $selling_point is provided
+        
+        if ($selling_point !== null) {
+        // Call getStocksWithDetails() with the provided selling point
+            $stock = $this->stock->getStocksWithDetails($selling_point);
+            } else {
+                // Call getStocksWithDetails() without filtering by selling point
+        
+                $stock = $this->stock->getStocksWithDetails();
+                }
+        
+        $data['title'] = 'Αποθήκη Ακουστικών';
+        
+        $year = date('Y');  
+        
+        $chart_data = $this->stock->fetchChartData($year, $selling_point);
+        $data['chart_data'] = $chart_data;
+
+        $data['stock'] = $stock;
+        
+        // Add DataTable initialization script
+        $data['custom_js'] = $this->get_datatables_js();
                
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
@@ -496,9 +449,17 @@ private function get_post_data() {
         //$stock = $this->stock->get_all('id, serial, customer_id, day_out, day_in, guarantee_end, type, manufacturer, model, status, selling_point, ha_model, ekapty_code', 'status=1');
         
         $stock = $this->stock->getStocksWithDetails(null, null, '1');
+        
+        // Add chart data for consistency
+        $chart_data = $this->stock->fetchChartData(2024, 2);
+        $data['chart_data'] = $chart_data;
 
         $data['title'] = 'Διαθέσιμα Αποθήκης';
         $data['stock'] = $stock;
+        
+        // Add DataTable initialization script
+        $data['custom_js'] = $this->get_datatables_js();
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
@@ -596,9 +557,17 @@ public function update_day_out()
         //$stock = $this->stock->get_all('id, serial, customer_id, day_out, day_in, guarantee_end, type, manufacturer, model, ha_model, status, selling_point', '(status=5 OR status=6)');
         
         $stock = $this->stock->getStocksWithDetails(null, null, '7');
+        
+        // Add chart data for consistency
+        $chart_data = $this->stock->fetchChartData(2024, 2);
+        $data['chart_data'] = $chart_data;
 
         $data['title'] = 'Επιστροφές Ακουστικών';
         $data['stock'] = $stock;
+        
+        // Add DataTable initialization script
+        $data['custom_js'] = $this->get_datatables_js();
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
@@ -617,9 +586,17 @@ public function update_day_out()
     public function get_stockblack() {
         //$stock = $this->stock->get_all('id, serial, customer_id, day_in, day_out, guarantee_end, type, manufacturer, model, ha_model, status, selling_point', 'status=2');
         $stock = $this->stock->getStocksWithDetails(null, null, '2');
+        
+        // Add chart data for consistency
+        $chart_data = $this->stock->fetchChartData(2024, 2);
+        $data['chart_data'] = $chart_data;
 
         $data['title'] = 'Διαθέσιμα Black Only';
         $data['stock'] = $stock;
+        
+        // Add DataTable initialization script
+        $data['custom_js'] = $this->get_datatables_js();
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
