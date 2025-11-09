@@ -3,147 +3,173 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
-<!-- Bootstrap (αν δεν υπάρχει ήδη) -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Begin Page Content -->
+<div class="container-fluid">
 
-<div id="page-wrapper">    
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="page-header users-header">
-                <h2>
-                    <?php echo $title ?>                    
-                    <a  href="<?= base_url('admin/stocks/create') ?>" class="btn btn-success" style="float: right">Προσθήκη Νέου</a>                    
-                </h2>
-            </div>
-        </div><!-- /.col-lg-12 -->
-    </div><!-- /.row -->      
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading ">Λίστα Αποθήκης Ακουστικών</div><!-- /.panel-heading -->
-                <div class="panel-body">
-                    <div class="dataTable_wrapper">
-                        <table class="table table-striped table-bordered table-hover" id="dataTables-example" sortable="day_out">
-                            <thead>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-boxes text-primary"></i> <?= $title ?>
+        </h1>
+        <a href="<?= base_url('admin/stocks/create') ?>" class="btn btn-success shadow-sm hidden-print">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Προσθήκη Νέου
+        </a>
+    </div>
+
+    <!-- DataTables Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-table"></i> Λίστα Αποθήκης Ακουστικών
+            </h6>
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chartModal">
+                <i class="fas fa-chart-bar"></i> Προβολή Γραφήματος
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="stocksTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ΔΟΚΤΟΡ No</th>
+                            <th>Serial No</th>
+                            <th>Πελάτης</th>
+                            <th>Εισαγωγή</th>
+                            <th>Ημ/νια Πώλησης</th>
+                            <th>Μοντέλο Ακουστικού</th>                                    
+                            <th>Μπαταρία</th> 
+                            <th>Κατάσταση</th>
+                            <th>Σημείο Πώλησης</th>
+                            <th>Barcode ΕΟΠΥΥ</th>
+                            <th>Εκτέλεση ΕΟΠΥΥ</th>                                                                       
+                            <th>Ενέργειες</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (count($stock)): ?>
+                            <?php foreach ($stock as $key => $list): ?>
                                 <tr>
-                                    <th>ΔΟΚΤΟΡ No</th>
-                                    <th>Serial No</th>
-                                    <th>Πελάτης</th>
-                                    <th>Εισαγωγή</th>
-                                    <th>Ημ/νια Πώλησης</th>
-                                    <th>Μοντέλο Ακουστικού</th>                                    
-                                    <th>Μπαταρία</th> 
-                                    <th>Κατάσταση</th>
-                                    <th>Σημείο Πώλησης</th>
-                                    <th>Barcode ΕΟΠΥΥ</th>
-                                    <th>Εκτέλεση ΕΟΠΥΥ</th>                                                                       
-                                    <th>Ενέργειες</th>
-                                </tr>
-                            </thead>
-                            <tbody> 
-                                
-                                <?php
-                                //echo json_encode($stock);
-                                
-                                $empty = 'not set';
-                                if (count($stock)):
-                                    foreach ($stock as $key => $list):
-                                    //echo json_encode($list);
-                                    /*
-                                    if (isset($list['customer_id'])) {
-                                            $customer = $this->customer->get($list['customer_id']);
-                                        }                                        
-                                       
-                                        $type = $this->ha_type->get($list['type']);  
-                                        $status = $this->stock_status->get($list['status']);
-                                        $selling_point = $this->selling_point->get($list['selling_point']);
-                                        
-                                        $ha_model = $this->model->get($list['ha_model']);
-                                        $ha_series = $this->serie->get($ha_model->series);
-                                        $ha_type = $this->ha_type->get($ha_model->ha_type);
-                                        $manufacturer = $this->manufacturer->get($ha_series->brand);
-                                        $battery = $this->battery_type->get($ha_model->battery);
-                                    */   
+                                    <td><?= $list['doctor_id'] ?></td>
+                                    <td><?= $list['serial'] ?></td>
+                                    <td><?= $list['customer_name'] ?></td>
+                                    <td><?= $list['day_in'] ?></td>
+                                    <td><?= $list['day_out'] ?></td>                                            
+                                    <td><?= $list['manufacturer_name'] ?> - <?= $list['series_name'] ?> <?= $list['model_name'] ?> - <?= $list['ha_type'] ?></td>                                            
+                                    <td><?= $list['battery_type'] ?></td>
+                                    <td>
+                                        <?php
+                                        // Helper function για badges
+                                        $status = strtolower(trim($list['stock_status']));
+                                        $badge_class = 'light';
+                                        switch ($status) {
+                                            case 'διαθέσιμο':
+                                            case 'available':
+                                            case 'onstock':
+                                                $badge_class = 'success';
+                                                break;
+                                            case 'πωλήθηκε':
+                                            case 'sold':
+                                                $badge_class = 'primary';
+                                                break;
+                                            case 'επιστροφή':
+                                            case 'return':
+                                            case 'returns':
+                                                $badge_class = 'warning';
+                                                break;
+                                            case 'service':
+                                                $badge_class = 'info';
+                                                break;
+                                            case 'demo':
+                                                $badge_class = 'secondary';
+                                                break;
+                                            case 'ελαττωματικό':
+                                            case 'defected':
+                                            case 'μαύρη λίστα':
+                                            case 'blacklist':
+                                                $badge_class = 'danger';
+                                                break;
+                                        }
                                         ?>
-                                        <tr class="odd gradeX">
-                                            <td><?= $list['doctor_id'] ?></td>
-                                            <td><?= $list['serial'] ?></td>
-                                            <td><?= $list['customer_name'] ?></td>
-                                            <td><?= $list['day_in'] ?></td>
-                                            <td><?= $list['day_out'] ?></td>                                            
-                                            <td><?= $list['manufacturer_name'] ?> - <?= $list['series_name'] ?> <?= $list['model_name'] ?> - <?= $list['ha_type'] ?></td>                                            
-                                            <td><?= $list['battery_type'] ?></td>
-                                            <td><?= $list['stock_status'] ?></td>
-                                            <td><?= $list['selling_point_city'] ?></td>
-                                            <td><?= $list['ekapty_code']?></td>
-                                            <td><?= $list['ektelesi_eopyy']?></td>                                            
-                                            <td style="width: 100px;">
-                                                <div class="action-buttons" style="display: flex; align-items: center;">
-                                                    <a href="<?= base_url('admin/stocks/edit/' . $list['id']) ?>" title="Επεξεργασία" style="margin-right: 10px;">
-                                                        <i class="fas fa-pencil-alt"></i> <!-- Εικονίδιο για επεξεργασία -->
+                                        <span class="badge badge-<?= $badge_class ?>">
+                                            <?= $list['stock_status'] ?>
+                                        </span>
+                                    </td>
+                                    <td><?= $list['selling_point_city'] ?></td>
+                                    <td><?= $list['ekapty_code'] ?></td>
+                                    <td><?= $list['ektelesi_eopyy'] ?></td>                                            
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="<?= base_url('admin/stocks/view/'.$list['id']) ?>" 
+                                               class="btn btn-sm btn-info" title="Προβολή">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="<?= base_url('admin/stocks/edit/'.$list['id']) ?>" 
+                                               class="btn btn-sm btn-warning" title="Επεξεργασία">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" 
+                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Περισσότερες Ενέργειες">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="<?= base_url('admin/stocks/eggyisi_doc/'.$list['id']) ?>">
+                                                        <i class="fas fa-file-alt"></i> Εγγύηση
                                                     </a>
-                                                    <a href="<?= base_url('admin/stocks/view/' . $list['id']) ?>" title="Προβολή" style="margin-right: 10px;">
-                                                        <i class="fas fa-eye"></i> <!-- Εικονίδιο για προβολή -->
+                                                    <a class="dropdown-item" href="<?= base_url('admin/stocks/ha_doc/'.$list['id']) ?>">
+                                                        <i class="fas fa-tag"></i> Ετικέτα
                                                     </a>
-                                                    <a href="<?= base_url('admin/stocks/delete/' . $list['id']) ?>" title="Διαγραφή" style="margin-right: 10px;">
-                                                        <i class="fas fa-trash-alt"></i> <!-- Εικονίδιο για διαγραφή -->
-                                                    </a>
-                                                    <a href="<?= base_url('admin/stocks/eggyisi_doc/' . $list['id']) ?>" title="Εγγύηση" style="margin-right: 10px;">
-                                                        <i class="fas fa-file-alt"></i> <!-- Εικονίδιο για εγγύηση -->
-                                                    </a>
-                                                    <a href="<?= base_url('admin/stocks/ha_doc/' . $list['id']) ?>" title="Ετικέτα" style="margin-right: 10px;">
-                                                        <i class="fas fa-tag"></i> <!-- Εικονίδιο για ετικέτα -->
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item text-danger" href="<?= base_url('admin/stocks/delete/'.$list['id']) ?>"
+                                                       onclick="return confirm('Είστε σίγουροι για τη διαγραφή;')">
+                                                        <i class="fas fa-trash"></i> Διαγραφή
                                                     </a>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr class="even gradeC">
-                                        <td>No data</td>
-                                        <td>No data</td>
-                                        <td>No data</td>
-                                        <td>No data</td>
-                                        <td>No data</td>
-                                        <td>
-                                            <a href="#" class="btn btn-info">edit</a>  
-                                            <a href="#" class="btn btn-danger">delete</a>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>                    
-                </div><!-- /.panel-body -->
-            </div><!-- /.panel -->
-        </div><!-- /.col-lg-12 -->
-        <!-- Modal -->
-        <div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="chartModalLabel">Γράφημα Αποθήκης</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="modal-bar-chart" style="height: 400px;"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Κλείσιμο</button>
-                    </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="12" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                    Δεν βρέθηκαν εγγραφές αποθήκης
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Modal -->
+    <div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chartModalLabel">
+                        <i class="fas fa-chart-bar text-primary"></i> Γράφημα Αποθήκης
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="modal-bar-chart" style="height: 400px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Κλείσιμο
+                    </button>
                 </div>
             </div>
         </div>
-    </div><!-- /#page-wrapper -->
-    <!-- Modal Button στο κάτω μέρος της σελίδας -->
-    <div class="text-center" style="margin-top: 20px;">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chartModal">
-            Προβολή Γραφήματος
-        </button>
     </div>
-</div>   
+
+</div>
+<!-- End Page Content -->
 
 <script>
     // Extract data from PHP and format for Morris.js
@@ -167,34 +193,6 @@
     $('#chartModal').on('hidden.bs.modal', function () {
         // Clear the chart container
         $('#modal-bar-chart').empty();
-    });
-
-    // Initialize DataTables for modern functionality
-    $(document).ready(function() {
-        $('#dataTables-example').DataTable({
-            "responsive": true,
-            "lengthChange": true,
-            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Όλα"]],
-            "pageLength": 25,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "language": {
-                "lengthMenu": "Εμφάνιση _MENU_ εγγραφών ανά σελίδα",
-                "zeroRecords": "Δε βρέθηκαν εγγραφές",
-                "info": "Εμφανίζονται _START_ έως _END_ από _TOTAL_ εγγραφές",
-                "infoEmpty": "Εμφανίζονται 0 έως 0 από 0 εγγραφές",
-                "infoFiltered": "(φιλτραρισμένες από _MAX_ συνολικές εγγραφές)",
-                "search": "Αναζήτηση:",
-                "paginate": {
-                    "first": "Πρώτη",
-                    "last": "Τελευταία", 
-                    "next": "Επόμενη",
-                    "previous": "Προηγούμενη"
-                }
-            }
-        });
     });
 </script>
 

@@ -64,9 +64,114 @@ class Stocks extends Admin_Controller {
         $stock = $this->stock->getStocksWithDetails();
         $data['stats'] = $this->stock->get_stats('2023');       
 
-        $data['stock'] = $stock;         
+        $data['stock'] = $stock;
+        
+        // Add DataTable initialization script
+        $data['custom_js'] = "
+        $(document).ready(function() {
+            console.log('Initializing Stocks DataTable...');
+            
+            // Check if table exists
+            if ($('#stocksTable').length === 0) {
+                console.error('Table #stocksTable not found!');
+                return;
+            }
+            
+            // Check if DataTables is loaded
+            if (typeof $.fn.DataTable === 'undefined') {
+                console.error('DataTables library not loaded');
+                return;
+            }
+            
+            try {
+                var table = $('#stocksTable').DataTable({
+                    'responsive': true,
+                    'pageLength': 10,
+                    'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Όλα']],
+                    'searching': true,
+                    'ordering': true,
+                    'paging': true,
+                    'info': true,
+                    'autoWidth': false,
+                    'language': {
+                        'search': 'Αναζήτηση:',
+                        'lengthMenu': 'Εμφάνιση _MENU_ εγγραφών ανά σελίδα',
+                        'info': 'Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές',
+                        'infoEmpty': 'Εμφάνιση 0 έως 0 από 0 εγγραφές',
+                        'infoFiltered': '(φιλτράρισμα από _MAX_ συνολικές εγγραφές)',
+                        'paginate': {
+                            'first': 'Πρώτη',
+                            'last': 'Τελευταία', 
+                            'next': 'Επόμενη',
+                            'previous': 'Προηγούμενη'
+                        },
+                        'emptyTable': 'Δεν υπάρχουν δεδομένα στον πίνακα',
+                        'zeroRecords': 'Δεν βρέθηκαν αποτελέσματα',
+                        'loadingRecords': 'Φόρτωση...',
+                        'processing': 'Επεξεργασία...'
+                    },
+                    'columnDefs': [
+                        { 'orderable': false, 'targets': [11] }, // Disable sorting for actions column
+                        { 'searchable': false, 'targets': [11] }, // Disable search for actions column
+                        { 'width': '8%', 'targets': [0] },       // Doctor No
+                        { 'width': '10%', 'targets': [1] },      // Serial No
+                        { 'width': '12%', 'targets': [2] },      // Customer
+                        { 'width': '8%', 'targets': [3] },       // Day In
+                        { 'width': '8%', 'targets': [4] },       // Day Out
+                        { 'width': '15%', 'targets': [5] },      // Model
+                        { 'width': '6%', 'targets': [6] },       // Battery
+                        { 'width': '8%', 'targets': [7] },       // Status
+                        { 'width': '8%', 'targets': [8] },       // Selling Point
+                        { 'width': '8%', 'targets': [9] },       // Barcode
+                        { 'width': '8%', 'targets': [10] },      // Execution
+                        { 'width': '11%', 'targets': [11] }      // Actions column
+                    ],
+                    'order': [[ 0, 'desc' ]], // Default sort by doctor_id descending (newest first)
+                    'dom': '<\"row\"<\"col-sm-12 col-md-6\"l><\"col-sm-12 col-md-6\"f>>' +
+                           '<\"row\"<\"col-sm-12\"tr>>' +
+                           '<\"row\"<\"col-sm-12 col-md-5\"i><\"col-sm-12 col-md-7\"p>>'
+                });
+                
+                console.log('DataTable initialized successfully');
+                
+            } catch (error) {
+                console.error('Error initializing DataTable:', error);
+            }
+        });
+        ";
+        
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
+    }
+
+    /**
+     * Helper function to get Bootstrap badge class based on stock status
+     */
+    public function get_status_badge_class($status) {
+        switch (strtolower(trim($status))) {
+            case 'διαθέσιμο':
+            case 'available':
+            case 'onstock':
+                return 'success';
+            case 'πωλήθηκε':
+            case 'sold':
+                return 'primary';
+            case 'επιστροφή':
+            case 'return':
+            case 'returns':
+                return 'warning';
+            case 'service':
+                return 'info';
+            case 'demo':
+                return 'secondary';
+            case 'ελαττωματικό':
+            case 'defected':
+            case 'μαύρη λίστα':
+            case 'blacklist':
+                return 'danger';
+            default:
+                return 'light';
+        }
     }
 
     public function list_sp($selling_point = null) {
@@ -88,7 +193,82 @@ class Stocks extends Admin_Controller {
         $chart_data = $this->stock->fetchChartData($year, $selling_point);
         $data['chart_data'] = $chart_data;
 
-        $data['stock'] = $stock;       
+        $data['stock'] = $stock;
+        
+        // Add the same DataTable initialization script as index()
+        $data['custom_js'] = "
+        $(document).ready(function() {
+            console.log('Initializing Stocks DataTable...');
+            
+            // Check if table exists
+            if ($('#stocksTable').length === 0) {
+                console.error('Table #stocksTable not found!');
+                return;
+            }
+            
+            // Check if DataTables is loaded
+            if (typeof $.fn.DataTable === 'undefined') {
+                console.error('DataTables library not loaded');
+                return;
+            }
+            
+            try {
+                var table = $('#stocksTable').DataTable({
+                    'responsive': true,
+                    'pageLength': 10,
+                    'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Όλα']],
+                    'searching': true,
+                    'ordering': true,
+                    'paging': true,
+                    'info': true,
+                    'autoWidth': false,
+                    'language': {
+                        'search': 'Αναζήτηση:',
+                        'lengthMenu': 'Εμφάνιση _MENU_ εγγραφών ανά σελίδα',
+                        'info': 'Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές',
+                        'infoEmpty': 'Εμφάνιση 0 έως 0 από 0 εγγραφές',
+                        'infoFiltered': '(φιλτράρισμα από _MAX_ συνολικές εγγραφές)',
+                        'paginate': {
+                            'first': 'Πρώτη',
+                            'last': 'Τελευταία', 
+                            'next': 'Επόμενη',
+                            'previous': 'Προηγούμενη'
+                        },
+                        'emptyTable': 'Δεν υπάρχουν δεδομένα στον πίνακα',
+                        'zeroRecords': 'Δεν βρέθηκαν αποτελέσματα',
+                        'loadingRecords': 'Φόρτωση...',
+                        'processing': 'Επεξεργασία...'
+                    },
+                    'columnDefs': [
+                        { 'orderable': false, 'targets': [11] }, // Disable sorting for actions column
+                        { 'searchable': false, 'targets': [11] }, // Disable search for actions column
+                        { 'width': '8%', 'targets': [0] },       // Doctor No
+                        { 'width': '10%', 'targets': [1] },      // Serial No
+                        { 'width': '12%', 'targets': [2] },      // Customer
+                        { 'width': '8%', 'targets': [3] },       // Day In
+                        { 'width': '8%', 'targets': [4] },       // Day Out
+                        { 'width': '15%', 'targets': [5] },      // Model
+                        { 'width': '6%', 'targets': [6] },       // Battery
+                        { 'width': '8%', 'targets': [7] },       // Status
+                        { 'width': '8%', 'targets': [8] },       // Selling Point
+                        { 'width': '8%', 'targets': [9] },       // Barcode
+                        { 'width': '8%', 'targets': [10] },      // Execution
+                        { 'width': '11%', 'targets': [11] }      // Actions column
+                    ],
+                    'order': [[ 0, 'desc' ]], // Default sort by doctor_id descending (newest first)
+                    'dom': '<\"row\"<\"col-sm-12 col-md-6\"l><\"col-sm-12 col-md-6\"f>>' +
+                           '<\"row\"<\"col-sm-12\"tr>>' +
+                           '<\"row\"<\"col-sm-12 col-md-5\"i><\"col-sm-12 col-md-7\"p>>'
+                });
+                
+                console.log('DataTable initialized successfully');
+                
+            } catch (error) {
+                console.error('Error initializing DataTable:', error);
+            }
+        });
+        ";
+               
         $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list";
         $this->load->view($this->_container, $data);
     }
