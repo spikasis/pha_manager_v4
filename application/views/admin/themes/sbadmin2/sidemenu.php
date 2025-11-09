@@ -56,23 +56,33 @@ $group_id = $group->id;
         </div>
     </li>
 
-    <!-- Nav Item - Stock Management Collapse Menu -->
-    <li class="nav-item <?= in_array($this->uri->segment(2), ['stocks', 'inventory']) ? 'active' : '' ?>">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStock" aria-expanded="true" aria-controls="collapseStock">
-            <i class="fas fa-fw fa-boxes"></i>
-            <span>Αποθήκη</span>
+    <!-- Nav Item - Stock Management (Admin - Full Access) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'stocks') ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStocks" aria-expanded="true" aria-controls="collapseStocks">
+            <i class="fas fa-fw fa-headphones"></i>
+            <span>Ακουστικά</span>
         </a>
-        <div id="collapseStock" class="collapse <?= in_array($this->uri->segment(2), ['stocks', 'inventory']) ? 'show' : '' ?>" aria-labelledby="headingStock" data-parent="#accordionSidebar">
+        <div id="collapseStocks" class="collapse <?= ($this->uri->segment(2) == 'stocks') ? 'show' : '' ?>" aria-labelledby="headingStocks" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Διαχείριση Αποθήκης:</h6>
-                <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Όλα τα Ακουστικά</a>
+                <h6 class="collapse-header">Διαχείριση:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Πλήρος Κατάλογος</a>
                 <a class="collapse-item <?= ($this->uri->segment(3) == 'create') ? 'active' : '' ?>" href="<?= base_url('admin/stocks/create') ?>">Νέο Ακουστικό</a>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/get_onstock') ?>">Διαθέσιμα</a>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/on_debt') ?>">Σε Χρέωση</a>
                 <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Κατηγορίες:</h6>
-                <a class="collapse-item" href="<?= base_url('admin/vendors') ?>">Κατασκευαστές</a>
-                <a class="collapse-item" href="<?= base_url('admin/models') ?>">Μοντέλα</a>
+                <h6 class="collapse-header">Πωλήσεις:</h6>
+                <a class="collapse-item" href="#" onclick="selectSellingPointSales()">Πωλήσεις ανά Υποκατάστημα</a>
+                <a class="collapse-item" href="#" onclick="selectCurrentMonthSales()">Τρέχων Μήνας</a>
+                <a class="collapse-item" href="#" onclick="selectCurrentYearSales()">Τρέχον Έτος</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Service & Επισκευές:</h6>
+                <a class="collapse-item" href="#" onclick="selectServicePoint()">Service ανά Υποκατάστημα</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_returns') ?>">Επιστροφές</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_defected') ?>">Ελαττωματικά</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Ειδικές Αναφορές:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_all_pays') ?>">Με Χρέη</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_stock_pending') ?>">Εκκρεμότητες</a>
+                <a class="collapse-item" href="#" onclick="selectDoctorSales()">Πωλήσεις Γιατρού</a>
+                <a class="collapse-item" href="#" onclick="selectBarcodePending()">Barcodes Εκκρεμείς</a>
             </div>
         </div>
     </li>
@@ -139,12 +149,28 @@ $group_id = $group->id;
         </div>
     </li>
 
-    <!-- Nav Item - Sales (Branch) -->
+    <!-- Nav Item - Stocks (Branch - Limited Access) -->
     <li class="nav-item <?= ($this->uri->segment(2) == 'stocks') ? 'active' : '' ?>">
-        <a class="nav-link" href="<?= base_url('admin/stocks') ?>">
-            <i class="fas fa-fw fa-shopping-cart"></i>
-            <span>Πωλήσεις</span>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStocksBranch" aria-expanded="true" aria-controls="collapseStocksBranch">
+            <i class="fas fa-fw fa-headphones"></i>
+            <span>Ακουστικά</span>
         </a>
+        <div id="collapseStocksBranch" class="collapse <?= ($this->uri->segment(2) == 'stocks') ? 'show' : '' ?>" aria-labelledby="headingStocksBranch" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Διαχείριση:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Πλήρος Κατάλογος</a>
+                <a class="collapse-item <?= ($this->uri->segment(3) == 'create') ? 'active' : '' ?>" href="<?= base_url('admin/stocks/create') ?>">Νέο Ακουστικό</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Πωλήσεις Υποκαταστήματος:</h6>
+                <a class="collapse-item" href="#" onclick="selectBranchSales()">Πωλήσεις</a>
+                <a class="collapse-item" href="#" onclick="selectBranchCurrentMonth()">Τρέχων Μήνας</a>
+                <a class="collapse-item" href="#" onclick="selectBranchCurrentYear()">Τρέχον Έτος</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Service:</h6>
+                <a class="collapse-item" href="#" onclick="selectBranchService()">Service Υποκαταστήματος</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_stock_pending') ?>">Εκκρεμότητες</a>
+            </div>
+        </div>
     </li>
 
     <?php elseif ($group_id == 6): // Service Group (Lab) ?>
@@ -173,6 +199,26 @@ $group_id = $group->id;
         </a>
     </li>
 
+    <!-- Nav Item - Stocks (Lab - Service Access) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'stocks') ? 'active' : '' ?>">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStocksLab" aria-expanded="true" aria-controls="collapseStocksLab">
+            <i class="fas fa-fw fa-headphones"></i>
+            <span>Ακουστικά</span>
+        </a>
+        <div id="collapseStocksLab" class="collapse <?= ($this->uri->segment(2) == 'stocks') ? 'show' : '' ?>" aria-labelledby="headingStocksLab" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Διαχείριση:</h6>
+                <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Πλήρος Κατάλογος</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Service Όλων Υποκαταστημάτων:</h6>
+                <a class="collapse-item" href="#" onclick="selectAllBranchesService()">Service Λιβαδειάς</a>
+                <a class="collapse-item" href="#" onclick="selectAllBranchesService(4)">Service Θήβας</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_returns') ?>">Επιστροφές</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_defected') ?>">Ελαττωματικά</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Nav Item - Tasks (Lab) -->
     <li class="nav-item <?= ($this->uri->segment(2) == 'tasks') ? 'active' : '' ?>">
         <a class="nav-link" href="<?= base_url('admin/tasks') ?>">
@@ -188,6 +234,14 @@ $group_id = $group->id;
         <a class="nav-link" href="<?= base_url('admin/customers') ?>">
             <i class="fas fa-fw fa-users"></i>
             <span>Πελάτες</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Stocks (Other Groups - Basic Access) -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'stocks') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/stocks') ?>">
+            <i class="fas fa-fw fa-headphones"></i>
+            <span>Ακουστικά</span>
         </a>
     </li>
 

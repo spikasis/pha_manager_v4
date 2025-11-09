@@ -942,5 +942,79 @@ public function get_payments($stock_id) {
     echo json_encode($payments);
 }
 
+    /**
+     * Branch-specific methods for limited access users (Groups 2, 4, 5)
+     * These methods get the user's selling point automatically
+     */
+    
+    public function get_branch_sales() {
+        // Get user's selling point from session/database
+        $user_id = $this->ion_auth->get_user_id();
+        $user_group = $this->ion_auth->get_users_groups($user_id)->row();
+        
+        // Map group to selling point
+        $selling_point_map = [
+            2 => 2, // member -> Λιβαδειά
+            4 => 2, // Levadia -> Λιβαδειά  
+            5 => 4  // Thiva -> Θήβα
+        ];
+        
+        $selling_point = isset($selling_point_map[$user_group->id]) ? $selling_point_map[$user_group->id] : 2;
+        
+        // Redirect to existing method with user's selling point
+        redirect("admin/stocks/get_sold/{$selling_point}");
+    }
+    
+    public function get_branch_current_month() {
+        // Get user's selling point
+        $user_id = $this->ion_auth->get_user_id();
+        $user_group = $this->ion_auth->get_users_groups($user_id)->row();
+        
+        $selling_point_map = [
+            2 => 2, // member -> Λιβαδειά
+            4 => 2, // Levadia -> Λιβαδειά  
+            5 => 4  // Thiva -> Θήβα
+        ];
+        
+        $selling_point = isset($selling_point_map[$user_group->id]) ? $selling_point_map[$user_group->id] : 2;
+        
+        // Redirect to existing method
+        redirect("admin/stocks/get_sold_current_month/{$selling_point}");
+    }
+    
+    public function get_branch_current_year() {
+        // Get user's selling point
+        $user_id = $this->ion_auth->get_user_id();
+        $user_group = $this->ion_auth->get_users_groups($user_id)->row();
+        
+        $selling_point_map = [
+            2 => 2, // member -> Λιβαδειά
+            4 => 2, // Levadia -> Λιβαδειά  
+            5 => 4  // Thiva -> Θήβα
+        ];
+        
+        $selling_point = isset($selling_point_map[$user_group->id]) ? $selling_point_map[$user_group->id] : 2;
+        
+        // Redirect to existing method
+        redirect("admin/stocks/get_sold_current_year/{$selling_point}");
+    }
+    
+    public function get_branch_service() {
+        // Get user's selling point
+        $user_id = $this->ion_auth->get_user_id();
+        $user_group = $this->ion_auth->get_users_groups($user_id)->row();
+        
+        $selling_point_map = [
+            2 => 2, // member -> Λιβαδειά
+            4 => 2, // Levadia -> Λιβαδειά  
+            5 => 4  // Thiva -> Θήβα
+        ];
+        
+        $selling_point = isset($selling_point_map[$user_group->id]) ? $selling_point_map[$user_group->id] : 2;
+        
+        // Redirect to existing method
+        redirect("admin/stocks/get_service/{$selling_point}");
+    }
+
 
 }
