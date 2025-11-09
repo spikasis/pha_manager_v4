@@ -35,10 +35,10 @@ class Payment_reminders_model extends MY_Model {
             s.type,
             s.ha_price,
             s.eopyy,
-            s.date_sold,
+            s.day_out as date_sold,
             COALESCE(SUM(p.pay), 0) as total_paid,
             (s.ha_price - s.eopyy - COALESCE(SUM(p.pay), 0)) as debt_amount,
-            DATEDIFF(CURDATE(), s.date_sold) as days_since_sold
+            DATEDIFF(CURDATE(), s.day_out) as days_since_sold
         ');
         
         $this->db->from('customers c');
@@ -46,8 +46,8 @@ class Payment_reminders_model extends MY_Model {
         $this->db->join('selling_points sp', 'c.selling_point = sp.id', 'left');
         $this->db->join('pays p', 's.id = p.hearing_aid', 'left');
         
-        $this->db->where('s.date_sold IS NOT NULL');
-        $this->db->where('s.status', 'sold');
+        $this->db->where('s.day_out IS NOT NULL');
+        $this->db->where('s.status', 4); // 4 = sold status
         
         if ($selling_point_id) {
             $this->db->where('c.selling_point', $selling_point_id);
@@ -82,9 +82,9 @@ class Payment_reminders_model extends MY_Model {
             GROUP BY hearing_aid
         ) p', 's.id = p.hearing_aid', 'left');
         
-        $this->db->where('s.date_sold IS NOT NULL');
-        $this->db->where('s.status', 'sold');
-        $this->db->where('DATEDIFF(CURDATE(), s.date_sold) > 30');
+        $this->db->where('s.day_out IS NOT NULL');
+        $this->db->where('s.status', 4); // 4 = sold status
+        $this->db->where('DATEDIFF(CURDATE(), s.day_out) > 30');
         
         $this->db->group_by('c.selling_point');
         $this->db->having('total_debt > 0');
