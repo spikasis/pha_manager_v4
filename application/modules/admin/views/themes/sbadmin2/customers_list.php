@@ -79,48 +79,5 @@
 </div>
 <!-- End Page Content -->
 
-<script>
-$(document).ready(function() {
-    $('#customersTable').DataTable({
-        "responsive": true,
-        "pageLength": 10,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Όλα"]],
-        "searching": true,
-        "ordering": true,
-        "paging": true,
-        "info": true,
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Greek.json",
-            "search": "Αναζήτηση:",
-            "lengthMenu": "Εμφάνιση _MENU_ εγγραφών ανά σελίδα",
-            "info": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
-            "infoEmpty": "Εμφάνιση 0 έως 0 από 0 εγγραφές",
-            "infoFiltered": "(φιλτράρισμα από _MAX_ συνολικές εγγραφές)",
-            "paginate": {
-                "first": "Πρώτη",
-                "last": "Τελευταία", 
-                "next": "Επόμενη",
-                "previous": "Προηγούμενη"
-            },
-            "emptyTable": "Δεν υπάρχουν δεδομένα στον πίνακα",
-            "zeroRecords": "Δεν βρέθηκαν αποτελέσματα"
-        },
-        "columnDefs": [
-            { "orderable": false, "targets": [6] }, // Disable sorting for actions column
-            { "searchable": false, "targets": [6] }, // Disable search for actions column
-            { "width": "15%", "targets": [0] },      // Name column
-            { "width": "20%", "targets": [1] },      // Address column  
-            { "width": "10%", "targets": [2] },      // City column
-            { "width": "12%", "targets": [3] },      // Phone home
-            { "width": "12%", "targets": [4] },      // Phone mobile
-            { "width": "12%", "targets": [5] },      // First visit
-            { "width": "19%", "targets": [6] }       // Actions column
-        ],
-        "order": [[ 0, "asc" ]], // Default sort by name ascending
-        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-               '<"row"<"col-sm-12"tr>>' +
-               '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'
-    });
-});
-</script>
+
 </div><!-- /#page-wrapper -->

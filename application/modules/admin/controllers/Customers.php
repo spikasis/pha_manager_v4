@@ -46,11 +46,80 @@ class Customers extends Admin_Controller {
             'assets/sbadmin2/vendor/datatables/jquery.dataTables.min.js',
             'assets/sbadmin2/vendor/datatables/dataTables.bootstrap4.min.js'
         ];
+        
+        // Add DataTable initialization script
+        $data['custom_js'] = "
+        $(document).ready(function() {
+            console.log('Initializing DataTable...');
+            
+            // Check if table exists
+            if ($('#customersTable').length === 0) {
+                console.error('Table #customersTable not found!');
+                return;
+            }
+            
+            // Check if DataTables is loaded
+            if (typeof $.fn.DataTable === 'undefined') {
+                console.error('DataTables library not loaded');
+                return;
+            }
+            
+            try {
+                var table = $('#customersTable').DataTable({
+                    'responsive': true,
+                    'pageLength': 10,
+                    'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Όλα']],
+                    'searching': true,
+                    'ordering': true,
+                    'paging': true,
+                    'info': true,
+                    'autoWidth': false,
+                    'language': {
+                        'search': 'Αναζήτηση:',
+                        'lengthMenu': 'Εμφάνιση _MENU_ εγγραφών ανά σελίδα',
+                        'info': 'Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές',
+                        'infoEmpty': 'Εμφάνιση 0 έως 0 από 0 εγγραφές',
+                        'infoFiltered': '(φιλτράρισμα από _MAX_ συνολικές εγγραφές)',
+                        'paginate': {
+                            'first': 'Πρώτη',
+                            'last': 'Τελευταία', 
+                            'next': 'Επόμενη',
+                            'previous': 'Προηγούμενη'
+                        },
+                        'emptyTable': 'Δεν υπάρχουν δεδομένα στον πίνακα',
+                        'zeroRecords': 'Δεν βρέθηκαν αποτελέσματα',
+                        'loadingRecords': 'Φόρτωση...',
+                        'processing': 'Επεξεργασία...'
+                    },
+                    'columnDefs': [
+                        { 'orderable': false, 'targets': [6] }, // Disable sorting for actions column
+                        { 'searchable': false, 'targets': [6] }, // Disable search for actions column
+                        { 'width': '15%', 'targets': [0] },      // Name column
+                        { 'width': '20%', 'targets': [1] },      // Address column  
+                        { 'width': '10%', 'targets': [2] },      // City column
+                        { 'width': '12%', 'targets': [3] },      // Phone home
+                        { 'width': '12%', 'targets': [4] },      // Phone mobile
+                        { 'width': '12%', 'targets': [5] },      // First visit
+                        { 'width': '19%', 'targets': [6] }       // Actions column
+                    ],
+                    'order': [[ 0, 'asc' ]], // Default sort by name ascending
+                    'dom': '<\"row\"<\"col-sm-12 col-md-6\"l><\"col-sm-12 col-md-6\"f>>' +
+                           '<\"row\"<\"col-sm-12\"tr>>' +
+                           '<\"row\"<\"col-sm-12 col-md-5\"i><\"col-sm-12 col-md-7\"p>>'
+                });
+                
+                console.log('DataTable initialized successfully for table with ' + table.rows().count() + ' rows');
+                
+            } catch (error) {
+                console.error('Error initializing DataTable:', error);
+                console.log('Falling back to basic table functionality');
+            }
+        });";
     }
 
     
     public function index() {
-        $customers = $this->customer->get_all();
+        $customers = $this->customer->get_all('id, name, address, city, phone_home, phone_mobile, first_visit');
 
         $data['title'] = 'Πελατολόγιο Πλήρες' ;
         $data['customers'] = $customers;
@@ -235,7 +304,7 @@ class Customers extends Admin_Controller {
         $this->load->view($this->_container, $data);
     }
     public function get_interested() {
-        $customers = $this->customer->get_all('id, name, address, city, phone_home, first_visit','status <> 1');
+        $customers = $this->customer->get_all('id, name, address, city, phone_home, phone_mobile, first_visit','status <> 1');
 
         $data['customers'] = $customers;
         $data['title'] = 'Πελατολόγιο Ενδιαφερομένων' ;
@@ -287,7 +356,7 @@ class Customers extends Admin_Controller {
         $this->load->view($this->_container, $data);
     } 
     public function get_all_pays() {
-        $pays = $this->customer->get_all('id, name, address, city, phone_home, first_visit','debt_flag<>0');
+        $pays = $this->customer->get_all('id, name, address, city, phone_home, phone_mobile, first_visit','debt_flag<>0');
         
         $data['customers'] = $pays;
         $data['title'] = 'Πληρωμές' ;
@@ -324,7 +393,7 @@ class Customers extends Admin_Controller {
     } 
     
     public function view_doctors_customers($doctor, $year) {
-        $customers = $this->customer->get_all('', 'YEAR(first_visit) =' . $year . ' AND doctor =' . $doctor);
+        $customers = $this->customer->get_all('id, name, address, city, phone_home, phone_mobile, first_visit', 'YEAR(first_visit) =' . $year . ' AND doctor =' . $doctor);
         //$selling_point_name = $this->selling_point->get($selling_point);
         $doctor_name = $this->doctor->get($doctor);
         $doc_name = $doctor_name->doc_name;
