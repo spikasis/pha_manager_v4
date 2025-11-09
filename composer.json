@@ -1,0 +1,50 @@
+{
+    "name": "spikasis/pha-manager-v4",
+    "description": "Pikasis Hearing Aid Management System V4 - SBAdmin2 UI Enhanced",
+    "type": "project",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Spikasis",
+            "email": "info@pikasis.gr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.4",
+        "mpdf/mpdf": "^8.2",
+        "fzaninotto/faker": "^1.9"
+    },
+    "require-dev": {
+        "mikey179/vfsstream": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "application/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "*": true
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"if (!file_exists('application/logs')) mkdir('application/logs', 0755, true);\"",
+            "@php -r \"if (!file_exists('tmp_session')) mkdir('tmp_session', 0755, true);\"",
+            "@php -r \"echo 'PHA Manager V4 dependencies installed successfully!\\n';\""
+        ],
+        "post-update-cmd": [
+            "@php -r \"echo 'PHA Manager V4 dependencies updated successfully!\\n';\""
+        ]
+    },
+    "extra": {
+        "codeigniter": {
+            "version": "3.1.14-dev",
+            "framework-path": "system/"
+        }
+    }
+}
