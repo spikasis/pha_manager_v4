@@ -115,7 +115,45 @@ assets/sbadmin2/ (SB Admin 2 theme files)
 - **Caching**: Avoid unnecessary repeated database calls
 - **Sessions**: Proper session management with secure paths
 
-### 13. **DataTable Implementation Standard** ⚠️ MANDATORY PATTERN
+### 13. **PDF Export with mPDF 8.x** ⚠️ UPDATED STANDARD
+**For ALL PDF export functionality, use this pattern:**
+
+**Controller Implementation:**
+```php
+// ALWAYS use Chart model's print_doc method
+$html = $this->load->view('view_template', $data, true);
+$title = 'PDF Document Title';
+$this->chart->print_doc($html, $title);
+
+// NEVER use M_pdf library directly:
+// ❌ $this->m_pdf->pdf->WriteHTML($html); // OLD METHOD - DON'T USE
+// ❌ $this->m_pdf->pdf->Output(); // OLD METHOD - DON'T USE
+```
+
+**Required Setup in Controller:**
+```php
+class YourController extends Admin_Controller {
+    public $chart; // REQUIRED property declaration
+    
+    function __construct() {
+        parent::__construct();
+        $this->load->model('admin/chart'); // REQUIRED model loading
+    }
+}
+```
+
+**mPDF Version Detection:**
+- System automatically detects mPDF 8.x (from Composer) vs mPDF 6.0 (legacy)
+- Chart model handles version compatibility automatically
+- No manual version checking needed in controllers
+
+**Installation Status:**
+- ✅ mPDF 8.2.6 installed via Composer
+- ✅ Dual compatibility maintained for legacy systems
+- ✅ Automatic version detection in Chart.php model
+- ✅ Greek character support enabled
+
+### 14. **DataTable Implementation Standard** ⚠️ MANDATORY PATTERN
 **For ALL list views that use DataTables, follow this exact pattern:**
 
 **Controller Setup:**

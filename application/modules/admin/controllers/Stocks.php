@@ -2,6 +2,27 @@
 
 class Stocks extends Admin_Controller {
 
+    public $chart;
+    public $stock;
+    public $doctor;
+    public $customer;
+    public $manufacturer;
+    public $vendor;
+    public $stock_status;
+    public $ch_customer;
+    public $company;
+    public $pay;
+    public $selling_point;
+    public $ha_type;
+    public $service;
+    public $balance_view;
+    public $debt_view;
+    public $invoice_view;
+    public $model;
+    public $serie;
+    public $battery_type;
+    public $earlab;
+
     function __construct() {
         parent::__construct();
 

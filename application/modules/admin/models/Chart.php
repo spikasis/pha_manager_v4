@@ -401,6 +401,11 @@ class Chart extends MY_Model {
     
     function print_doc($html, $title)
     {       
+        // Load Composer autoloader for mPDF 8.x
+        if (file_exists(FCPATH . 'vendor/autoload.php')) {
+            require_once FCPATH . 'vendor/autoload.php';
+        }
+        
         // Check which mPDF version is available
         if (class_exists('\\Mpdf\\Mpdf')) {
             // mPDF 8.x (new version from vendor)
