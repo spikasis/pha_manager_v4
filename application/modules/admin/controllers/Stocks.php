@@ -466,134 +466,159 @@ public function update_day_out()
     }
     
     public function eggyisi_doc($id) {
-    
-        $stock = $this->stock->get($id);        
-        $customers = $this->customer->get($stock->customer_id);
-        $companies = $this->company->get(1);   
-        $ha_model = $this->model->get($stock->ha_model);
-        $ha_series = $this->serie->get($ha_model->series);
-        $manufacturers = $this->manufacturer->get($ha_series->brand);
-        $ha_type = $this->ha_type->get($ha_model->ha_type);
-        
-        $data['company'] = $companies;
-        $data['stock'] = $stock;
-        $data['manufacturer'] = $manufacturers;
-        $data['customer'] = $customers;
-        $data['ha_model'] = $this->model->get($ha_model->id);
-        $data['ha_series'] = $ha_series;
-        $data['type'] = $ha_type;
-        
-        $title = 'Εγγύηση Ακουστικού Βαρηκοΐας';
-        $html = $this->load->view('eggyisi_doc_final', $data, true);
-        $this->chart->print_doc($html, $title);
-        
-        
-    }
-
-    // Temporary debugging method - remove after fixing
-    public function debug_eggyisi_doc($id) {
-        echo "<h1>Debug eggyisi_doc for ID: $id</h1>";
-        
         try {
-            echo "<h2>1. Getting stock data...</h2>";
+            // Enhanced error handling with detailed logging
+            log_message('info', 'eggyisi_doc called for ID: ' . $id);
+            
+            // Get stock with error checking
             $stock = $this->stock->get($id);
             if (!$stock) {
-                echo "❌ Stock not found with ID: $id<br>";
+                log_message('error', 'Stock not found for ID: ' . $id);
+                show_error('Δεν βρέθηκε το ακουστικό με ID: ' . $id);
                 return;
             }
-            echo "✅ Stock found: Serial=" . $stock->serial . ", Customer ID=" . $stock->customer_id . "<br>";
             
-            echo "<h2>2. Getting customer data...</h2>";
+            // Get customer with error checking  
+            if (empty($stock->customer_id)) {
+                log_message('error', 'Stock has no customer_id: ' . $id);
+                show_error('Το ακουστικό δεν έχει συνδεδεμένο πελάτη.');
+                return;
+            }
+            
             $customers = $this->customer->get($stock->customer_id);
             if (!$customers) {
-                echo "❌ Customer not found with ID: " . $stock->customer_id . "<br>";
+                log_message('error', 'Customer not found for ID: ' . $stock->customer_id);
+                show_error('Δεν βρέθηκε ο πελάτης με ID: ' . $stock->customer_id);
                 return;
             }
-            echo "✅ Customer found: " . $customers->name . "<br>";
             
-            echo "<h2>3. Getting company data...</h2>";
+            // Get company
             $companies = $this->company->get(1);
-            echo "✅ Company loaded<br>";
-            
-            echo "<h2>4. Getting model data...</h2>";
-            if (empty($stock->ha_model)) {
-                echo "❌ Stock has no ha_model field or it's empty<br>";
+            if (!$companies) {
+                log_message('error', 'Company not found with ID: 1');
+                show_error('Δεν βρέθηκαν στοιχεία εταιρείας.');
                 return;
             }
+            
+            // Get model with error checking
+            if (empty($stock->ha_model)) {
+                log_message('error', 'Stock has no ha_model: ' . $id);
+                show_error('Το ακουστικό δεν έχει συνδεδεμένο μοντέλο.');
+                return;
+            }
+            
             $ha_model = $this->model->get($stock->ha_model);
             if (!$ha_model) {
-                echo "❌ Model not found with ID: " . $stock->ha_model . "<br>";
+                log_message('error', 'Model not found for ID: ' . $stock->ha_model);
+                show_error('Δεν βρέθηκε το μοντέλο με ID: ' . $stock->ha_model);
                 return;
             }
-            echo "✅ Model found: " . $ha_model->model . "<br>";
             
-            echo "<h2>5. Getting series data...</h2>";
+            // Get series with error checking
             if (empty($ha_model->series)) {
-                echo "❌ Model has no series field or it's empty<br>";
+                log_message('error', 'Model has no series: ' . $stock->ha_model);
+                show_error('Το μοντέλο δεν έχει συνδεδεμένη σειρά.');
                 return;
             }
+            
             $ha_series = $this->serie->get($ha_model->series);
             if (!$ha_series) {
-                echo "❌ Series not found with ID: " . $ha_model->series . "<br>";
+                log_message('error', 'Series not found for ID: ' . $ha_model->series);
+                show_error('Δεν βρέθηκε η σειρά με ID: ' . $ha_model->series);
                 return;
             }
-            echo "✅ Series found: " . $ha_series->series . "<br>";
             
-            echo "<h2>6. Getting manufacturer data...</h2>";
+            // Get manufacturer with error checking
             if (empty($ha_series->brand)) {
-                echo "❌ Series has no brand field or it's empty<br>";
+                log_message('error', 'Series has no brand: ' . $ha_model->series);
+                show_error('Η σειρά δεν έχει συνδεδεμένο κατασκευαστή.');
                 return;
             }
+            
             $manufacturers = $this->manufacturer->get($ha_series->brand);
             if (!$manufacturers) {
-                echo "❌ Manufacturer not found with ID: " . $ha_series->brand . "<br>";
+                log_message('error', 'Manufacturer not found for ID: ' . $ha_series->brand);
+                show_error('Δεν βρέθηκε ο κατασκευαστής με ID: ' . $ha_series->brand);
                 return;
             }
-            echo "✅ Manufacturer found: " . $manufacturers->name . "<br>";
             
-            echo "<h2>7. Getting type data...</h2>";
+            // Get type with error checking
             if (empty($ha_model->ha_type)) {
-                echo "❌ Model has no ha_type field or it's empty<br>";
+                log_message('error', 'Model has no ha_type: ' . $stock->ha_model);
+                show_error('Το μοντέλο δεν έχει συνδεδεμένο τύπο.');
                 return;
             }
+            
             $ha_type = $this->ha_type->get($ha_model->ha_type);
             if (!$ha_type) {
-                echo "❌ Type not found with ID: " . $ha_model->ha_type . "<br>";
+                log_message('error', 'Type not found for ID: ' . $ha_model->ha_type);
+                show_error('Δεν βρέθηκε ο τύπος με ID: ' . $ha_model->ha_type);
                 return;
             }
-            echo "✅ Type found: " . $ha_type->type . "<br>";
             
-            echo "<h2>8. Testing view loading...</h2>";
-            $data['company'] = $companies;
-            $data['stock'] = $stock;
-            $data['manufacturer'] = $manufacturers;
-            $data['customer'] = $customers;
-            $data['ha_model'] = $this->model->get($ha_model->id);
-            $data['ha_series'] = $ha_series;
-            $data['type'] = $ha_type;
+            // Prepare data array
+            $data = array(
+                'company' => $companies,
+                'stock' => $stock,
+                'manufacturer' => $manufacturers,
+                'customer' => $customers,
+                'ha_model' => $ha_model,
+                'ha_series' => $ha_series,
+                'type' => $ha_type
+            );
             
+            log_message('info', 'All data prepared successfully for eggyisi_doc ID: ' . $id);
+            
+            // Load view with error handling
             try {
                 $html = $this->load->view('eggyisi_doc_final', $data, true);
-                echo "✅ View loaded successfully. HTML length: " . strlen($html) . " characters<br>";
+                
+                if (empty($html)) {
+                    log_message('error', 'View returned empty HTML for eggyisi_doc ID: ' . $id);
+                    show_error('Η φόρτωση του template εγγύησης απέτυχε.');
+                    return;
+                }
+                
+                log_message('info', 'View loaded successfully, HTML length: ' . strlen($html));
+                
             } catch (Exception $e) {
-                echo "❌ View loading failed: " . $e->getMessage() . "<br>";
+                log_message('error', 'View loading failed for eggyisi_doc: ' . $e->getMessage());
+                show_error('Σφάλμα στη φόρτωση του template: ' . $e->getMessage());
                 return;
             }
             
-            echo "<h2>9. Testing Chart model...</h2>";
-            if (!isset($this->chart)) {
-                echo "❌ Chart model not loaded<br>";
-                return;
+            // Generate PDF with error handling
+            try {
+                $title = 'Εγγύηση Ακουστικού Βαρηκοΐας - ' . $stock->serial;
+                
+                // Check if chart model is available
+                if (!isset($this->chart)) {
+                    log_message('error', 'Chart model not loaded in eggyisi_doc');
+                    show_error('Η βιβλιοθήκη PDF δεν είναι διαθέσιμη. Επικοινωνήστε με τον διαχειριστή.');
+                    return;
+                }
+                
+                log_message('info', 'Calling print_doc for eggyisi_doc ID: ' . $id);
+                $this->chart->print_doc($html, $title);
+                
+            } catch (Exception $e) {
+                log_message('error', 'PDF generation failed for eggyisi_doc: ' . $e->getMessage());
+                show_error('Η δημιουργία του PDF απέτυχε: ' . $e->getMessage() . '<br>Παρακαλώ επικοινωνήστε με τον διαχειριστή.');
+            } catch (Error $e) {
+                log_message('error', 'PDF generation PHP error for eggyisi_doc: ' . $e->getMessage());
+                show_error('Σφάλμα στη δημιουργία PDF. Παρακαλώ επικοινωνήστε με τον διαχειριστή.');
             }
-            echo "✅ Chart model available<br>";
-            
-            echo "<h2>✅ All checks passed! The eggyisi_doc should work.</h2>";
             
         } catch (Exception $e) {
-            echo "❌ General error: " . $e->getMessage() . "<br>";
-            echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+            log_message('error', 'General error in eggyisi_doc: ' . $e->getMessage());
+            show_error('Γενικό σφάλμα: ' . $e->getMessage() . '<br>Παρακαλώ επικοινωνήστε με τον διαχειριστή.');
+        } catch (Error $e) {
+            log_message('error', 'PHP Error in eggyisi_doc: ' . $e->getMessage());
+            show_error('Σφάλμα PHP. Παρακαλώ επικοινωνήστε με τον διαχειριστή.');
         }
     }
+
+
         
     public function epistrofi_doc($id) {
     
