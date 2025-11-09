@@ -168,6 +168,34 @@
         // Clear the chart container
         $('#modal-bar-chart').empty();
     });
+
+    // Initialize DataTables for modern functionality
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Όλα"]],
+            "pageLength": 25,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "language": {
+                "lengthMenu": "Εμφάνιση _MENU_ εγγραφών ανά σελίδα",
+                "zeroRecords": "Δε βρέθηκαν εγγραφές",
+                "info": "Εμφανίζονται _START_ έως _END_ από _TOTAL_ εγγραφές",
+                "infoEmpty": "Εμφανίζονται 0 έως 0 από 0 εγγραφές",
+                "infoFiltered": "(φιλτραρισμένες από _MAX_ συνολικές εγγραφές)",
+                "search": "Αναζήτηση:",
+                "paginate": {
+                    "first": "Πρώτη",
+                    "last": "Τελευταία", 
+                    "next": "Επόμενη",
+                    "previous": "Προηγούμενη"
+                }
+            }
+        });
+    });
 </script>
 
 

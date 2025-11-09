@@ -68,20 +68,19 @@ $group_id = $group->id;
                 <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Πλήρος Κατάλογος</a>
                 <a class="collapse-item <?= ($this->uri->segment(3) == 'create') ? 'active' : '' ?>" href="<?= base_url('admin/stocks/create') ?>">Νέο Ακουστικό</a>
                 <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Πωλήσεις:</h6>
-                <a class="collapse-item" href="#" onclick="selectSellingPointSales()">Πωλήσεις ανά Υποκατάστημα</a>
-                <a class="collapse-item" href="#" onclick="selectCurrentMonthSales()">Τρέχων Μήνας</a>
-                <a class="collapse-item" href="#" onclick="selectCurrentYearSales()">Τρέχον Έτος</a>
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Service & Επισκευές:</h6>
-                <a class="collapse-item" href="#" onclick="selectServicePoint()">Service ανά Υποκατάστημα</a>
+                <h6 class="collapse-header">Κατάσταση Αποθήκης:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_onstock') ?>">Διαθέσιμα</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_demo/5') ?>">Demo</a>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_returns') ?>">Επιστροφές</a>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/get_defected') ?>">Ελαττωματικά</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_stockblack') ?>">Μαύρη Λίστα</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Οικονομικά:</h6>
+                <a class="collapse-item" href="#" onclick="viewDebtItems()">Χρέη</a>
+                <a class="collapse-item" href="#" onclick="selectStockOnDebt()">Χρέη ανά Έτος/Υποκατάστημα</a>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Ειδικές Αναφορές:</h6>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/get_all_pays') ?>">Με Χρέη</a>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/get_stock_pending') ?>">Εκκρεμότητες</a>
-                <a class="collapse-item" href="#" onclick="selectDoctorSales()">Πωλήσεις Γιατρού</a>
+                <a class="collapse-item" href="#" onclick="selectYearSelling('stocks')">Πωλήσεις ανά Έτος</a>
+                <a class="collapse-item" href="#" onclick="selectVendorYear()">Πωλήσεις Κατασκευαστή</a>
                 <a class="collapse-item" href="#" onclick="selectBarcodePending()">Barcodes Εκκρεμείς</a>
             </div>
         </div>
@@ -161,14 +160,14 @@ $group_id = $group->id;
                 <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Πλήρος Κατάλογος</a>
                 <a class="collapse-item <?= ($this->uri->segment(3) == 'create') ? 'active' : '' ?>" href="<?= base_url('admin/stocks/create') ?>">Νέο Ακουστικό</a>
                 <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Πωλήσεις Υποκαταστήματος:</h6>
-                <a class="collapse-item" href="#" onclick="selectBranchSales()">Πωλήσεις</a>
-                <a class="collapse-item" href="#" onclick="selectBranchCurrentMonth()">Τρέχων Μήνας</a>
-                <a class="collapse-item" href="#" onclick="selectBranchCurrentYear()">Τρέχον Έτος</a>
+                <h6 class="collapse-header">Κατάσταση Αποθήκης:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_onstock') ?>">Διαθέσιμα</a>
+                <a class="collapse-item" href="#" onclick="selectBranchDemo()">Demo Υποκαταστήματος</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_returns') ?>">Επιστροφές</a>
                 <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Service:</h6>
-                <a class="collapse-item" href="#" onclick="selectBranchService()">Service Υποκαταστήματος</a>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/get_stock_pending') ?>">Εκκρεμότητες</a>
+                <h6 class="collapse-header">Οικονομικά:</h6>
+                <a class="collapse-item" href="#" onclick="selectBranchDebt()">Χρέη Υποκαταστήματος</a>
+                <a class="collapse-item" href="#" onclick="selectBranchYearSales()">Πωλήσεις ανά Έτος</a>
             </div>
         </div>
     </li>
@@ -210,11 +209,10 @@ $group_id = $group->id;
                 <h6 class="collapse-header">Διαχείριση:</h6>
                 <a class="collapse-item <?= ($this->uri->segment(2) == 'stocks' && $this->uri->segment(3) == '') ? 'active' : '' ?>" href="<?= base_url('admin/stocks') ?>">Πλήρος Κατάλογος</a>
                 <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Service Όλων Υποκαταστημάτων:</h6>
-                <a class="collapse-item" href="#" onclick="selectAllBranchesService()">Service Λιβαδειάς</a>
-                <a class="collapse-item" href="#" onclick="selectAllBranchesService(4)">Service Θήβας</a>
+                <h6 class="collapse-header">Κατάσταση Αποθήκης:</h6>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_onstock') ?>">Διαθέσιμα</a>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_returns') ?>">Επιστροφές</a>
-                <a class="collapse-item" href="<?= base_url('admin/stocks/get_defected') ?>">Ελαττωματικά</a>
+                <a class="collapse-item" href="<?= base_url('admin/stocks/get_stockblack') ?>">Μαύρη Λίστα</a>
             </div>
         </div>
     </li>
