@@ -1,7 +1,6 @@
-<!-- Morris.js -->
+<!-- Morris.js CSS -->
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<!-- Note: Morris.js scripts will be loaded after jQuery in the footer -->
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
