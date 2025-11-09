@@ -348,42 +348,34 @@ public function get_all_acoustics_with_details() {
         $columns = $this->db->list_fields('stocks');
         $has_demo_type = in_array('demo_type', $columns);
         
-        // Build select query based on available columns
-        $select_fields = '
-            s.id,
-            s.serial, 
-            s.customer_id,
-            s.day_out, 
-            s.day_in,
-            s.on_test,
-            s.comments,
-            s.ha_price,
-            s.selling_point,
-            mo.model AS model_name, 
-            se.series AS series_name, 
-            ma.name AS manufacturer_name,
-            c.name AS customer_name,
-            CASE 
-                WHEN s.customer_id IS NOT NULL AND s.customer_id > 0 THEN 1 
-                ELSE 0 
-            END as in_use,
-            CASE 
-                WHEN s.day_out IS NOT NULL AND s.day_out != "0000-00-00" 
-                THEN DATEDIFF(CURDATE(), s.day_out) 
-                ELSE NULL 
-            END as days_out';
+        // Build select fields array
+        $this->db->select('s.id');
+        $this->db->select('s.serial'); 
+        $this->db->select('s.customer_id');
+        $this->db->select('s.day_out'); 
+        $this->db->select('s.day_in');
+        $this->db->select('s.on_test');
+        $this->db->select('s.comments');
+        $this->db->select('s.ha_price');
+        $this->db->select('s.selling_point');
+        $this->db->select('mo.model AS model_name'); 
+        $this->db->select('se.series AS series_name'); 
+        $this->db->select('ma.name AS manufacturer_name');
+        $this->db->select('c.name AS customer_name');
         
-        // Add demo_type only if column exists
+        // Add calculated fields using FALSE to prevent escaping
+        $this->db->select('(CASE WHEN s.customer_id IS NOT NULL AND s.customer_id > 0 THEN 1 ELSE 0 END) as in_use', FALSE);
+        $this->db->select('(CASE WHEN s.day_out IS NOT NULL AND s.day_out != "0000-00-00" THEN DATEDIFF(CURDATE(), s.day_out) ELSE NULL END) as days_out', FALSE);
+        
+        // Add demo_type based on availability
         if ($has_demo_type) {
-            $select_fields .= ', s.demo_type';
+            $this->db->select('s.demo_type');
         } else {
             // Fallback: simulate demo_type based on on_test
-            $select_fields .= ', CASE WHEN s.on_test = 1 THEN "trial" ELSE "replacement" END as demo_type';
+            $this->db->select('(CASE WHEN s.on_test = 1 THEN "trial" ELSE "replacement" END) as demo_type', FALSE);
         }
-        
-        $this->db->select($select_fields);
 
-        // Join tables
+        // Set up table joins
         $this->db->from('stocks s');
         $this->db->join('customers c', 's.customer_id = c.id', 'left');
         $this->db->join('models mo', 's.ha_model = mo.id', 'left');
