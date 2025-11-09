@@ -477,24 +477,162 @@ private function get_post_data() {
         $this->load->view($this->_container, $data);
     }
 
-    public function get_demo($status, $selling_point = null) {
-    // Εάν το $selling_point είναι null, τότε δεν το συμπεριλαμβάνουμε στο query
-    if ($selling_point === null) {
-        $data['stock_on_test_no'] = $this->stock->get_stocks_with_conditions($status, 0, null);
-        $data['stock_on_test_yes'] = $this->stock->get_stocks_with_conditions($status, 1, null);
-    } else {
-        $data['stock_on_test_no'] = $this->stock->get_stocks_with_conditions($status, 0, $selling_point);
-        $data['stock_on_test_yes'] = $this->stock->get_stocks_with_conditions($status, 1, $selling_point);
+    /**
+     * New improved demo management with clear categorization
+     * @param mixed $param Can be either status (for compatibility) or selling_point
+     */
+    public function get_demo($param = null) {
+        // Handle backwards compatibility - if param is 5 (demo status), treat as old call
+        $selling_point = null;
+        if ($param && $param != 5) {
+            $selling_point = $param;
+        }
+        // Get demo stocks by category and usage
+        $data['trial_available'] = $this->stock->get_demo_stocks('trial', 0, $selling_point);
+        $data['trial_in_use'] = $this->stock->get_demo_stocks('trial', 1, $selling_point);
+        $data['replacement_available'] = $this->stock->get_demo_stocks('replacement', 0, $selling_point);
+        $data['replacement_in_use'] = $this->stock->get_demo_stocks('replacement', 1, $selling_point);
+
+        // Load customers for dropdowns
+        $this->load->model('customer');
+        $data['customers'] = $this->customer->get_all();
+        
+        // Calculate totals for display
+        $data['total_trial'] = count($data['trial_available']) + count($data['trial_in_use']);
+        $data['total_replacement'] = count($data['replacement_available']) + count($data['replacement_in_use']);
+        $data['total_demo'] = $data['total_trial'] + $data['total_replacement'];
+
+        $data['title'] = 'Διαχείριση Demo Ακουστικών';
+        
+        // Use helper function to add common requirements
+        $data = $this->prepare_stock_list_data($data);
+        
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list_demo_new";
+        $this->load->view($this->_container, $data);
     }
-
-    // Φόρτωση των πελατών για το dropdown
-    $this->load->model('customer');
-    $data['customers'] = $this->customer->get_all();
-
-    $data['title'] = 'Προς Δοκιμή';
-    $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "stock_list_demo";
-    $this->load->view($this->_container, $data);
-}
+    
+    /**
+     * Legacy method - keep for backwards compatibility but redirect to new method
+     */
+    public function get_demo_legacy($status, $selling_point = null) {
+        // Redirect to new method
+        redirect('admin/stocks/get_demo/' . ($selling_point ?: ''));
+    }
+    
+    /**
+     * Update demo type via AJAX
+     */
+    public function update_demo_type() {
+        $stock_id = $this->input->post('stock_id');
+        $demo_type = $this->input->post('demo_type');
+        
+        if ($stock_id && in_array($demo_type, ['trial', 'replacement'])) {
+            $success = $this->stock->update_demo_type($stock_id, $demo_type);
+            
+            if ($success) {
+                $this->output->set_content_type('application/json');
+                $this->output->set_output(json_encode([
+                    'status' => 'success',
+                    'message' => 'Ο τύπος demo ενημερώθηκε επιτυχώς'
+                ]));
+            } else {
+                $this->output->set_status_header(500);
+                $this->output->set_content_type('application/json');
+                $this->output->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Σφάλμα κατά την ενημέρωση'
+                ]));
+            }
+        } else {
+            $this->output->set_status_header(400);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Μη έγκυρα δεδομένα'
+            ]));
+        }
+    }
+    
+    /**
+     * Assign customer to demo hearing aid
+     */
+    public function assign_customer() {
+        $stock_id = $this->input->post('stock_id');
+        $customer_id = $this->input->post('customer_id');
+        $day_out = $this->input->post('day_out');
+        $comments = $this->input->post('comments');
+        
+        if ($stock_id && $customer_id) {
+            $update_data = [
+                'customer_id' => $customer_id,
+                'day_out' => $day_out,
+                'comments' => $comments
+            ];
+            
+            $success = $this->stock->update($stock_id, $update_data);
+            
+            if ($success) {
+                $this->output->set_content_type('application/json');
+                $this->output->set_output(json_encode([
+                    'status' => 'success',
+                    'message' => 'Η ανάθεση στον πελάτη ολοκληρώθηκε επιτυχώς'
+                ]));
+            } else {
+                $this->output->set_status_header(500);
+                $this->output->set_content_type('application/json');
+                $this->output->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Σφάλμα κατά την ανάθεση'
+                ]));
+            }
+        } else {
+            $this->output->set_status_header(400);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Απαιτούνται όλα τα απαραίτητα πεδία'
+            ]));
+        }
+    }
+    
+    /**
+     * Return demo hearing aid (remove customer assignment)
+     */
+    public function return_demo() {
+        $stock_id = $this->input->post('stock_id');
+        
+        if ($stock_id) {
+            $update_data = [
+                'customer_id' => null,
+                'day_out' => null,
+                'on_test' => 0
+            ];
+            
+            $success = $this->stock->update($stock_id, $update_data);
+            
+            if ($success) {
+                $this->output->set_content_type('application/json');
+                $this->output->set_output(json_encode([
+                    'status' => 'success',
+                    'message' => 'Το ακουστικό επιστράφηκε επιτυχώς'
+                ]));
+            } else {
+                $this->output->set_status_header(500);
+                $this->output->set_content_type('application/json');
+                $this->output->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Σφάλμα κατά την επιστροφή'
+                ]));
+            }
+        } else {
+            $this->output->set_status_header(400);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Μη έγκυρο ID ακουστικού'
+            ]));
+        }
+    }
 
 
 // Update "on_test" status

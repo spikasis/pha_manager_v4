@@ -335,6 +335,107 @@ public function get_all_acoustics_with_details() {
         
         return $this->db->get()->result_array();
     }
+    
+    /**
+     * Get demo stocks with new categorization system
+     * @param string $demo_type 'trial' or 'replacement'
+     * @param int $in_use 0=available, 1=in use (has customer_id)
+     * @param int $selling_point optional selling point filter
+     * @return array
+     */
+    public function get_demo_stocks($demo_type = null, $in_use = null, $selling_point = null) {
+        // Select required fields with additional demo info
+        $this->db->select('
+            s.id,
+            s.serial, 
+            s.customer_id,
+            s.day_out, 
+            s.day_in,
+            s.on_test,
+            s.demo_type,
+            s.comments,
+            s.ha_price,
+            s.selling_point,
+            mo.model AS model_name, 
+            se.series AS series_name, 
+            ma.name AS manufacturer_name,
+            c.name AS customer_name,
+            CASE 
+                WHEN s.customer_id IS NOT NULL AND s.customer_id > 0 THEN 1 
+                ELSE 0 
+            END as in_use,
+            CASE 
+                WHEN s.day_out IS NOT NULL AND s.day_out != "0000-00-00" 
+                THEN DATEDIFF(CURDATE(), s.day_out) 
+                ELSE NULL 
+            END as days_out
+        ');
+
+        // Join tables
+        $this->db->from('stocks s');
+        $this->db->join('customers c', 's.customer_id = c.id', 'left');
+        $this->db->join('models mo', 's.ha_model = mo.id', 'left');
+        $this->db->join('series se', 'mo.series = se.id', 'left');
+        $this->db->join('manufacturers ma', 'se.brand = ma.id', 'left');
+
+        // Always filter for demo status (assuming status=5 is demo)
+        $this->db->where('s.status', 5);
+        
+        // Filter by demo_type if specified (temporary fallback to on_test until migration runs)
+        if ($demo_type !== null) {
+            // Check if demo_type column exists, otherwise use on_test as fallback
+            $columns = $this->db->list_fields('stocks');
+            if (in_array('demo_type', $columns)) {
+                $this->db->where('s.demo_type', $demo_type);
+            } else {
+                // Fallback logic: trial = on_test 1, replacement = on_test 0 or null
+                if ($demo_type === 'trial') {
+                    $this->db->where('s.on_test', 1);
+                } else {
+                    $this->db->group_start();
+                    $this->db->where('s.on_test', 0);
+                    $this->db->or_where('s.on_test IS NULL');
+                    $this->db->group_end();
+                }
+            }
+        }
+        
+        // Filter by usage status if specified
+        if ($in_use !== null) {
+            if ($in_use == 1) {
+                // In use: has customer assigned
+                $this->db->where('s.customer_id IS NOT NULL');
+                $this->db->where('s.customer_id >', 0);
+            } else {
+                // Available: no customer assigned
+                $this->db->group_start();
+                $this->db->where('s.customer_id IS NULL');
+                $this->db->or_where('s.customer_id', 0);
+                $this->db->group_end();
+            }
+        }
+        
+        // Filter by selling point if specified
+        if ($selling_point !== null) {
+            $this->db->where('s.selling_point', $selling_point);
+        }
+
+        // Order by serial for consistency
+        $this->db->order_by('s.serial', 'ASC');
+
+        return $this->db->get()->result_array();
+    }
+    
+    /**
+     * Update demo type for a stock item
+     * @param int $stock_id
+     * @param string $demo_type 'trial' or 'replacement'
+     * @return bool
+     */
+    public function update_demo_type($stock_id, $demo_type) {
+        $this->db->where('id', $stock_id);
+        return $this->db->update('stocks', ['demo_type' => $demo_type]);
+    }
 
 }
 
