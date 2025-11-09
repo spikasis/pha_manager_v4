@@ -422,113 +422,190 @@
 </div>
 
 <script>
-// Wait for page to fully load
 $(document).ready(function() {
-    // Small delay to ensure all assets are loaded
+    // Wait a bit more to ensure everything is loaded
     setTimeout(function() {
         initializeDemoTables();
-    }, 500);
+    }, 1000);
 });
 
 function initializeDemoTables() {
-    // Debug logging
-    console.log('🚀 Starting DataTables initialization...');
+    console.log('=== DEMO TABLES INITIALIZATION DEBUG ===');
     
-    // Check if DataTables is loaded
-    if (typeof $.fn.DataTable === 'undefined') {
-        console.error('❌ DataTables library is not loaded!');
-        alert('DataTables library failed to load. Please refresh the page.');
+    // Check jQuery
+    if (typeof $ === 'undefined') {
+        console.error('❌ jQuery is not loaded!');
         return;
     }
-    console.log('✅ DataTables library detected');
+    console.log('✅ jQuery version:', $.fn.jquery);
     
-    // Greek language configuration
-    const greekLanguage = {
-        "sEmptyTable": "Δεν βρέθηκαν δεδομένα στον πίνακα",
-        "sInfo": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
-        "sInfoEmpty": "Εμφάνιση 0 έως 0 από 0 εγγραφές",
-        "sInfoFiltered": "(φιλτράρισμα από _MAX_ συνολικές εγγραφές)",
-        "sLengthMenu": "Εμφάνιση _MENU_ εγγραφών",
-        "sLoadingRecords": "Φόρτωση...",
-        "sProcessing": "Επεξεργασία...",
-        "sSearch": "Αναζήτηση:",
-        "sZeroRecords": "Δεν βρέθηκαν εγγραφές που να ταιριάζουν",
-        "oPaginate": {
-            "sFirst": "Πρώτη",
-            "sLast": "Τελευταία",
-            "sNext": "Επόμενη",
-            "sPrevious": "Προηγούμενη"
-        }
-    };
+    // Check DataTables
+    if (typeof $.fn.DataTable === 'undefined') {
+        console.error('❌ DataTables library is not loaded!');
+        return;
+    }
+    console.log('✅ DataTables is available');
     
-    // DataTable configuration
-    const tableConfig = {
-        "language": greekLanguage,
-        "pageLength": 10,
-        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Όλα"]],
-        "order": [[0, "asc"]],
-        "columnDefs": [{
-            "targets": -1,
-            "orderable": false,
-            "searchable": false
-        }],
-        "responsive": true,
-        "searching": true,
-        "paging": true,
-        "info": true,
-        "autoWidth": false,
-        "processing": false,
-        "serverSide": false
-    };
-    
-    // Initialize each table with error handling
-    const tableIds = [
-        'trialAvailableTable',
-        'trialInUseTable', 
-        'replacementAvailableTable',
-        'replacementInUseTable'
+    // Debug: Check if tables exist in DOM
+    const tableSelectors = [
+        '#trialAvailableTable',
+        '#trialInUseTable', 
+        '#replacementAvailableTable',
+        '#replacementInUseTable'
     ];
     
-    let initializedCount = 0;
-    
-    tableIds.forEach(function(tableId) {
-        const $table = $('#' + tableId);
-        
-        if ($table.length > 0) {
-            try {
-                console.log(`🔧 Initializing ${tableId}...`);
-                
-                // Destroy existing DataTable if exists
-                if ($.fn.DataTable.isDataTable('#' + tableId)) {
-                    $table.DataTable().destroy();
-                }
-                
-                // Initialize new DataTable
-                $table.DataTable(tableConfig);
-                initializedCount++;
-                console.log(`✅ ${tableId} initialized successfully`);
-                
-            } catch (error) {
-                console.error(`❌ Error initializing ${tableId}:`, error);
-            }
-        } else {
-            console.warn(`⚠️ Table ${tableId} not found in DOM`);
-        }
+    console.log('🔍 Checking table existence:');
+    tableSelectors.forEach(selector => {
+        const exists = $(selector).length > 0;
+        const rows = exists ? $(selector + ' tbody tr').length : 0;
+        console.log(`  ${selector}: ${exists ? '✅ EXISTS' : '❌ MISSING'} (${rows} rows)`);
     });
     
-    console.log(`🎉 DataTables initialization complete. ${initializedCount}/${tableIds.length} tables initialized.`);
-    
-    // Handle tab switching
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
-        setTimeout(function() {
-            try {
-                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-                console.log('📏 Table columns adjusted for tab switch');
-            } catch (error) {
-                console.error('Error adjusting columns:', error);
+    // DataTable configuration - simplified for debugging
+    const config = {
+        "paging": true,
+        "pageLength": 10,
+        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Όλα"]],
+        "searching": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "language": {
+            "emptyTable": "Δεν βρέθηκαν δεδομένα",
+            "info": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
+            "infoEmpty": "Εμφάνιση 0 έως 0 από 0 εγγραφές",
+            "infoFiltered": "(φιλτράρισμα από _MAX_ συνολικές εγγραφές)",
+            "lengthMenu": "Εμφάνιση _MENU_ εγγραφών",
+            "loadingRecords": "Φόρτωση...",
+            "processing": "Επεξεργασία...",
+            "search": "Αναζήτηση:",
+            "zeroRecords": "Δεν βρέθηκαν εγγραφές",
+            "paginate": {
+                "first": "Πρώτη",
+                "last": "Τελευταία",
+                "next": "Επόμενη",
+                "previous": "Προηγούμενη"
             }
+        }
+    };
+    
+    // Initialize visible tables first (those in active tabs)
+    console.log('🚀 Starting table initialization...');
+    
+    // Step 1: Initialize active (visible) tables
+    initializeVisibleTables();
+    
+    // Step 2: Initialize hidden tables when their tabs are shown
+    setupTabHandlers();
+}
+
+function initializeVisibleTables() {
+    // Find currently active tabs
+    const activeTrialTab = $('#trialTabs .nav-link.active').attr('data-target');
+    const activeReplacementTab = $('#replacementTabs .nav-link.active').attr('data-target');
+    
+    console.log('🎯 Active tabs:', activeTrialTab, activeReplacementTab);
+    
+    // Initialize tables in active tabs
+    if (activeTrialTab === '#trial-available') {
+        initializeTable('trialAvailableTable');
+    } else if (activeTrialTab === '#trial-inuse') {
+        initializeTable('trialInUseTable');
+    }
+    
+    if (activeReplacementTab === '#replacement-available') {
+        initializeTable('replacementAvailableTable');
+    } else if (activeReplacementTab === '#replacement-inuse') {
+        initializeTable('replacementInUseTable');
+    }
+}
+
+function initializeTable(tableId) {
+    const $table = $('#' + tableId);
+    
+    if ($table.length === 0) {
+        console.warn(`⚠️ Table ${tableId} not found`);
+        return false;
+    }
+    
+    try {
+        // Destroy existing instance if it exists
+        if ($.fn.DataTable.isDataTable('#' + tableId)) {
+            console.log(`🔄 Destroying existing ${tableId} instance`);
+            $table.DataTable().destroy();
+        }
+        
+        console.log(`🔧 Initializing ${tableId}...`);
+        
+        const config = {
+            "paging": true,
+            "pageLength": 10,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Όλα"]],
+            "searching": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": false, // Disable responsive for now
+            "language": {
+                "emptyTable": "Δεν βρέθηκαν δεδομένα",
+                "info": "Εμφάνιση _START_ έως _END_ από _TOTAL_ εγγραφές",
+                "lengthMenu": "Εμφάνιση _MENU_ εγγραφών",
+                "search": "Αναζήτηση:",
+                "paginate": {
+                    "next": "Επόμενη",
+                    "previous": "Προηγούμενη"
+                }
+            },
+            "columnDefs": [{
+                "targets": -1,
+                "orderable": false
+            }]
+        };
+        
+        const dataTable = $table.DataTable(config);
+        console.log(`✅ ${tableId} initialized with ${dataTable.rows().count()} rows`);
+        return true;
+        
+    } catch (error) {
+        console.error(`❌ Failed to initialize ${tableId}:`, error);
+        return false;
+    }
+}
+
+function setupTabHandlers() {
+    // Handle tab switching for trial tabs
+    $('#trialTabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+        const target = $(e.target).attr('data-target');
+        console.log(`🔄 Trial tab switched to: ${target}`);
+        
+        setTimeout(function() {
+            if (target === '#trial-available') {
+                initializeTable('trialAvailableTable');
+            } else if (target === '#trial-inuse') {
+                initializeTable('trialInUseTable');
+            }
+            
+            // Adjust visible tables
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
         }, 100);
     });
+    
+    // Handle tab switching for replacement tabs
+    $('#replacementTabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+        const target = $(e.target).attr('data-target');
+        console.log(`🔄 Replacement tab switched to: ${target}`);
+        
+        setTimeout(function() {
+            if (target === '#replacement-available') {
+                initializeTable('replacementAvailableTable');
+            } else if (target === '#replacement-inuse') {
+                initializeTable('replacementInUseTable');
+            }
+            
+            // Adjust visible tables
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        }, 100);
+    });
+}
         
         // Customer assignment handlers
         $(document).on('click', '.assign-customer, .assign-replacement', function(e) {
