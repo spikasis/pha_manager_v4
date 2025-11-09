@@ -310,6 +310,15 @@ switch (ENVIRONMENT)
 
 /*
  * --------------------------------------------------------------------
+ * LOAD HMVC (Hierarchical Model-View-Controller)
+ * --------------------------------------------------------------------
+ *
+ * Enable modular structure with HMVC extension
+ */
+require APPPATH . 'third_party/MX/Modules.php';
+
+/*
+ * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
  * --------------------------------------------------------------------
  *
