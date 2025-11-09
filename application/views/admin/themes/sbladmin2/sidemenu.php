@@ -55,11 +55,15 @@ $is_admin = $CI->ion_auth->is_admin();
                 <h6 class="collapse-header">Διαχείριση:</h6>
                 <a class="collapse-item <?= uri_string() == 'admin/stock' ? 'active' : '' ?>" href="<?= base_url('admin/stock') ?>">Λίστα Ακουστικών</a>
                 <a class="collapse-item <?= uri_string() == 'admin/stock/create' ? 'active' : '' ?>" href="<?= base_url('admin/stock/create') ?>">Νέο Ακουστικό</a>
+                <?php if (true): // Show Demo options for all users ?>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Demo Ακουστικά:</h6>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/get_demo') ?>">Demo Γενικά</a>
                 <a class="collapse-item" href="#" onclick="selectBranchDemo()">Demo Υποκαταστήματος</a>
+                <?php if ($is_admin): ?>
                 <a class="collapse-item" href="<?= base_url('admin/stocks/manage_demo_types') ?>">Διαχείριση Demo Types</a>
+                <?php endif; ?>
+                <?php endif; ?>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Ειδικές Κατηγορίες:</h6>
                 <a class="collapse-item" href="<?= base_url('admin/stock/list_demo') ?>">Demo Ακουστικά (Παλιό)</a>
