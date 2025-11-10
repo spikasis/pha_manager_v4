@@ -1,3 +1,66 @@
+<style>
+/* Enhanced Task Management Styles */
+.progress {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+.panel-heading h4 {
+    margin: 0;
+    color: #333;
+}
+
+.checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 0;
+}
+
+.checkbox input[type="checkbox"] {
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.modal-dialog {
+    width: 90%;
+    max-width: 800px;
+}
+
+.progress-indicator {
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.alert-dismissible {
+    border-radius: 4px;
+}
+
+/* Status color indicators */
+.text-danger { color: #d9534f !important; }
+.text-warning { color: #f0ad4e !important; }
+.text-info { color: #5bc0de !important; }
+.text-primary { color: #337ab7 !important; }
+.text-success { color: #5cb85c !important; }
+
+/* Enhanced table styling */
+.table-striped > tbody > tr:hover {
+    background-color: #f5f5f5;
+}
+
+.fa {
+    margin-right: 5px;
+}
+</style>
+
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -147,11 +210,21 @@
                                 </td>
                                 <!-- Πρόοδος -->
                                 <td>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: <?= $task['progress']; ?>%;" aria-valuenow="<?= $task['progress']; ?>" aria-valuemin="0" aria-valuemax="100">
-                                            <?= round($task['progress']) ?>%
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar progress-bar-<?= $task['status_class'] ?>" 
+                                             role="progressbar" 
+                                             style="width: <?= $task['progress']; ?>%;" 
+                                             aria-valuenow="<?= $task['progress']; ?>" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100"
+                                             title="<?= $task['status_text'] ?>">
+                                            <strong><?= round($task['progress']) ?>%</strong>
+                                            <?php if ($task['progress'] > 20): ?>
+                                                <small class="d-block"><?= round($task['progress'] / 100 * 7) ?>/7 βήματα</small>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
+                                    <small class="text-muted"><?= $task['status_text'] ?></small>
                                 </td>
                                 
                             </tr>
@@ -311,63 +384,179 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm" method="POST">
+                    <!-- Hidden field για task ID -->
+                    <input type="hidden" id="taskId" name="id">
+                    
+                    <!-- Progress indicator για το modal -->
+                    <div class="progress-indicator" style="margin-bottom: 15px; display: none;">
+                        <div class="alert alert-info">
+                            <strong>Πρόοδος Εργασίας:</strong>
+                            <div class="progress" style="margin-top: 5px;">
+                                <div class="progress-bar" id="modalProgressBar" role="progressbar" style="width: 0%;">
+                                    <span id="modalProgressText">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                                         
                     <!-- Dropdown for selecting customer -->
                     <div class="form-group">
-                        <label for="taskClient" class="control-label">Πελάτης:</label>
-                        <select class="form-control" id="taskClient" name="client">
+                        <label for="taskClient" class="control-label">
+                            Πελάτης: <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control" id="taskClient" name="client" required>
                             <option value="">Επιλέξτε Πελάτη</option>
                             <?php foreach ($clients as $client): ?>
-                                <option value="<?= $client['id']; ?>"><?= $client['name']; ?></option>
+                                <option value="<?= $client['id']; ?>"><?= htmlspecialchars($client['name']); ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="invalid-feedback">
+                            Παρακαλώ επιλέξτε έναν πελάτη.
+                        </div>
                     </div>
 
-                    <!-- Dropdown for selecting Acoustic -->
-                    <div class="form-group">
-                        <label for="taskAcoustic" class="control-label">Ακουστικό R:</label>
-                        <select class="form-control" id="taskAcoustic" name="acoustic_id">
-                            <option value="">Επιλέξτε Ακουστικό</option>
-                               <?php foreach ($acoustics as $acoustic): ?>
-                            <option value="<?= $acoustic['id']; ?>" <?= $task['acoustic_id'] == $acoustic['id'] ? 'selected' : ''; ?>><?= $acoustic['serial'] . ' (' . $acoustic['ha_model'] . ')'; ?></option>
-                               <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <!-- Dropdown for selecting Second Acoustic -->
-                    <div class="form-group">
-                        <label for="taskAcoustic2" class="control-label">Ακουστικό L:</label>
-                        <select class="form-control" id="taskAcoustic2" name="acoustic_id_2">
-                            <option value="">Επιλέξτε Δεύτερο Ακουστικό</option>
-                               <?php foreach ($acoustics as $acoustic): ?>
-                            <option value="<?= $acoustic['id']; ?>" <?= $task['acoustic_id_2'] == $acoustic['id'] ? 'selected' : ''; ?>><?= $acoustic['serial'] . ' (' . $acoustic['ha_model'] . ')'; ?></option>
-                               <?php endforeach; ?>
-                        </select>
+                    <!-- Acoustic Selection Section -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Ακουστικά</h4>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Dropdown for selecting Right Acoustic -->
+                            <div class="form-group">
+                                <label for="taskAcoustic" class="control-label">
+                                    <i class="fa fa-volume-up"></i> Ακουστικό Δεξί (R):
+                                </label>
+                                <select class="form-control" id="taskAcoustic" name="acoustic_id">
+                                    <option value="">Επιλέξτε Ακουστικό Δεξί</option>
+                                    <?php foreach ($acoustics as $acoustic): ?>
+                                        <option value="<?= $acoustic['id']; ?>" <?= isset($task['acoustic_id']) && $task['acoustic_id'] == $acoustic['id'] ? 'selected' : ''; ?>>
+                                            <?= htmlspecialchars($acoustic['serial']) ?> 
+                                            (<?= htmlspecialchars($acoustic['ha_model']) ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            
+                            <!-- Dropdown for selecting Left Acoustic -->
+                            <div class="form-group">
+                                <label for="taskAcoustic2" class="control-label">
+                                    <i class="fa fa-volume-up"></i> Ακουστικό Αριστερό (L):
+                                </label>
+                                <select class="form-control" id="taskAcoustic2" name="acoustic_id_2">
+                                    <option value="">Επιλέξτε Ακουστικό Αριστερό</option>
+                                    <?php foreach ($acoustics as $acoustic): ?>
+                                        <option value="<?= $acoustic['id']; ?>" <?= isset($task['acoustic_id_2']) && $task['acoustic_id_2'] == $acoustic['id'] ? 'selected' : ''; ?>>
+                                            <?= htmlspecialchars($acoustic['serial']) ?> 
+                                            (<?= htmlspecialchars($acoustic['ha_model']) ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            
+                            <!-- Buttons για acoustic management -->
+                            <div class="form-group">
+                                <button type="button" class="btn btn-sm btn-info" onclick="loadAcoustics()">
+                                    <i class="fa fa-refresh"></i> Ανανέωση Λίστας
+                                </button>
+                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#addAcousticModal">
+                                    <i class="fa fa-plus"></i> Προσθήκη Νέου
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
 
-                    <!-- Checkbox for Scan -->
-                    <div class="form-group">
-                        <label for="taskScan" class="control-label">Scan:</label>
-                        <input type="checkbox" id="taskScan" name="scan" value="1">
-                    </div>
+                    <!-- Task Progress Steps -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Βήματα Εργασίας (7/7)</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- Checkbox for Scan -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskScan">
+                                                <input type="checkbox" id="taskScan" name="scan" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-search"></i> Scan
+                                            </label>
+                                        </div>
+                                    </div>
 
-                    <!-- Date for Order -->
-                    <div class="form-group">
-                        <label for="taskOrder" class="control-label">Παραγγελία:</label>
-                        <input type="date" class="form-control" id="taskOrder" name="order">
-                    </div>
+                                    <!-- Checkbox for Gnomateusi -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskGnomateusi">
+                                                <input type="checkbox" id="taskGnomateusi" name="gnomateusi" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-stethoscope"></i> Γνωμάτευση
+                                            </label>
+                                        </div>
+                                    </div>
 
-                    <!-- Checkbox for Gnomateusi -->
-                    <div class="form-group">
-                        <label for="taskGnomateusi" class="control-label">Γνωμάτευση:</label>
-                        <input type="checkbox" id="taskGnomateusi" name="gnomateusi" value="1">
-                    </div>
+                                    <!-- Checkbox for Tel Rdv -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskTelRdv">
+                                                <input type="checkbox" id="taskTelRdv" name="tel_rdv" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-phone"></i> Τηλ Ραντεβού
+                                            </label>
+                                        </div>
+                                    </div>
 
-                    <!-- Checkbox for Tel Rdv -->
-                    <div class="form-group">
-                        <label for="taskTelRdv" class="control-label">Τηλ Ραντεβού:</label>
-                        <input type="checkbox" id="taskTelRdv" name="tel_rdv" value="1">
+                                    <!-- Checkbox for Ektelesi -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskEktelesi">
+                                                <input type="checkbox" id="taskEktelesi" name="ektelesi" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-cogs"></i> Εκτέλεση
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <!-- Date for Order -->
+                                    <div class="form-group">
+                                        <label for="taskOrder" class="control-label">
+                                            <i class="fa fa-calendar"></i> Ημ/νία Παραγγελίας:
+                                        </label>
+                                        <input type="date" class="form-control" id="taskOrder" name="order" onchange="updateModalProgress()">
+                                    </div>
+
+                                    <!-- Checkbox for Signatures -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskSignatures">
+                                                <input type="checkbox" id="taskSignatures" name="signatures" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-edit"></i> Υπογραφές
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Checkbox for Receipt -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskReceipt">
+                                                <input type="checkbox" id="taskReceipt" name="receipt" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-file-text"></i> Απόδειξη
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Checkbox for Arxeio -->
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="taskArxeio">
+                                                <input type="checkbox" id="taskArxeio" name="arxeio" value="1" onchange="updateModalProgress()">
+                                                <i class="fa fa-archive"></i> Αρχείο
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
 
                     <!-- Checkbox for Ektelesi -->
@@ -728,6 +917,9 @@ $('.viewAcousticBtn').on('click', function(e) {
             success: function(response) {
                 var backgroundColor = isChecked ? '#d4edda' : '#f8d7da';
                 $('input[data-id="' + taskId + '"][data-field="' + field + '"]').closest('td').css('background-color', backgroundColor);
+                
+                // Update progress bar in real-time
+                updateTaskProgress(taskId);
             },
             error: function(xhr, status, error) {
                 console.error(error);
@@ -736,7 +928,56 @@ $('.viewAcousticBtn').on('click', function(e) {
         });
     });
 
-    // Update date fields (e.g., day_in, paradosi)
+    // Function to calculate and update progress bar
+    function updateTaskProgress(taskId) {
+        var totalSteps = 7;
+        var completedSteps = 0;
+        
+        // Count completed checkboxes for this task
+        $('input[data-id="' + taskId + '"]').each(function() {
+            var field = $(this).data('field');
+            
+            if (field === 'order') {
+                // For date fields, check if value is not empty and not '0000-00-00'
+                var value = $(this).val();
+                if (value && value !== '0000-00-00') {
+                    completedSteps++;
+                }
+            } else if ($(this).is(':checkbox') && $(this).is(':checked')) {
+                // For checkboxes, check if they are checked
+                completedSteps++;
+            }
+        });
+        
+        var progress = Math.round((completedSteps / totalSteps) * 100);
+        
+        // Update progress bar
+        var progressBar = $('tr').find('input[data-id="' + taskId + '"]').first().closest('tr').find('.progress-bar');
+        progressBar.css('width', progress + '%');
+        progressBar.attr('aria-valuenow', progress);
+        progressBar.find('strong').text(progress + '%');
+        
+        // Update steps indicator
+        if (progress > 20) {
+            progressBar.find('small').text(completedSteps + '/7 βήματα');
+        }
+        
+        // Update progress bar color based on progress
+        progressBar.removeClass('progress-bar-danger progress-bar-warning progress-bar-info progress-bar-primary progress-bar-success');
+        if (progress == 0) {
+            progressBar.addClass('progress-bar-danger');
+        } else if (progress < 30) {
+            progressBar.addClass('progress-bar-warning');
+        } else if (progress < 70) {
+            progressBar.addClass('progress-bar-info');
+        } else if (progress < 100) {
+            progressBar.addClass('progress-bar-primary');
+        } else {
+            progressBar.addClass('progress-bar-success');
+        }
+    }
+
+    // Update date fields (e.g., order date)
     $('.updateDate').on('change', function() {
         var taskId = $(this).data('id');
         var field = $(this).data('field');
@@ -756,6 +997,15 @@ $('.viewAcousticBtn').on('click', function(e) {
             },
             success: function(response) {
                 console.log('Η ημερομηνία ενημερώθηκε επιτυχώς για πεδίο ' + field);
+                
+                // Update background color based on date value
+                var backgroundColor = (dateValue && dateValue !== '0000-00-00') ? '#d4edda' : '#f8d7da';
+                $('input[data-id="' + taskId + '"][data-field="' + field + '"]').closest('td').css('background-color', backgroundColor);
+                
+                // Update progress bar for date fields that count towards progress
+                if (field === 'order') {
+                    updateTaskProgress(taskId);
+                }
             },
             error: function(xhr, status, error) {
                 console.error(error);
@@ -913,4 +1163,76 @@ $(document).ready(function() {
         $('#commentsModal').modal('show'); // Show the modal
     });
 });
+
+// Function to update modal progress in real-time
+function updateModalProgress() {
+    var completedSteps = 0;
+    var totalSteps = 7;
+    
+    // Count completed checkboxes
+    $('#taskForm input[type="checkbox"]:checked').each(function() {
+        completedSteps++;
+    });
+    
+    // Check if order date is filled
+    var orderDate = $('#taskOrder').val();
+    if (orderDate && orderDate !== '0000-00-00') {
+        completedSteps++;
+    }
+    
+    var progress = Math.round((completedSteps / totalSteps) * 100);
+    
+    // Update progress bar in modal
+    $('#modalProgressBar').css('width', progress + '%');
+    $('#modalProgressBar').attr('aria-valuenow', progress);
+    $('#modalProgressText').text(progress + '% (' + completedSteps + '/' + totalSteps + ' βήματα)');
+    
+    // Update progress bar color
+    $('#modalProgressBar').removeClass('progress-bar-danger progress-bar-warning progress-bar-info progress-bar-primary progress-bar-success');
+    if (progress == 0) {
+        $('#modalProgressBar').addClass('progress-bar-danger');
+    } else if (progress < 30) {
+        $('#modalProgressBar').addClass('progress-bar-warning');
+    } else if (progress < 70) {
+        $('#modalProgressBar').addClass('progress-bar-info');
+    } else if (progress < 100) {
+        $('#modalProgressBar').addClass('progress-bar-primary');
+    } else {
+        $('#modalProgressBar').addClass('progress-bar-success');
+    }
+    
+    // Show/hide progress indicator
+    if (progress > 0) {
+        $('.progress-indicator').show();
+    }
+}
+
+// Function to load/refresh acoustics
+function loadAcoustics() {
+    $.ajax({
+        url: '<?= base_url('admin/tasks/get_acoustics') ?>',
+        method: 'GET',
+        success: function(response) {
+            var acoustics = JSON.parse(response);
+            var options = '<option value="">Επιλέξτε Ακουστικό</option>';
+            
+            acoustics.forEach(function(acoustic) {
+                options += '<option value="' + acoustic.id + '">' + 
+                          acoustic.serial + ' (' + acoustic.ha_model + ')</option>';
+            });
+            
+            $('#taskAcoustic, #taskAcoustic2').html(options);
+            
+            // Show success message
+            $('<div class="alert alert-success alert-dismissible" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">' +
+              '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+              '<strong>Επιτυχία!</strong> Η λίστα ακουστικών ανανεώθηκε.' +
+              '</div>').appendTo('body').delay(3000).fadeOut();
+        },
+        error: function() {
+            alert('Σφάλμα κατά την ανανέωση της λίστας ακουστικών.');
+        }
+    });
+}
+
 </script>

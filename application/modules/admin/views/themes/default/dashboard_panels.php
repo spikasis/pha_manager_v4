@@ -18,10 +18,19 @@
                 <?php foreach($tasks as $task): ?>
                     <a href="<?= base_url('admin/customers/view/' . $task['client']) ?>" class="list-group-item">
                         <i class="fa fa-tasks fa-fw"></i> <?= htmlspecialchars($task['customer_name']) ?>
+                        <span class="badge pull-right"><?= $task['status_text'] ?></span>
                     </a>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: <?= $task['progress'] ?>%;">
-                            <?= round($task['progress']) ?>%
+                        <div class="progress-bar progress-bar-<?= $task['status_class'] ?>" 
+                             role="progressbar" 
+                             style="width: <?= $task['progress'] ?>%;"
+                             aria-valuenow="<?= $task['progress'] ?>" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            <?= round($task['progress']) ?>% 
+                            <?php if ($task['progress'] > 0): ?>
+                                <small>(<?= $task['progress'] == 100 ? '✓' : round($task['progress'] / 100 * 7) . '/7' ?>)</small>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>

@@ -327,5 +327,34 @@ public function filtered_tasks($selling_point = null) {
     $this->load->view($this->_container, $data);
 }
 
+// Get all acoustics for AJAX requests
+public function get_acoustics() {
+    // Ensure this is an AJAX request
+    if (!$this->input->is_ajax_request()) {
+        show_404();
+        return;
+    }
+    
+    // Get all available acoustics
+    $acoustics = $this->stock->get_all();
+    
+    // Filter only necessary fields for dropdown
+    $filtered_acoustics = [];
+    foreach ($acoustics as $acoustic) {
+        $filtered_acoustics[] = [
+            'id' => $acoustic['id'],
+            'serial' => $acoustic['serial'],
+            'ha_model' => $acoustic['ha_model'] ?? 'Άγνωστο μοντέλο',
+            'manufacturer' => $acoustic['manufacturer'] ?? '',
+            'status' => $acoustic['status'] ?? 'available'
+        ];
+    }
+    
+    // Set JSON header and return data
+    header('Content-Type: application/json');
+    echo json_encode($filtered_acoustics);
+    exit();
+}
+
 
 }

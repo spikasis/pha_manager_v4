@@ -63,9 +63,9 @@ class Task extends MY_Model {
             $totalSteps = 7; // Συνολικός αριθμός βημάτων
             $completedSteps = 0;
 
-            // Ελέγχουμε ποια βήματα έχουν ολοκληρωθεί
+            // Ελέγχουμε ποια βήματα έχουν ολοκληρωθεί (με proper date validation)
             if ($task['scan']) $completedSteps++;
-            if ($task['order']) $completedSteps++;
+            if (!empty($task['order']) && $task['order'] !== '0000-00-00') $completedSteps++;
             if ($task['tel_rdv']) $completedSteps++;
             if ($task['ektelesi']) $completedSteps++;
             if ($task['signatures']) $completedSteps++;
@@ -74,7 +74,25 @@ class Task extends MY_Model {
             
             // Υπολογισμός ποσοστού πρόοδου
             $task['progress'] = round(($completedSteps / $totalSteps) * 100, 2); // Πρόοδος σε %
-    }
+            
+            // Προσθήκη status indicator για καλύτερο visualization
+            if ($task['progress'] == 0) {
+                $task['status_class'] = 'danger'; // Κόκκινο
+                $task['status_text'] = 'Δεν έχει ξεκινήσει';
+            } elseif ($task['progress'] < 30) {
+                $task['status_class'] = 'warning'; // Κίτρινο
+                $task['status_text'] = 'Αρχικά στάδια';
+            } elseif ($task['progress'] < 70) {
+                $task['status_class'] = 'info'; // Μπλε
+                $task['status_text'] = 'Σε εξέλιξη';
+            } elseif ($task['progress'] < 100) {
+                $task['status_class'] = 'primary'; // Μπλε σκούρο
+                $task['status_text'] = 'Σχεδόν έτοιμο';
+            } else {
+                $task['status_class'] = 'success'; // Πράσινο
+                $task['status_text'] = 'Ολοκληρωμένο';
+            }
+        }
         
         return $tasks; // Επιστρέφει τη λίστα με τα tasks
     }
