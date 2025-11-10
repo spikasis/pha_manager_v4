@@ -147,6 +147,33 @@
                         Ανοιχτές επισκευές: <span class="badge"><?= count($services) ?></span>
                     </a>
                 </li>
+                <!-- Καθυστερημένες Επισκευές Notification -->
+                <li class="dropdown" id="delayed-services-notification">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Καθυστερημένες Επισκευές">
+                        <i class="fa fa-exclamation-triangle text-danger"></i> 
+                        Καθυστερημένες: <span class="badge badge-danger" id="delayed-services-count">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts" style="width: 350px;">
+                        <li class="dropdown-header">
+                            <i class="fa fa-exclamation-triangle"></i> Επισκευές με Καθυστέρηση
+                        </li>
+                        <li class="divider"></li>
+                        <div id="delayed-services-list">
+                            <!-- Θα φορτωθεί με AJAX -->
+                        </div>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center">
+                                <a href="<?= base_url('admin/services/delayed') ?>" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-eye"></i> Προβολή Όλων
+                                </a>
+                                <button class="btn btn-sm btn-default" id="refresh-delayed-services">
+                                    <i class="fa fa-refresh"></i> Ανανέωση
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     <a href="<?= base_url('admin/earlabs/list_open/' . $sp_id) ?>" class="btn hidden-print">
                         Ανοιχτές κατασκευές: <span class="badge"><?= count($moulds) ?></span>
@@ -184,254 +211,95 @@
                     </ul>
                 </li>
             </ul>            
-            <div class="navbar-default sidebar" role="navigation">                
-                <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </li>
-                        
-                        <li>
-                            <a href="#" data-toggle="collapse" data-target="#statistics" aria-expanded="false">
-                                <i class="fa fa-line-chart fa-fw"></i> Statistics <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="statistics">
-                                <li><a href="<?= base_url('admin/dashboard') ?>"><i class="fa fa-bar-chart-o fa-fw"></i> General</a></li>
-                                <li  class="bg-info"><a href="<?= base_url('admin/tasks/') ?>" class="btn hidden-print"><i class="fa fa-tasks fa-fw"></i>Όλες οι Εργασίες</a></li> 
-                    <?php if ($this->is_admin): ?>
-                                <li>
-                                    <a href="#" data-toggle="collapse" data-target="#admin-stats" aria-expanded="false">
-                                        <i class="fa fa-line-chart fa-fw"></i> Admin Stats <span class="fa arrow"></span>
-                                    </a>
-                                    <ul class="nav nav-second-level collapse" id="admin-stats">
-                                        <li>
-                                            <a href="#" data-toggle="collapse" data-target="#sales-stats" aria-expanded="false">
-                                                <i class="fa fa-line-chart fa-fw"></i> Στατιστικά Πωλήσεων <span class="fa arrow"></span>
-                                            </a>
-                                            <ul class="nav nav-third-level collapse" id="sales-stats">
-                                    <?php
-                                    $year = 2014;
-                                    $year_now = date('Y');
-                                    for ($year; $year <= $year_now; $year++) { ?>
-                                                <li>
-                                                    <a href="<?= base_url('admin/charts/sales_charts/' . $year) ?>">
-                                                        <i class="fa fa-bar-chart fa-fw"></i> Sales <?php echo $year ?>
-                                                    </a>
-                                                </li>
-                                    <?php } ?>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="<?= base_url('admin/services/service_stats') ?>">
-                                                <i class="fa fa-support fa-fw"></i> Στατιστικα Μοντέλων
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="<?= base_url('admin/service_tickets/service_stats/1') ?>" data-toggle="collapse" data-target="#repair-stats" aria-expanded="false">
-                                                <i class="fa fa-line-chart fa-fw"></i> Στατιστικά Επισκευών <span class="fa arrow"></span>
-                                            </a>                                            
-                                        </li>
-                                        
-                                        <!--start of ChatGPT Addition -->
-                                        <li>
-                                            <a href="#" data-toggle="collapse" data-target="#store-stats" aria-expanded="false">                                                
-                                                <i class="fa fa-line-chart fa-fw"></i> Στατιστικά Καταστημάτων <span class="fa arrow"></span>
-                                            </a>
-                                            <ul class="nav nav-third-level collapse" id="store-stats">
-                                            <?php
-                                                $this->load->model(array('admin/selling_point'));
-                                                $selling_point = $this->selling_point->get_all('id, city');
-                                                foreach ($selling_point as $list): ?>
-                                                <li>
-                                                    <a href="<?= base_url('admin/dashboard/' . $list['id']) ?>">
-                                                        <i class="fa fa-pie-chart fa-fw"></i> <?php echo $list['city'] ?>
-                                                    </a>
-                                                </li>
-                                            <?php endforeach; ?>
-                                                
-                                                <!-- Adding Overall Yearly Statistics -->
-                                                <li>
-                                                    <a href="<?= base_url('admin/dashboard/selling_point') ?>">
-                                                        <i class="fa fa-bar-chart fa-fw"></i> Συνολικά Στατιστικά Έτους
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li><!--end of ChatGPT Addition -->                                        
-                                    </ul>
-                                </li>
-                    <?php endif; ?>
-                            </ul>
-                        </li>                                               
-                        <li class="bg-success">
-                            <a href="#" data-toggle="collapse" data-target="#new-entries" aria-expanded="false">
-                                <i class="fa fa-plus fa-fw"></i> Νέες Καταχωρήσεις <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="new-entries">
-                                <li><a href="<?= base_url('admin/customers/create') ?>"><i class="fa fa-plus fa-fw"></i> Πελάτης</a></li>
-                                <li><a href="<?= base_url('admin/offers/create') ?>"><i class="fa fa-plus fa-fw"></i> Προσφορά</a></li>
-                                <li><a  href="<?= base_url('admin/stocks/create') ?>" ><i class="fa fa-plus fa-fw"></i>Ακουστικό</a></li>
-                                <li><a  href="<?= base_url('admin/services/create') ?>"><i class="fa fa-plus fa-fw"></i>Επισκευή</a></li>
-                                <li><a  href="<?= base_url('admin/earlabs/create') ?>" ><i class="fa fa-plus fa-fw"></i>Κατασκευή</a></li>
-                                <li><a href="#" class="btn-hover"><i class="fa fa-plus fa-fw"></i>Μοντέλα Ακουστικών</a>
-                                    <ul class="nav nav-third-level">                                          
-                                        <li><a  href="<?= base_url('admin/models') ?>"><i class="fa fa-eye fa-fw"></i>Προβολή Μοντέλων</a></li>
-                                        <li><a  href="<?= base_url('admin/models/create') ?>"><i class="fa fa-plus fa-fw"></i>Προσθήκη Μοντέλου</a></li>
-                                        <?php if ($this->is_admin): ?>
-                                        <li><a  href="<?= base_url('admin/series') ?>" ><i class="fa fa-eye fa-fw"></i>Προβολή Σειρών Ακουστικών</a></li>
-                                        <li><a  href="<?= base_url('admin/series/create') ?>" ><i class="fa fa-plus fa-fw"></i>Προσθήκη Σειράς Ακουστικών</a></li>
-                                        <?php endif;?>
-                                    </ul>  
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="bg-warning">
-                            <a href="#" data-toggle="collapse" data-target="#customers-menu">
-                                <i class="fa fa-android fa-fw"></i> Πελάτες<span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="customers-menu">
-                                <li><a href="<?= base_url('admin/customers/get_sold/' . $sp_id) ?>"><i class="fa fa-check-circle fa-fw"></i> Πωλήσεις <?php echo $this->logged_in_name; ?></a></li>
-                                <li><a href="<?= base_url('admin/customers/get_interested_sp/' . $sp_id) ?>"><i class="fa fa-openid fa-fw"></i> Ενδιαφερόμενοι <?php echo $this->logged_in_name; ?></a></li>
-                                <li><a href="<?= base_url('admin/customers/') ?>"><i class="fa fa-check-circle fa-fw"></i> Πλήρης Λίστα Πελατών</a></li>
-                                <li><a href="<?= base_url('admin/customers/get_onhold/' . $sp_id) ?>"><i class="fa fa-pause fa-fw"></i> Σε Εκκρεμότητα</a></li>
-                                <li><a href="<?= base_url('admin/offers') ?>"><i class="fa fa-dollar fa-fw"></i> Προσφορές</a></li>
-                            </ul>
-                        </li>
-                        
-                        <li class="bg-info">
-                            <a href="#" data-toggle="collapse" data-target="#acousticMenu">
-                                <i class="fa fa-headphones fa-fw"></i> Ακουστικά <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="acousticMenu">
-                                <li><a href="<?= base_url('admin/stocks/list_sp/') ?>"><i class="fa fa-check fa-fw"></i> Ακουστικά Πλήρης Λίστα</a></li>
-                                <li><a href="<?= base_url('admin/stocks/list_sp/' . $sp_id ) ?>"><i class="fa fa-check fa-fw"></i> Ακουστικά <?= $this->logged_in_name; ?></a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_demo/5/' . $sp_id) ?>"><i class="fa fa-try fa-fw"></i> Demo</a></li>
-                                <li><a href="<?= base_url('admin/stocks/view_free_barcodes/' . $year_this) ?>"><i class="fa fa-barcode fa-fw"></i> Ελέυθερα BC</a></li>
-                                
-                            <?php if ($this->is_admin): ?>
-                                <li><a href="<?= base_url('admin/stocks/get_onstock') ?>"><i class="fa fa-stack-overflow fa-fw"></i> Διαθέσιμα Αποθήκης</a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_available_serial') ?>"><i class="fa fa-barcode fa-fw"></i> Serials/BC (Διαθέσιμα)</a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_stockblack') ?>"><i class="fa fa-outdent fa-fw"></i> Black</a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_returns') ?>"><i class="fa fa-recycle fa-fw"></i> Επιστροφές</a></li>
-                            <?php endif; ?>
-                                
-                            <?php if ($this->logged_id == 20): ?>
-                                <li><a href="<?= base_url('admin/stocks/list_sp/') ?>"><i class="fa fa-check fa-fw"></i> Ακουστικά Πλήρης Λίστα</a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_onstock') ?>"><i class="fa fa-bookmark fa-fw"></i> Διαθέσιμα Αποθήκης</a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_available_serial') ?>"><i class="fa fa-barcode fa-fw"></i> Serials/BC (Διαθέσιμα)</a></li>
-                                <li><a href="<?= base_url('admin/stocks/get_returns') ?>"><i class="fa fa-barcode fa-fw"></i> Επιστροφές</a></li>
-                            <?php endif; ?>
-                            </ul>
-                        </li>
-                        <li class="bg-danger">
-                            <a href="#" data-toggle="collapse" data-target="#labMenu">
-                                <i class="fa fa-wrench fa-fw"></i> Εργαστήριο <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="labMenu">
-                                <li><a href="<?= base_url('admin/services/list_sp/' . $sp_id) ?>"><i class="fa fa-support fa-fw"></i> Service <?= $this->logged_in_name; ?></a></li>
-                                <li><a href="<?= base_url('admin/earlabs/list_sp/' . $sp_id) ?>"><i class="fa fa-gear fa-fw"></i> Κατασκευές <?= $this->logged_in_name; ?></a></li>
-                            </ul>
-                        </li>
-                        
-                        <li>
-                            <a href="#" data-toggle="collapse" data-target="#documentsMenu">
-                                <i class="fa fa-paperclip fa-fw"></i> Έντυπα <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="documentsMenu">
-                                <li>
-                                    <a href="#" data-toggle="collapse" data-target="#ekaptyMenu">
-                                        <i class="fa fa-file-archive-o fa-fw"></i> ΕΚΑΠΤΥ <span class="fa arrow"></span>
-                                    </a>
-                                    <ul class="nav nav-third-level collapse" id="ekaptyMenu">
-                                        <li><a href="<?= base_url('admin/vendors/view_all_ekapty') ?>"><i class="fa fa-file-archive-o fa-fw"></i> Λίστα Προμηθευτων</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#" data-toggle="collapse" data-target="#otherDocumentsMenu">
-                                        <i class="fa fa-certificate fa-fw"></i> Διάφορα Έντυπα <span class="fa arrow"></span>
-                                    </a>
-                                    <ul class="nav nav-third-level collapse" id="otherDocumentsMenu">
-                                        <li><a href="<?= base_url('admin/banks/view') ?>"><i class="fa fa-bank fa-fw"></i> Τραπεζικοί Λογαριασμοί</a></li>
-                                        <li><a href="<?= base_url('assets/uploads/files/documents/first_user.pdf') ?>" target="_blank"><i class="fa fa-user fa-fw"></i> Πρώτη Εφαρμογή</a></li>
-                                        <li><a href="<?= base_url('assets/uploads/files/documents/perifereia_students.pdf') ?>" target="_blank"><i class="fa fa-briefcase fa-fw"></i> Δικαιολογητικά Περιφέρειας - Μαθητές</a></li>
-                                        <li><a href="<?= base_url('assets/uploads/files/documents/battery_consumption.pdf') ?>" target="_blank"><i class="fa fa-check-circle fa-fw"></i> Φόρμα Κατανάλωσης Μπαταρίας</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        
-                        <li class="bg-danger">
-                            <a href="#" data-toggle="collapse" data-target="#paymentsMenu" aria-expanded="false">
-                                <i class="fa fa-money fa-fw"></i> Πληρωμές <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="paymentsMenu">
-                                <li><a href="<?= base_url('admin/pays/get_pays_sp/' . $sp_id ) ?>"><i class="fa fa-money fa-fw"></i> Οφειλές Πελατών</a></li>
-        <?php if ($this->is_admin): ?>
-                                <li><a href="<?= base_url('admin/pays') ?>"><i class="fa fa-money fa-fw"></i> Πληρωμές Πελατών</a></li>
-                                <li><a href="<?= base_url('admin/eopyy_pays') ?>"><i class="fa fa-money fa-fw"></i> Πληρωμές ΕΟΠΥΥ</a></li>
-        <?php endif; ?>
-                            </ul>
-                        </li>
-                        
-                            <?php if ($this->is_admin): ?>
-                        <li>
-                            <a href="#" data-toggle="collapse" data-target="#partnersMenu" aria-expanded="false">
-                                <i class="fa fa-briefcase fa-fw"></i> Συνεργάτες <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="partnersMenu">
-                                <li><a href="<?= base_url('admin/doctors') ?>"><i class="fa fa-user-md fa-fw"></i> Γιατροί</a></li>
-                                <li><a href="<?= base_url('admin/vendors') ?>"><i class="fa fa-briefcase fa-fw"></i> Προμηθευτές</a></li>
-                                <li><a href="<?= base_url('admin/manufacturers') ?>"><i class="fa fa-headphones fa-fw"></i> Brands</a></li>
-                                <li><a href="<?= base_url('admin/ManufacturerReport/') ?>"><i class="fa fa-headphones fa-fw"></i> Στατιστικα</a></li>
-                            
-                            </ul>
-                        </li>
-                        
-                        <li>
-                            <a href="#" data-toggle="collapse" data-target="#settingsMenu" aria-expanded="false">
-                                <i class="fa fa-gears fa-fw"></i> Ρυθμίσεις <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level collapse" id="settingsMenu">
-                                <li>
-                                    <a href="#" data-toggle="collapse" data-target="#businessSettingsMenu" aria-expanded="false">
-                                        <i class="fa fa-edit fa-fw"></i> Settings Επιχείρησης <span class="fa arrow"></span>
-                                    </a>
-                                    <ul class="nav nav-third-level collapse" id="businessSettingsMenu">
-                                        <li><a href="<?= base_url('admin/companies') ?>"><i class="fa fa-edit fa-fw"></i> Προφίλ Επιχείρησης</a></li>
-                                        <li><a href="<?= base_url('admin/selling_points') ?>"><i class="fa fa-edit fa-fw"></i> Καταστήματα</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="<?= base_url('admin/banks') ?>"><i class="fa fa-edit fa-fw"></i> Τραπεζικοί Λογαριασμοί</a></li>
-                                <li><a href="<?= base_url('admin/usergroups') ?>"><i class="fa fa-edit fa-fw"></i> User Groups</a></li>
-                                <li><a href="<?= base_url('admin/users') ?>"><i class="fa fa-edit fa-fw"></i> Users</a></li>
-                            </ul>
-                        </li>
-                            <?php endif; ?>
-                        
-                </div>
-            </div>            
+            <!-- Sidebar Menu - Loaded from separate file -->
+            <?php $this->load->view($this->config->item('ci_my_admin_template_dir_admin') . 'sidemenu'); ?>
+
+
+
+
+            
         </nav>
     </div>
    
     <script>
     $(document).ready(function() {
         $('.dropdown-toggle').dropdown();
-    });
-    
-    $(document).ready(function() {
-        $('.dropdown-toggle').dropdown();
+        
+        // Menu toggle functionality
         $('#toggle-menu').on('click', function() {
             $('#wrapper').toggleClass('collapsed');
             $('.navbar-default.sidebar').toggleClass('sidebar-hidden');
         });
+        
+        // Initialize delayed services notification system
+        loadDelayedServicesNotification();
+        
+        // Refresh delayed services every 5 minutes
+        setInterval(loadDelayedServicesNotification, 300000);
+        
+        // Manual refresh button
+        $(document).on('click', '#refresh-delayed-services', function(e) {
+            e.preventDefault();
+            loadDelayedServicesNotification();
+        });
     });
+    
+    function loadDelayedServicesNotification() {
+        $.get('<?= base_url("admin/services/get_delayed_services") ?>', function(data) {
+            if (data && typeof data === 'object') {
+                updateDelayedServicesUI(data);
+            }
+        }).fail(function() {
+            console.log('Σφάλμα φόρτωσης καθυστερημένων επισκευών');
+        });
+    }
+    
+    function updateDelayedServicesUI(data) {
+        var count = data.count || 0;
+        var services = data.services || [];
+        
+        // Update badge
+        $('#delayed-services-count').text(count);
+        
+        // Show/hide notification based on count
+        if (count > 0) {
+            $('#delayed-services-notification').show();
+            
+            // Update list
+            var listHtml = '';
+            services.forEach(function(service) {
+                var daysLate = service.days_in_lab;
+                var badgeClass = daysLate > 14 ? 'badge-danger' : (daysLate > 7 ? 'badge-warning' : 'badge-info');
+                
+                listHtml += '<li>' +
+                    '<div class="dropdown-item-content">' +
+                        '<div><strong>' + service.customer_name + '</strong></div>' +
+                        '<div class="small text-muted">' + service.device_model + ' - S/N: ' + service.device_serial + '</div>' +
+                        '<div class="small">' +
+                            '<span class="badge ' + badgeClass + '">' + daysLate + ' ημέρες</span> ' +
+                            '<span class="text-muted">στο ' + service.lab_name + '</span>' +
+                        '</div>' +
+                        '<div class="text-right">' +
+                            '<a href="<?= base_url("admin/services/edit/") ?>' + service.id + '" class="btn btn-xs btn-primary">Επεξεργασία</a>' +
+                        '</div>' +
+                    '</div>' +
+                '</li>' +
+                (services.indexOf(service) < services.length - 1 ? '<li class="divider"></li>' : '');
+            });
+            
+            $('#delayed-services-list').html(listHtml);
+            
+            // Make notification more prominent if there are critical delays (>14 days)
+            var criticalCount = services.filter(function(s) { return s.days_in_lab > 14; }).length;
+            if (criticalCount > 0) {
+                $('#delayed-services-notification').addClass('pulse-danger');
+            } else {
+                $('#delayed-services-notification').removeClass('pulse-danger');
+            }
+        } else {
+            $('#delayed-services-notification').hide();
+        }
+    }
     </script>
     <style>
     .sidebar-hidden {
@@ -447,10 +315,62 @@
     }
 
     #toggle-menu {
-        display: inline-block; /* Διασφαλίζει ότι το κουμπί είναι ορατό */
-        margin-top: 10px; /* Εάν χρειάζεται να προσαρμόσεις την απόσταση */
-        color: #000; /* Ίσως να χρειαστείς διαφορετικό χρώμα */
-        cursor: pointer; /* Χερί για να δείξεις ότι είναι κλικαριστό */
+        display: inline-block;
+        margin-top: 10px;
+        color: #000;
+        cursor: pointer;
+    }
+    
+    /* Delayed Services Notification Styles */
+    .dropdown-alerts {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .dropdown-item-content {
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .dropdown-item-content:last-child {
+        border-bottom: none;
+    }
+    
+    .badge-danger {
+        background-color: #d9534f;
+    }
+    
+    .badge-warning {
+        background-color: #f0ad4e;
+    }
+    
+    .badge-info {
+        background-color: #5bc0de;
+    }
+    
+    /* Pulse animation for critical notifications */
+    @keyframes pulse-danger {
+        0% { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(217, 83, 79, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0); }
+    }
+    
+    .pulse-danger {
+        animation: pulse-danger 2s infinite;
+    }
+    
+    #delayed-services-notification .fa-exclamation-triangle {
+        animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0.5; }
+    }
+    
+    /* Notification hidden by default */
+    #delayed-services-notification {
+        display: none;
     }
     
     #main-content {

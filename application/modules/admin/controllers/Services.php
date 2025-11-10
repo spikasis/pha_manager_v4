@@ -280,4 +280,175 @@ class Services extends Admin_Controller {
         redirect('/admin/services', 'refresh');
     }
 
+    /**
+     * AJAX endpoint για λήψη καθυστερημένων επισκευών
+     */
+    public function get_delayed_services() {
+        $this->load->model('admin/system_setting');
+        
+        // Ensure settings table exists
+        $this->system_setting->create_table_if_not_exists();
+        
+        // Get delay threshold from settings (default 7 days)
+        $delay_days = $this->system_setting->get_setting('service_delay_notification_days', 7);
+        
+        // Check if notifications are enabled
+        $notifications_enabled = $this->system_setting->get_setting('enable_service_notifications', 1);
+        
+        if (!$notifications_enabled) {
+            echo json_encode(['count' => 0, 'services' => []]);
+            return;
+        }
+
+        try {
+            // Get delayed services
+            $delayed_services = $this->get_services_delayed_in_lab($delay_days);
+            
+            $response = [
+                'count' => count($delayed_services),
+                'services' => $delayed_services,
+                'threshold_days' => $delay_days
+            ];
+            
+            header('Content-Type: application/json');
+            echo json_encode($response);
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage(), 'count' => 0, 'services' => []]);
+        }
+    }
+
+    /**
+     * Λήψη επισκευών που είναι καθυστερημένες στο εργαστήριο
+     */
+    private function get_services_delayed_in_lab($delay_days = 7) {
+        $this->db->select('
+            services.id, 
+            services.day_in, 
+            services.lab_sent,
+            customers.name as customer_name,
+            customers.phone as customer_phone,
+            stocks.model as device_model,
+            stocks.serial as device_serial,
+            vendors.name as lab_name,
+            DATEDIFF(NOW(), services.day_in) as days_in_lab
+        ');
+        
+        $this->db->from('services');
+        $this->db->join('stocks', 'services.ha_service = stocks.id', 'left');
+        $this->db->join('customers', 'stocks.customer_id = customers.id', 'left');
+        $this->db->join('vendors', 'services.lab_sent = vendors.id', 'left');
+        
+        // Conditions for delayed services
+        $this->db->where('services.status', 2); // Status 2 = "Στο Εργαστήριο"
+        $this->db->where('services.day_in IS NOT NULL');
+        $this->db->where("DATEDIFF(NOW(), services.day_in) > {$delay_days}");
+        
+        // Order by most delayed first
+        $this->db->order_by('days_in_lab', 'DESC');
+        $this->db->limit(10); // Limit to 10 most critical
+        
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    /**
+     * AJAX endpoint για στατιστικά επισκευών
+     */
+    public function get_service_statistics() {
+        try {
+            $stats = [
+                'total' => $this->service->count_all(),
+                'pending' => $this->get_services_count_by_status(2), // Στο εργαστήριο
+                'completed' => $this->get_services_count_by_status(3), // Έτοιμες
+                'delivered' => $this->get_services_count_by_status(4), // Παραδόθηκαν
+            ];
+            
+            // Get delayed services count
+            $this->load->model('admin/system_setting');
+            $this->system_setting->create_table_if_not_exists();
+            $delay_days = $this->system_setting->get_setting('service_delay_notification_days', 7);
+            
+            $this->db->where('status', 2);
+            $this->db->where('day_in IS NOT NULL');
+            $this->db->where("DATEDIFF(NOW(), day_in) > {$delay_days}");
+            $stats['delayed'] = $this->db->count_all_results('services');
+            
+            header('Content-Type: application/json');
+            echo json_encode($stats);
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Μέτρηση επισκευών ανά status
+     */
+    private function get_services_count_by_status($status) {
+        $this->db->where('status', $status);
+        return $this->db->count_all_results('services');
+    }
+
+    /**
+     * Προβολή καθυστερημένων επισκευών
+     */
+    public function delayed() {
+        $this->load->model('admin/system_setting');
+        $this->system_setting->create_table_if_not_exists();
+        
+        $delay_days = $this->system_setting->get_setting('service_delay_notification_days', 7);
+        $data['delayed_services'] = $this->get_services_delayed_in_lab($delay_days);
+        $data['delay_threshold'] = $delay_days;
+        
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "service_delayed_list";
+        $this->load->view($this->_container, $data);
+    }
+
+    /**
+     * Ρυθμίσεις ειδοποιήσεων
+     */
+    public function notification_settings() {
+        $this->load->model('admin/system_setting');
+        $this->system_setting->create_table_if_not_exists();
+        
+        $data['settings'] = $this->system_setting->get_all_settings();
+        
+        $data['page'] = $this->config->item('ci_my_admin_template_dir_admin') . "service_notification_settings";
+        $this->load->view($this->_container, $data);
+    }
+
+    /**
+     * Αποθήκευση ρυθμίσεων ειδοποιήσεων (AJAX)
+     */
+    public function save_notification_settings() {
+        if ($this->input->post()) {
+            $this->load->model('admin/system_setting');
+            $this->system_setting->create_table_if_not_exists();
+            
+            try {
+                // Save settings
+                $settings = [
+                    'enable_service_notifications' => $this->input->post('enable_notifications') ?: '0',
+                    'service_delay_notification_days' => $this->input->post('delay_days') ?: '7',
+                    'service_critical_delay_days' => $this->input->post('critical_delay_days') ?: '14',
+                    'notification_refresh_interval' => $this->input->post('refresh_interval') ?: '300000'
+                ];
+                
+                foreach ($settings as $key => $value) {
+                    $this->system_setting->set_setting($key, $value);
+                }
+                
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'message' => 'Ρυθμίσεις αποθηκεύτηκαν επιτυχώς']);
+            } catch (Exception $e) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            }
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Δεν βρέθηκαν δεδομένα']);
+        }
+    }
+
 }
