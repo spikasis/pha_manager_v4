@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Task Update Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Task Update Test</h1>
+    
+    <form id="loginForm" style="border: 1px solid #ccc; padding: 20px; margin-bottom: 20px;">
+        <h3>Login First</h3>
+        <div>
+            <label>Username: <input type="text" name="identity" value="admin" required></label><br><br>
+            <label>Password: <input type="password" name="password" value="12345" required></label><br><br>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+    
+    <div style="border: 1px solid #ccc; padding: 20px;">
+        <h3>Test Checkbox Update</h3>
+        <p>Task ID: <input type="number" id="taskId" value="1" min="1"></p>
+        <p>Field: 
+            <select id="field">
+                <option value="scan">Scan</option>
+                <option value="gnomateusi">Gnomateusi</option>
+                <option value="tel_rdv">Tel RDV</option>
+                <option value="ektelesi">Ektelesi</option>
+                <option value="signatures">Signatures</option>
+                <option value="receipt">Receipt</option>
+                <option value="arxeio">Arxeio</option>
+            </select>
+        </p>
+        <p>Value: 
+            <label><input type="radio" name="value" value="1" checked> True (1)</label>
+            <label><input type="radio" name="value" value="0"> False (0)</label>
+        </p>
+        <button id="testUpdate">Test Update</button>
+    </div>
+    
+    <div id="result" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 200px; background: #f9f9f9;">
+        <h3>Results will appear here...</h3>
+    </div>
+
+    <script>
+    // Login form handler
+    $('#loginForm').submit(function(e) {
+        e.preventDefault();
+        
+        $('#result').html('<h3>Logging in...</h3>');
+        
+        $.ajax({
+            url: '/auth/login',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                $('#result').html('<h3>Login Response:</h3><pre>' + response + '</pre>');
+                
+                // Check if login was successful by looking for redirect or success indicator
+                if (response.indexOf('dashboard') > -1 || response.indexOf('admin') > -1) {
+                    $('#result').append('<p style="color: green;"><strong>Login appears successful!</strong></p>');
+                } else {
+                    $('#result').append('<p style="color: red;"><strong>Login may have failed. Check response above.</strong></p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#result').html('<h3>Login Error:</h3><p>Status: ' + xhr.status + '</p><p>Error: ' + error + '</p><pre>' + xhr.responseText + '</pre>');
+            }
+        });
+    });
+
+    // Test update button handler
+    $('#testUpdate').click(function() {
+        var taskId = $('#taskId').val();
+        var field = $('#field').val();
+        var value = $('input[name="value"]:checked').val();
+        
+        $('#result').html('<h3>Testing update...</h3><p>Task ID: ' + taskId + '</p><p>Field: ' + field + '</p><p>Value: ' + value + '</p>');
+        
+        $.ajax({
+            url: '/admin/tasks/update_field',
+            method: 'POST',
+            data: {
+                id: taskId,
+                field: field,
+                value: value
+            },
+            beforeSend: function(xhr) {
+                $('#result').append('<p><strong>Sending request to:</strong> /admin/tasks/update_field</p>');
+            },
+            success: function(response) {
+                $('#result').append('<h3>SUCCESS Response:</h3>');
+                $('#result').append('<p><strong>Type:</strong> ' + typeof response + '</p>');
+                $('#result').append('<pre>' + JSON.stringify(response, null, 2) + '</pre>');
+            },
+            error: function(xhr, status, error) {
+                $('#result').append('<h3>ERROR Response:</h3>');
+                $('#result').append('<p><strong>Status:</strong> ' + xhr.status + ' ' + xhr.statusText + '</p>');
+                $('#result').append('<p><strong>Error:</strong> ' + error + '</p>');
+                $('#result').append('<p><strong>Response Text:</strong></p><pre>' + xhr.responseText + '</pre>');
+            }
+        });
+    });
+    </script>
+</body>
+</html>

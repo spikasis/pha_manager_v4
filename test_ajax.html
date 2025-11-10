@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test AJAX Update Field</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Test AJAX Update Field</h1>
+    
+    <button id="testBtn">Test Update Field</button>
+    <div id="result" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 200px;">
+        <h3>Result will appear here...</h3>
+    </div>
+
+    <script>
+    $('#testBtn').click(function() {
+        console.log('Test button clicked');
+        $('#result').html('<h3>Sending AJAX request...</h3>');
+        
+        $.ajax({
+            url: '/admin/tasks/update_field',
+            method: 'POST',
+            data: {
+                id: 1,
+                field: 'scan', 
+                value: 1
+            },
+            beforeSend: function(xhr) {
+                console.log('Sending AJAX request to:', '/admin/tasks/update_field');
+                console.log('Data:', {id: 1, field: 'scan', value: 1});
+            },
+            success: function(response) {
+                console.log('=== SUCCESS ===');
+                console.log('Response type:', typeof response);
+                console.log('Raw response:', response);
+                
+                $('#result').html('<h3>SUCCESS Response:</h3><pre>' + JSON.stringify(response, null, 2) + '</pre>');
+            },
+            error: function(xhr, status, error) {
+                console.log('=== ERROR ===');
+                console.log('XHR Status:', xhr.status);
+                console.log('XHR Status Text:', xhr.statusText);
+                console.log('XHR Response Text:', xhr.responseText);
+                console.log('Status:', status);
+                console.log('Error:', error);
+                console.log('Full XHR:', xhr);
+                
+                $('#result').html('<h3>ERROR Response:</h3><p><strong>Status:</strong> ' + xhr.status + ' ' + xhr.statusText + '</p><p><strong>Response:</strong></p><pre>' + xhr.responseText + '</pre>');
+            }
+        });
+    });
+    </script>
+</body>
+</html>

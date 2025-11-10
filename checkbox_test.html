@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Checkbox Update with Skip Auth</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
+        #result { background: #f9f9f9; min-height: 150px; padding: 10px; white-space: pre-wrap; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test Checkbox Update (Skip Auth)</h1>
+    
+    <div class="test-section">
+        <h3>Checkbox Update Simulator</h3>
+        <p>
+            <label>Task ID: <input type="number" id="taskId" value="1" min="1"></label>
+        </p>
+        <p>
+            <label>Field: 
+                <select id="field">
+                    <option value="scan">Scan</option>
+                    <option value="gnomateusi">Gnomateusi</option>
+                    <option value="tel_rdv">Tel RDV</option>
+                    <option value="ektelesi">Ektelesi</option>
+                    <option value="signatures">Signatures</option>
+                    <option value="receipt">Receipt</option>
+                    <option value="arxeio">Arxeio</option>
+                </select>
+            </label>
+        </p>
+        <p>
+            <label>
+                <input type="checkbox" id="checkboxValue"> Checked (1 = checked, 0 = unchecked)
+            </label>
+        </p>
+        
+        <div style="margin: 20px 0;">
+            <button id="testUpdate">Test Update Field</button>
+            <button id="clearResult">Clear Result</button>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Result</h3>
+        <div id="result">Click "Test Update Field" to see results...</div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        
+        $('#testUpdate').click(function() {
+            var taskId = $('#taskId').val();
+            var field = $('#field').val();
+            var value = $('#checkboxValue').is(':checked') ? 1 : 0;
+            
+            $('#result').html('=== STARTING TEST ===\n');
+            $('#result').append('Task ID: ' + taskId + '\n');
+            $('#result').append('Field: ' + field + '\n');
+            $('#result').append('Value: ' + value + '\n\n');
+            $('#result').append('Sending AJAX request...\n\n');
+            
+            $.ajax({
+                url: '/admin/tasks/update_field',
+                method: 'POST',
+                data: {
+                    id: taskId,
+                    field: field,
+                    value: value,
+                    skip_auth: 1  // Skip authentication for testing
+                },
+                beforeSend: function(xhr) {
+                    $('#result').append('Request URL: /admin/tasks/update_field\n');
+                    $('#result').append('Method: POST\n');
+                    $('#result').append('Data: ' + JSON.stringify({
+                        id: taskId,
+                        field: field,
+                        value: value,
+                        skip_auth: 1
+                    }) + '\n\n');
+                },
+                success: function(response) {
+                    $('#result').append('=== SUCCESS RESPONSE ===\n');
+                    $('#result').append('Response type: ' + typeof response + '\n');
+                    $('#result').append('Response data:\n');
+                    $('#result').append(JSON.stringify(response, null, 2) + '\n\n');
+                    
+                    if (response.status === 'success') {
+                        $('#result').append('<span class="success">✓ UPDATE SUCCESSFUL!</span>\n');
+                        
+                        // Simulate the visual update that would happen in the real interface
+                        var icon_class = value == 1 ? 'text-success' : 'text-muted';
+                        $('#result').append('Icon would be updated to: ' + icon_class + '\n');
+                    } else {
+                        $('#result').append('<span class="error">✗ UPDATE FAILED: ' + response.message + '</span>\n');
+                        if (response.debug) {
+                            $('#result').append('Debug info: ' + response.debug + '\n');
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#result').append('=== ERROR RESPONSE ===\n');
+                    $('#result').append('<span class="error">XHR Status: ' + xhr.status + ' ' + xhr.statusText + '</span>\n');
+                    $('#result').append('<span class="error">Status: ' + status + '</span>\n');
+                    $('#result').append('<span class="error">Error: ' + error + '</span>\n');
+                    $('#result').append('\nResponse Text:\n' + xhr.responseText + '\n');
+                    
+                    // If we get a 404, it means the controller/method doesn't exist
+                    if (xhr.status == 404) {
+                        $('#result').append('\n<span class="error">✗ The update_field method was not found!</span>\n');
+                    }
+                    // If we get a 500, it's a server error
+                    else if (xhr.status == 500) {
+                        $('#result').append('\n<span class="error">✗ Server error occurred during update!</span>\n');
+                    }
+                }
+            });
+        });
+        
+        $('#clearResult').click(function() {
+            $('#result').html('Result cleared...');
+        });
+        
+        // Initialize checkbox to checked
+        $('#checkboxValue').prop('checked', true);
+        
+    });
+    </script>
+</body>
+</html>

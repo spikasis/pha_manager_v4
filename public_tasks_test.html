@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Public Tasks Update</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; background: #f9f9f9; }
+        #result { background: white; min-height: 150px; padding: 10px; white-space: pre-wrap; border: 1px solid #ddd; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input, select { padding: 5px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Test Public Tasks Update (No Auth Required)</h1>
+    
+    <div class="test-section">
+        <h3>🔧 Checkbox Update Simulator</h3>
+        <p>This test uses the public_tasks controller which doesn't require authentication.</p>
+        
+        <p>
+            <label>Task ID: <input type="number" id="taskId" value="1" min="1"></label>
+        </p>
+        <p>
+            <label>Field: 
+                <select id="field">
+                    <option value="scan">Scan</option>
+                    <option value="gnomateusi">Gnomateusi</option>
+                    <option value="tel_rdv">Tel RDV</option>
+                    <option value="ektelesi">Ektelesi</option>
+                    <option value="signatures">Signatures</option>
+                    <option value="receipt">Receipt</option>
+                    <option value="arxeio">Arxeio</option>
+                </select>
+            </label>
+        </p>
+        <p>
+            <label>
+                <input type="checkbox" id="checkboxValue" checked> Checked (1 = checked, 0 = unchecked)
+            </label>
+        </p>
+        
+        <div style="margin: 20px 0;">
+            <button id="testUpdate">🚀 Test Update Field</button>
+            <button id="testController">🔍 Test Controller Connection</button>
+            <button id="clearResult">🧹 Clear Result</button>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>📊 Result</h3>
+        <div id="result">Click a test button to see results...</div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        
+        // Test the update field functionality
+        $('#testUpdate').click(function() {
+            var taskId = $('#taskId').val();
+            var field = $('#field').val();
+            var value = $('#checkboxValue').is(':checked') ? 1 : 0;
+            
+            $('#result').html('=== TESTING UPDATE FIELD ===\n');
+            $('#result').append('📝 Task ID: ' + taskId + '\n');
+            $('#result').append('📝 Field: ' + field + '\n');
+            $('#result').append('📝 Value: ' + value + '\n');
+            $('#result').append('📝 URL: /public_tasks/update_field\n\n');
+            $('#result').append('⏳ Sending AJAX request...\n\n');
+            
+            $.ajax({
+                url: '/public_tasks/update_field',
+                method: 'POST',
+                data: {
+                    id: taskId,
+                    field: field,
+                    value: value
+                },
+                success: function(response) {
+                    $('#result').append('=== ✅ SUCCESS RESPONSE ===\n');
+                    $('#result').append('Response type: ' + typeof response + '\n');
+                    $('#result').append('Response data:\n');
+                    $('#result').append(JSON.stringify(response, null, 2) + '\n\n');
+                    
+                    if (response.status === 'success') {
+                        $('#result').append('<span class="success">🎉 UPDATE SUCCESSFUL!</span>\n');
+                        $('#result').append('✨ The checkbox update worked correctly!\n');
+                    } else {
+                        $('#result').append('<span class="error">❌ UPDATE FAILED: ' + response.message + '</span>\n');
+                        if (response.debug) {
+                            $('#result').append('🐛 Debug info: ' + response.debug + '\n');
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#result').append('=== ❌ ERROR RESPONSE ===\n');
+                    $('#result').append('<span class="error">HTTP Status: ' + xhr.status + ' ' + xhr.statusText + '</span>\n');
+                    $('#result').append('<span class="error">Status: ' + status + '</span>\n');
+                    $('#result').append('<span class="error">Error: ' + error + '</span>\n');
+                    $('#result').append('\nResponse Text:\n' + xhr.responseText + '\n');
+                }
+            });
+        });
+        
+        // Test basic controller connection
+        $('#testController').click(function() {
+            $('#result').html('=== TESTING CONTROLLER CONNECTION ===\n');
+            $('#result').append('⏳ Testing /public_tasks/test endpoint...\n\n');
+            
+            $.ajax({
+                url: '/public_tasks/test',
+                method: 'GET',
+                success: function(response) {
+                    $('#result').append('=== ✅ CONTROLLER CONNECTION SUCCESS ===\n');
+                    $('#result').append(JSON.stringify(response, null, 2) + '\n\n');
+                    $('#result').append('<span class="success">🎉 Controller is reachable!</span>\n');
+                },
+                error: function(xhr, status, error) {
+                    $('#result').append('=== ❌ CONTROLLER CONNECTION ERROR ===\n');
+                    $('#result').append('<span class="error">HTTP Status: ' + xhr.status + ' ' + xhr.statusText + '</span>\n');
+                    $('#result').append('<span class="error">Error: ' + error + '</span>\n');
+                    
+                    if (xhr.status == 404) {
+                        $('#result').append('\n<span class="error">❌ Controller not found! Check if Public_tasks.php exists.</span>\n');
+                    }
+                }
+            });
+        });
+        
+        // Clear result area
+        $('#clearResult').click(function() {
+            $('#result').html('Result area cleared...');
+        });
+        
+    });
+    </script>
+</body>
+</html>

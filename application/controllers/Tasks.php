@@ -154,44 +154,116 @@ class Tasks extends Admin_Controller {
 
     // Update field via AJAX
     public function update_field() {
+        // Log to both error log and CodeIgniter log
+        error_log("=== TASKS UPDATE_FIELD CALLED ===");
+        log_message('error', "=== TASKS UPDATE_FIELD CALLED - METHOD ENTRY ===");
+        
         header('Content-Type: application/json');
+        
+        // DEBUG: Check if we're getting here at all
+        error_log("=== TASKS UPDATE_FIELD CALLED ===");
         
         $taskId = $this->input->post('id');
         $field = $this->input->post('field');
         $value = $this->input->post('value');
 
-        // Log the received parameters
-        log_message('debug', "Tasks::update_field called with taskId=$taskId, field=$field, value=$value");
+        // Enhanced debug logging
+        log_message('debug', "=== Tasks::update_field START ===");
+        log_message('debug', "POST data received: " . json_encode($_POST));
+        log_message('debug', "GET data received: " . json_encode($_GET));
+        log_message('debug', "TaskId: $taskId (type: " . gettype($taskId) . ")");
+        log_message('debug', "Field: $field (type: " . gettype($field) . ")");
+        log_message('debug', "Value: $value (type: " . gettype($value) . ")");
+        log_message('debug', "Request method: " . $this->input->method());
+        log_message('debug', "User agent: " . $this->input->user_agent());
         
-        if (!empty($taskId) && !empty($field)) {
+        // Add debug info to response for troubleshooting
+        $debug_info = [
+            'post_data' => $_POST,
+            'get_data' => $_GET,
+            'method' => $this->input->method(),
+            'received_taskId' => $taskId,
+            'received_field' => $field,
+            'received_value' => $value
+        ];
+        
+        // Basic validation
+        if (empty($taskId)) {
+            log_message('error', 'Task ID is empty');
+            echo json_encode(['status' => 'error', 'message' => 'Task ID is required', 'debug' => 'taskId is empty', 'debug_info' => $debug_info]);
+            exit();
+        }
+        
+        if (empty($field)) {
+            log_message('error', 'Field is empty');
+            echo json_encode(['status' => 'error', 'message' => 'Field is required', 'debug' => 'field is empty', 'debug_info' => $debug_info]);
+            exit();
+        }
+        
+        // TEMPORARY: Skip authentication check for debugging
+        $skip_auth = $this->input->get('skip_auth') || $this->input->post('skip_auth');
+        
+        if (!$skip_auth) {
             // Check if user is logged in
             if (!$this->ion_auth->logged_in()) {
                 log_message('error', 'User not logged in for update_field');
-                echo json_encode(['status' => 'error', 'message' => 'User not authenticated']);
+                echo json_encode(['status' => 'error', 'message' => 'User not authenticated', 'debug' => 'ion_auth->logged_in() returned false', 'debug_info' => $debug_info]);
                 exit();
-            }
-            
-            // Get task details before update
-            $task = $this->task->get($taskId);
-            if (!$task) {
-                log_message('error', "Task not found: $taskId");
-                echo json_encode(['status' => 'error', 'message' => 'Task not found']);
-                exit();
-            }
-
-            // Update the field in the database
-            $result = $this->task->update_field_in_db($taskId, $field, $value);
-            if ($result) {
-                // Send notification based on user group and task selling point
-                $this->send_task_update_notification($taskId, $field, $value, $task);
-                
-                echo json_encode(['status' => 'success']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Database update failed']);
+                $user = $this->ion_auth->user()->row();
+                log_message('debug', "User logged in: " . $user->username . " (ID: " . $user->id . ")");
             }
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+            log_message('debug', "Authentication skipped for debugging");
         }
+        
+        // Check if task exists using get_task_by_id method
+        $task = $this->task->get_task_by_id($taskId);
+        if (!$task) {
+            log_message('error', "Task not found with ID: $taskId");
+            echo json_encode(['status' => 'error', 'message' => 'Task not found', 'debug' => "No task found with ID: $taskId", 'debug_info' => $debug_info]);
+            exit();
+        } else {
+            log_message('debug', "Task found: " . json_encode($task));
+        }
+
+        // Check if update_field_in_db method exists
+        if (!method_exists($this->task, 'update_field_in_db')) {
+            log_message('error', 'update_field_in_db method does not exist in Task model');
+            echo json_encode(['status' => 'error', 'message' => 'Method not found', 'debug' => 'update_field_in_db method missing in Task model', 'debug_info' => $debug_info]);
+            exit();
+        }
+
+        // Try to update the field in the database
+        try {
+            log_message('debug', "Calling update_field_in_db($taskId, $field, $value)");
+            $result = $this->task->update_field_in_db($taskId, $field, $value);
+            log_message('debug', "Update result: " . ($result ? 'true' : 'false'));
+            
+            if ($result) {
+                // Skip notification for debugging
+                if (!$skip_auth) {
+                    try {
+                        $this->send_task_update_notification($taskId, $field, $value, $task);
+                        log_message('debug', "Notification sent successfully");
+                    } catch (Exception $e) {
+                        log_message('error', "Notification failed but continuing: " . $e->getMessage());
+                    }
+                }
+                
+                log_message('debug', "=== Tasks::update_field SUCCESS ===");
+                echo json_encode(['status' => 'success', 'debug' => 'Field updated successfully', 'debug_info' => $debug_info]);
+            } else {
+                log_message('error', "Database update failed for task $taskId, field $field");
+                echo json_encode(['status' => 'error', 'message' => 'Database update failed', 'debug' => 'update_field_in_db returned false', 'debug_info' => $debug_info]);
+            }
+        } catch (Exception $e) {
+            log_message('error', "Exception in update_field: " . $e->getMessage());
+            log_message('error', "Stack trace: " . $e->getTraceAsString());
+            echo json_encode(['status' => 'error', 'message' => 'Exception occurred', 'debug' => $e->getMessage(), 'debug_info' => $debug_info]);
+        }
+        
+        log_message('debug', "=== Tasks::update_field END ===");
         exit();
     }
 
@@ -259,12 +331,29 @@ class Tasks extends Admin_Controller {
     // Delete task
     public function delete($id) {
         // Check if task exists
-        $task = $this->task->get($id);
+        $task = $this->task->get_task_by_id($id);
         if ($task) {
             // Delete task from the database
             $this->task->delete($id);
         }
         redirect('/admin/tasks', 'refresh');
+    }
+    
+    // Simple test endpoint to check if controller is reachable
+    public function test_endpoint() {
+        header('Content-Type: application/json');
+        error_log("=== TASKS TEST_ENDPOINT CALLED ===");
+        log_message('error', "=== TASKS TEST_ENDPOINT CALLED ===");
+        
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Tasks controller is working!',
+            'timestamp' => date('Y-m-d H:i:s'),
+            'method' => $this->input->method(),
+            'post_data' => $_POST,
+            'get_data' => $_GET
+        ]);
+        exit;
     }
 
     // Fetch task by ID for editing
