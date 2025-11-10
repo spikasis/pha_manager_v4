@@ -4,14 +4,17 @@ $user_id = $CI->ion_auth->get_user_id();
 $group = $CI->ion_auth->get_users_groups($user_id)->row();
 $group_id = $group->id;
 
+// Get the logged_id from the controller - same as $this->logged_id in header
+$logged_id = $CI->logged_id;
+
 // Debug: Show group information (remove this after testing)
-echo "<!-- Debug: User ID: " . $CI->logged_id . ", Group ID: " . $group_id . ", Group Name: " . $group->name . " -->";
+echo "<!-- Debug: User ID: " . $logged_id . ", Group ID: " . $group_id . ", Group Name: " . $group->name . " -->";
 
 // Load necessary models
 $CI->load->model(array('admin/customer', 'admin/service', 'admin/earlab', 'admin/stock', 'admin/task'));
 
 // Determine selling point ID based on user
-switch ($CI->logged_id) {
+switch ($logged_id) {
     case 1:
         $sp_id = 'selling_point'; // Admin sees all
         break;
@@ -49,13 +52,13 @@ switch ($CI->logged_id) {
             <li><a href="<?= base_url('admin/dashboard') ?>"><i class="fa fa-dashboard fa-fw"></i> Αρχική</a></li>
 
             <!-- Διαχείριση Πελατών -->
-            <?php if (in_array($CI->logged_id, [1, 14, 19])): // Admin, Υποκαταστήματα ?>
+            <?php if (in_array($logged_id, [1, 14, 19])): // Admin, Υποκαταστήματα ?>
             <li>
                 <a href="#" data-toggle="collapse" data-target="#customers-menu" aria-expanded="false">
                     <i class="fa fa-users fa-fw"></i> Πελάτες <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse" id="customers-menu">
-                    <?php if ($CI->logged_id == 1): // Admin sees all ?>
+                    <?php if ($logged_id == 1): // Admin sees all ?>
                     <li><a href="<?= base_url('admin/customers') ?>"><i class="fa fa-list fa-fw"></i> Όλοι οι Πελάτες</a></li>
                     <li><a href="<?= base_url('admin/customers/list_sp/1') ?>"><i class="fa fa-building-o fa-fw"></i> Πελάτες Λιβαδειάς</a></li>
                     <li><a href="<?= base_url('admin/customers/list_sp/2') ?>"><i class="fa fa-building-o fa-fw"></i> Πελάτες Θήβας</a></li>
@@ -64,7 +67,7 @@ switch ($CI->logged_id) {
                     <?php endif; ?>
                     
                     <li><a href="<?= base_url('admin/customers/create') ?>"><i class="fa fa-plus fa-fw"></i> Νέος Πελάτης</a></li>
-                    <?php if ($CI->logged_id == 1): // Admin only ?>
+                    <?php if ($logged_id == 1): // Admin only ?>
                     <li><a href="<?= base_url('admin/customers/search') ?>"><i class="fa fa-search fa-fw"></i> Αναζήτηση Πελάτη</a></li>
                     <?php endif; ?>
                 </ul>
@@ -72,13 +75,13 @@ switch ($CI->logged_id) {
             <?php endif; ?>
 
             <!-- Διαχείριση Ακουστικών -->
-            <?php if (in_array($CI->logged_id, [1, 14, 19])): ?>
+            <?php if (in_array($logged_id, [1, 14, 19])): ?>
             <li>
                 <a href="#" data-toggle="collapse" data-target="#stocks-menu" aria-expanded="false">
                     <i class="fa fa-headphones fa-fw"></i> Ακουστικά <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse" id="stocks-menu">
-                    <?php if ($CI->logged_id == 1): // Admin sees all ?>
+                    <?php if ($logged_id == 1): // Admin sees all ?>
                     <li><a href="<?= base_url('admin/stocks') ?>"><i class="fa fa-list fa-fw"></i> Όλα τα Ακουστικά</a></li>
                     <li><a href="<?= base_url('admin/stocks/list_sp/1') ?>"><i class="fa fa-building-o fa-fw"></i> Ακουστικά Λιβαδειάς</a></li>
                     <li><a href="<?= base_url('admin/stocks/list_sp/2') ?>"><i class="fa fa-building-o fa-fw"></i> Ακουστικά Θήβας</a></li>
