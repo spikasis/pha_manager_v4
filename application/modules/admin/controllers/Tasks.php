@@ -152,43 +152,47 @@ class Tasks extends Admin_Controller {
 
     // Update field via AJAX
     public function update_field() {
+        // Set JSON header first
         header('Content-Type: application/json');
         
-        $taskId = $this->input->post('id');
-        $field = $this->input->post('field');
-        $value = $this->input->post('value');
-
-        // Log the received parameters
-        log_message('debug', "Tasks::update_field called with taskId=$taskId, field=$field, value=$value");
+        // Disable PHP error output to prevent breaking JSON
+        ini_set('display_errors', 0);
         
-        if (!empty($taskId) && !empty($field)) {
-            // Check if user is logged in
-            if (!$this->ion_auth->logged_in()) {
-                log_message('error', 'User not logged in for update_field');
-                echo json_encode(['status' => 'error', 'message' => 'User not authenticated']);
-                exit();
-            }
-            
-            // Get task details before update
-            $task = $this->task->get($taskId);
-            if (!$task) {
-                log_message('error', "Task not found: $taskId");
-                echo json_encode(['status' => 'error', 'message' => 'Task not found']);
-                exit();
-            }
+        try {
+            $taskId = $this->input->post('id');
+            $field = $this->input->post('field');
+            $value = $this->input->post('value');
 
-            // Update the field in the database
-            $result = $this->task->update_field_in_db($taskId, $field, $value);
-            if ($result) {
-                // Send notification based on user group and task selling point
-                $this->send_task_update_notification($taskId, $field, $value, $task);
+            if ($taskId && $field !== null) {
+                // Get task details first
+                $task = $this->task->get_task_by_id($taskId);
                 
-                echo json_encode(['status' => 'success']);
+                // Update the field in the database
+                $result = $this->task->update_field_in_db($taskId, $field, $value);
+                if ($result) {
+                    // Get full task details for notification
+                    $task_details = $this->task->get_task_by_id($taskId);
+                    
+                    // Send notification based on user group and task selling point
+                    if ($task_details) {
+                        try {
+                            $this->send_task_update_notification($taskId, $field, $value, $task_details);
+                        } catch (Exception $e) {
+                            // Log notification error but don't fail the update
+                            log_message('error', 'Notification failed: ' . $e->getMessage());
+                        }
+                    }
+                    
+                    echo json_encode(['status' => 'success', 'taskId' => $taskId, 'field' => $field, 'value' => $value]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Database update failed']);
+                }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Database update failed']);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid request - missing parameters']);
             }
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+        } catch (Exception $e) {
+            log_message('error', 'Exception in update_field: ' . $e->getMessage());
+            echo json_encode(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()]);
         }
         exit();
     }
@@ -197,36 +201,61 @@ class Tasks extends Admin_Controller {
      * Send notification when task is updated
      */
     private function send_task_update_notification($taskId, $field, $value, $task) {
-        // Get current user's selling point and group
-        $current_user = $this->ion_auth->user()->row();
-        $user_groups = $this->ion_auth->get_users_groups($current_user->id)->result();
-        
-        // Check if user is in service group (group_id = 6)
-        $is_service_group = false;
-        $current_selling_point = $current_user->selling_point;
-        
-        foreach ($user_groups as $group) {
-            if ($group->id == 6) { // Service group
-                $is_service_group = true;
-                $current_selling_point = 0; // Service group represents all selling points
-                break;
+        try {
+            // Validate input
+            if (!$taskId || !$field || !$task) {
+                return false;
             }
-        }
 
-        // Determine notification target
-        if ($is_service_group) {
-            // Service group updated task -> notify original selling point
-            $target_selling_point = $task->selling_point;
-            $message = "Το Service έκανε ενημέρωση στην εργασία: {$task->title}";
-        } else {
-            // Branch office updated task -> notify service group (selling_point = 0 means service)
-            $target_selling_point = 0; // Service group
-            $message = "Νέα ενημέρωση εργασίας από υποκατάστημα: {$task->title}";
-        }
+            // Get current user's selling point and group safely
+            $current_user = $this->ion_auth->user()->row();
+            if (!$current_user) {
+                return false;
+            }
 
-        // Don't send notification to self
-        if ($target_selling_point != $current_selling_point) {
-            // Create field-specific message
+            $user_groups = $this->ion_auth->get_users_groups($current_user->id)->result();
+            
+            // Check if user is in service group (group_id = 6)
+            $is_service_group = false;
+            $current_selling_point = isset($current_user->selling_point) ? $current_user->selling_point : 0;
+            
+            foreach ($user_groups as $group) {
+                if ($group->id == 6) { // Service group
+                    $is_service_group = true;
+                    $current_selling_point = 0; // Service group represents all selling points
+                    break;
+                }
+            }
+
+            // Safely get task properties
+            $task_selling_point = 0;
+            $task_title = 'Task #' . $taskId;
+
+            // Handle both array and object formats
+            if (is_array($task)) {
+                $task_selling_point = isset($task['selling_point']) ? $task['selling_point'] : 0;
+                $task_title = isset($task['customer_name']) ? $task['customer_name'] : 
+                             (isset($task['title']) ? $task['title'] : 'Task #' . $taskId);
+            } else {
+                $task_selling_point = isset($task->selling_point) ? $task->selling_point : 0;
+                $task_title = isset($task->customer_name) ? $task->customer_name : 
+                             (isset($task->title) ? $task->title : 'Task #' . $taskId);
+            }
+
+            // Determine notification target
+            if ($is_service_group) {
+                // Service group updated task -> notify original selling point
+                $target_selling_point = $task_selling_point;
+                $message = "Το Service έκανε ενημέρωση στην εργασία: {$task_title}";
+            } else {
+                // Branch office updated task -> notify service group (selling_point = 0 means service)
+                $target_selling_point = 0; // Service group
+                $message = "Νέα ενημέρωση εργασίας από υποκατάστημα: {$task_title}";
+            }
+
+            // Don't send notification to self
+            if ($target_selling_point != $current_selling_point) {
+                // Create field-specific message
             $field_names = [
                 'ekatpy_done' => 'Εκάπτι Ολοκληρώθηκε',
                 'mould_done' => 'Εκμαγείο Ολοκληρώθηκε', 
@@ -244,13 +273,22 @@ class Tasks extends Admin_Controller {
             $detailed_message = $message . " - Ενημερώθηκε: " . $field_display;
             
             // Send notification
-            $this->notification->create(
-                $taskId,
-                $current_selling_point,
-                $target_selling_point,
-                $detailed_message,
-                'task_update'
-            );
+            if (isset($this->notification)) {
+                $this->notification->create(
+                    $taskId,
+                    $current_selling_point,
+                    $target_selling_point,
+                    $detailed_message,
+                    'task_update'
+                );
+            }
+        }
+        
+        return true;
+        
+        } catch (Exception $e) {
+            log_message('error', 'Notification error in send_task_update_notification: ' . $e->getMessage());
+            return false;
         }
     }
 

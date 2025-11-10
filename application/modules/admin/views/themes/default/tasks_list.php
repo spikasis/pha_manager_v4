@@ -680,7 +680,20 @@
 <!--END OF MODALS -->
 
 <script>
-$(document).ready(function() {
+// Wait for jQuery to be available before executing
+(function waitForJQuery() {
+    'use strict';
+    
+    if (typeof jQuery === 'undefined') {
+        console.log('Waiting for jQuery to load...');
+        setTimeout(waitForJQuery, 100);
+        return;
+    }
+    
+    console.log('jQuery and DataTable loaded, initializing components...');
+
+// Use jQuery instead of $ to avoid conflicts
+jQuery(document).ready(function($) {
     // Modal for creating a new task
     $('#addTaskBtn').on('click', function() {
         $('#taskModalLabel').text('Προσθήκη Νέας Εργασίας');
@@ -902,28 +915,60 @@ $('.viewAcousticBtn').on('click', function(e) {
 
     // Update checkbox field values (e.g., scan, signatures, etc.)
     $('.updateCheckbox').on('change', function() {
+        console.log('=== CHECKBOX CHANGE START ===');
+        console.log('Checkbox element:', this);
+        
         var taskId = $(this).data('id');
         var field = $(this).data('field');
         var isChecked = $(this).is(':checked') ? 1 : 0;
+        
+        console.log('Task ID:', taskId, typeof taskId);
+        console.log('Field:', field, typeof field);
+        console.log('Value:', isChecked, typeof isChecked);
+        console.log('AJAX URL:', '<?= base_url('admin/tasks/update_field') ?>');
 
         $.ajax({
             url: '<?= base_url('admin/tasks/update_field') ?>',
             method: 'POST',
+            dataType: 'json', // Expect JSON response
             data: {
                 id: taskId,
                 field: field,
                 value: isChecked
             },
-            success: function(response) {
-                var backgroundColor = isChecked ? '#d4edda' : '#f8d7da';
-                $('input[data-id="' + taskId + '"][data-field="' + field + '"]').closest('td').css('background-color', backgroundColor);
+            success: function(response, textStatus, xhr) {
+                console.log('=== AJAX SUCCESS ===');
+                console.log('Response:', response);
+                console.log('Status:', textStatus);
                 
-                // Update progress bar in real-time
-                updateTaskProgress(taskId);
+                if (response && response.status === 'success') {
+                    var backgroundColor = isChecked ? '#d4edda' : '#f8d7da';
+                    $('input[data-id="' + taskId + '"][data-field="' + field + '"]').closest('td').css('background-color', backgroundColor);
+                    
+                    // Update progress bar in real-time
+                    updateTaskProgress(taskId);
+                } else {
+                    console.error('Unexpected response format:', response);
+                    alert('Απρόσδοκτη απάντηση από τον server: ' + JSON.stringify(response));
+                }
             },
             error: function(xhr, status, error) {
-                console.error(error);
-                alert('Σφάλμα κατά την ενημέρωση της βάσης δεδομένων.');
+                console.log('=== AJAX ERROR ===');
+                console.log(' XHR status:', xhr.status);
+                console.log(' XHR statusText:', status);
+                console.log(' XHR responseText:', xhr.responseText);
+                console.log(' Status:', status);
+                console.log(' Error:', error);
+                console.log(' Full XHR object:', xhr);
+                
+                // Check if response contains HTML (PHP error)
+                if (xhr.responseText && xhr.responseText.indexOf('<div') !== -1) {
+                    console.error('Server returned PHP error instead of JSON');
+                    alert('Σφάλμα διακομιστή: Ο διακομιστής επέστρεψε σφάλμα PHP αντί για JSON. Ελέγξτε τα logs του διακομιστή.');
+                } else {
+                    console.error('AJAX Error:', error);
+                    alert('Σφάλμα κατά την ενημέρωση της βάσης δεδομένων: ' + error);
+                }
             }
         });
     });
@@ -1234,5 +1279,7 @@ function loadAcoustics() {
         }
     });
 }
+
+})(); // End of jQuery check wrapper
 
 </script>
