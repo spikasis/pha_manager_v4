@@ -4,6 +4,9 @@ $user_id = $CI->ion_auth->get_user_id();
 $group = $CI->ion_auth->get_users_groups($user_id)->row();
 $group_id = $group->id;
 
+// Debug: Show group information (remove this after testing)
+// echo "<!-- Debug: User ID: " . $CI->logged_id . ", Group ID: " . $group_id . ", Group Name: " . $group->name . " -->";
+
 // Load necessary models
 $CI->load->model(array('admin/customer', 'admin/service', 'admin/earlab', 'admin/stock', 'admin/task'));
 
@@ -93,28 +96,28 @@ switch ($CI->logged_id) {
             <?php endif; ?>
 
             <!-- Επισκευές -->
-            <?php if (in_array($group_id, [1, 4, 5, 6])): // Admin, Υποκαταστήματα, Lab ?>
+            <?php if (in_array($CI->logged_id, [1, 6, 14, 19, 20])): // Admin, Lab, Υποκαταστήματα ?>
             <li>
                 <a href="#" data-toggle="collapse" data-target="#services-menu" aria-expanded="false">
                     <i class="fa fa-wrench fa-fw"></i> Επισκευές <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse" id="services-menu">
-                    <?php if ($group_id == 1): // Admin sees all ?>
+                    <?php if ($CI->logged_id == 1): // Admin sees all ?>
                     <li><a href="<?= base_url('admin/services') ?>"><i class="fa fa-list fa-fw"></i> Όλες οι Επισκευές</a></li>
                     <li><a href="<?= base_url('admin/services/list_sp/1') ?>"><i class="fa fa-building-o fa-fw"></i> Λιβαδειά</a></li>
                     <li><a href="<?= base_url('admin/services/list_sp/2') ?>"><i class="fa fa-building-o fa-fw"></i> Θήβα</a></li>
-                    <?php elseif (in_array($group_id, [4, 5])): // Υποκαταστήματα see their own ?>
+                    <?php elseif (in_array($CI->logged_id, [14, 19])): // Υποκαταστήματα see their own ?>
                     <li><a href="<?= base_url('admin/services/list_sp/' . $sp_id) ?>"><i class="fa fa-list fa-fw"></i> Επισκευές <?= ($sp_id == 1) ? 'Λιβαδειάς' : 'Θήβας' ?></a></li>
                     <?php else: // Lab sees all ?>
                     <li><a href="<?= base_url('admin/services') ?>"><i class="fa fa-list fa-fw"></i> Όλες οι Επισκευές</a></li>
                     <?php endif; ?>
                     
-                    <?php if (in_array($group_id, [1, 4, 5])): // Not lab users ?>
+                    <?php if (in_array($CI->logged_id, [1, 14, 19])): // Not lab users ?>
                     <li><a href="<?= base_url('admin/services/create') ?>"><i class="fa fa-plus fa-fw"></i> Νέα Επισκευή</a></li>
                     <?php endif; ?>
                     <li><a href="<?= base_url('admin/services/list_open') ?>"><i class="fa fa-clock-o fa-fw"></i> Ανοιχτές Επισκευές</a></li>
                     <li><a href="<?= base_url('admin/services/delayed') ?>"><i class="fa fa-exclamation-triangle fa-fw"></i> Καθυστερημένες</a></li>
-                    <?php if ($group_id == 1): // Admin only ?>
+                    <?php if ($CI->logged_id == 1): // Admin only ?>
                     <li><a href="<?= base_url('admin/services/service_stats') ?>"><i class="fa fa-bar-chart fa-fw"></i> Στατιστικά Επισκευών</a></li>
                     <?php endif; ?>
                 </ul>
